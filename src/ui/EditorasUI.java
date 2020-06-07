@@ -296,25 +296,26 @@ public class EditorasUI extends javax.swing.JInternalFrame {
     
     private void jButtonAbrirEditoraCadastroUIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAbrirEditoraCadastroUIActionPerformed
         
-        this.dispose();
-        
-        jDesktopPane.remove(this);
-        
-//      Cria um instância de LivroPrincipalUI.
-        EditoraCadastroUI editoraCadastroUI = new EditoraCadastroUI();
-       
-//      Adiciona a pilha de do JDesktopPane o JInternalFrame.
-        jDesktopPane.add(editoraCadastroUI);
-        
-//      Remove barra de título e borda da janela
         try {
+            this.dispose();
+
+            jDesktopPane.remove(this);
+
+//          Cria um instância de LivroPrincipalUI.
+            EditoraCadastroUI editoraCadastroUI = new EditoraCadastroUI();
+
+//          Adiciona a pilha de do JDesktopPane o JInternalFrame.
+            jDesktopPane.add(editoraCadastroUI);
+
+//          Remove barra de título e borda da janela
             UtilComponentes.removerBarraTituloEBorda(editoraCadastroUI);
+    
+//          Mostra a tela LivrosPrincipal.
+            editoraCadastroUI.show();
         } catch (Exception ex) {
             Logger.getLogger(DashboardUI.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-//      Mostra a tela LivrosPrincipal.
-        editoraCadastroUI.show();
     }//GEN-LAST:event_jButtonAbrirEditoraCadastroUIActionPerformed
 
     private void jButtonSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSairActionPerformed
@@ -348,7 +349,7 @@ public class EditorasUI extends javax.swing.JInternalFrame {
 //                  Reinicializa a tabela
                     inicializarTabelaDadosEditoras(editorasTabela);
                     
-                    if (editorasNaoExlcuidos != null && !editorasNaoExlcuidos.isEmpty()) {
+                    if (!editorasNaoExlcuidos.isEmpty()) {
                         JOptionPane.showMessageDialog(this, "Não foi possível excluir alguns dos registros selecionados porque existem operações gravadas.", "Editoras", JOptionPane.DEFAULT_OPTION);
                     }
                     

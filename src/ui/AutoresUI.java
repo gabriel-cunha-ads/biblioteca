@@ -349,7 +349,7 @@ public class AutoresUI extends javax.swing.JInternalFrame {
 //                  Reinicializa a tabela
                     inicializarTabelaDadosAutores(autoresTabela);
                     
-                    if (autoresNaoExlcuidos != null) {
+                    if (!autoresNaoExlcuidos.isEmpty()) {
                         JOptionPane.showMessageDialog(this, "Não foi possível excluir alguns dos registros selecionados porque existem operações gravadas.");
                     }
                     

@@ -136,7 +136,7 @@ public class DashboardUI extends javax.swing.JFrame {
         mainMenu.add(JMenuLivro);
 
         jMenuItemAbrirLivrosOperacoes.setMnemonic('o');
-        jMenuItemAbrirLivrosOperacoes.setText("Oeprações");
+        jMenuItemAbrirLivrosOperacoes.setText("Operações");
 
         jMenuItem1.setText("Livros");
         jMenuItemAbrirLivrosOperacoes.add(jMenuItem1);
@@ -246,7 +246,7 @@ public class DashboardUI extends javax.swing.JFrame {
             List<Autor> autores = autorService.listar();
 
     //      Cria um instância de AutoreslUI.
-            AutoresUI autoresUI = new AutoresUI(autores);
+            AutoresUI autoresUI = new AutoresUI();
 
     //      Adiciona a pilha de do JDesktopPane o JInternalFrame AutoresUI.
             jDesktopPrincipal.add(autoresUI);

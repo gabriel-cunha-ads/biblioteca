@@ -9,7 +9,6 @@ import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
 import repository.interfaces.Persistencia;
-import sun.reflect.generics.factory.GenericsFactory;
 import util.UtilArquivo;
 import util.UtilSistema;
 
@@ -23,6 +22,7 @@ public class AutorPersistenciaImpl implements Persistencia<Autor>{
     
     private final String PATH_BANCO_DADOS;
     
+    
     public AutorPersistenciaImpl(String nomeArquivoBancoDados) throws Exception {
         
         PATH_BANCO_DADOS = UtilSistema.getDiretorioBancoDados();
@@ -32,30 +32,25 @@ public class AutorPersistenciaImpl implements Persistencia<Autor>{
         arquivoBancoDados = PATH_BANCO_DADOS + File.separator + nomeArquivoBancoDados;
     }
     
-
-
     @Override
     public void incluir(Object autor) throws Exception {
         
-        List<Autor> autores = listar();
+        List<Autor> autoresBanco = listar();
   
-        UtilArquivo.removerEspacosBranco(arquivoBancoDados, autores);
+        UtilArquivo.removerLinhaSemRegistro(arquivoBancoDados, autoresBanco);
         
         FileWriter fw = new FileWriter(arquivoBancoDados, true);
         
         BufferedWriter bw = new BufferedWriter(fw);
         
 //      Escreve no arquivo  
-        bw.write(autor + "\n");
+        bw.write(autor.toString());
 
 //      Fecha o arquivo
         bw.close();
     }
 
-    @Override
-    public void alterar(Object objeto) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+
 
     @Override
     public List<Autor> listar() throws Exception {
@@ -68,7 +63,7 @@ public class AutorPersistenciaImpl implements Persistencia<Autor>{
         String linha = "";
         
         while((linha = br.readLine()) != null && !linha.trim().equals("")) {
-            Autor autor = new Autor(linha);
+            Autor autor = new Autor().from(linha);
             autores.add(autor);
         }
         
@@ -78,12 +73,48 @@ public class AutorPersistenciaImpl implements Persistencia<Autor>{
     }
 
     @Override
-    public void excluir(Object objeto) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Object consultar(Object autor) throws Exception {
+        
+        FileReader fr = new FileReader(arquivoBancoDados);
+        
+        BufferedReader br = new BufferedReader(fr);
+        
+        String linha = "";
+        
+        List<Autor> autoresBanco = new ArrayList<>();
+        
+        while((linha = br.readLine()) != null && !linha.trim().equals("")) {
+            Autor a = new Autor().from(linha);
+            autoresBanco.add(a);
+        }
+        
+        Autor autorResultado = null;
+        
+        for (Autor a : autoresBanco) {
+            if (a.equals(autor)) {
+                autorResultado = a;
+            }
+        }
+        return autorResultado;
     }
 
     @Override
-    public Autor consultar(String nome) throws Exception {
+    public void alterar(Object objeto) throws Exception {
+        Autor autorParaAlterar = (Autor) objeto;
+        
+        Autor autorBanco = (Autor) this.consultar(autorParaAlterar);
+        
+        this.excluir(autorBanco);
+
+        Autor autorAtualizado = autorBanco.from(autorParaAlterar);
+        
+        this.incluir(autorAtualizado);
+    }
+
+    @Override
+    public void excluir(Object objeto) throws Exception {
+        
+        Autor autorParaExcluir = (Autor) objeto;
         
         List<Autor> autores = new ArrayList<>();
         
@@ -94,45 +125,25 @@ public class AutorPersistenciaImpl implements Persistencia<Autor>{
         String linha = "";
         
         while((linha = br.readLine()) != null && !linha.trim().equals("")) {
-            Autor autorBanco = new Autor(linha);
-            autores.add(autorBanco);
-        }
-        
-        Autor autorBanco = null;
-        
-        for (Autor a : autores) {
-            if (a.getNome().equals(nome)) {
-                autorBanco = a;
+            Autor autorBanco = new Autor().from(linha);
+            
+            if (!autorBanco.equals(autorParaExcluir)) {
+                autores.add(autorBanco);
             }
-        }
-        return autorBanco;
-    }
-
-@Override
-    public Autor consultar(Autor autor) throws Exception {
-        List<Autor> autores = new ArrayList<>();
+        }   
         
-        FileReader fr = new FileReader(arquivoBancoDados);
+        FileWriter fw = new FileWriter(arquivoBancoDados, false);
         
-        BufferedReader br = new BufferedReader(fr);
+        BufferedWriter bw = new BufferedWriter(fw);
         
-        String linha = "";
-        
-        while((linha = br.readLine()) != null && !linha.trim().equals("")) {
-            Autor autorBanco = new Autor(linha);
-            autores.add(autorBanco);
-        }
-        
-        Autor autorBanco = null;
-        
+//      Escreve no arquivo  
         for (Autor a : autores) {
-            if (a.equals(autor)) {
-                autorBanco = a;
-            }
+            bw.write(a + "\n");
         }
-        return autorBanco;
+//      Fecha o arquivo
+        bw.close();        
     }
-
+    
     @Override
     public Integer consultarUltimoID() throws Exception {
         
@@ -145,7 +156,7 @@ public class AutorPersistenciaImpl implements Persistencia<Autor>{
         String linha = "";
         
         while((linha = br.readLine()) != null && !linha.trim().equals("")) {
-            Autor autorBanco = new Autor(linha);
+            Autor autorBanco = new Autor().from(linha);
             autores.add(autorBanco);
         }
         
@@ -157,8 +168,5 @@ public class AutorPersistenciaImpl implements Persistencia<Autor>{
         }
         return ultimoId;        
         
-    }
-
-
-
+    }    
 }

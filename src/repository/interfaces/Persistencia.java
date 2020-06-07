@@ -41,9 +41,9 @@ public interface Persistencia<E> {
      * @param e - objeto consultado.
      * @throws java.lang.Exception
      */
-    E consultar(E e) throws Exception;
+    Object consultar(Object objeto) throws Exception;
     
-    E consultar(String str) throws Exception;
+//    Object consultar(String str) throws Exception;
     
     Integer consultarUltimoID() throws Exception;
     

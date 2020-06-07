@@ -1,21 +1,19 @@
 package ui.components;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JDesktopPane;
-import javax.swing.JInternalFrame;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import ui.DashboardUI;
-import ui.LivroCadastroUI;
-import util.UtilComponentes;
 
 /**
  *
  * @author Gabriel Cunha <gabrielcunhadev@gmail.com>
  */
+@Deprecated
 public class TableListener implements ListSelectionListener{
     
     private final JDesktopPane jDesktopPane;
@@ -24,13 +22,13 @@ public class TableListener implements ListSelectionListener{
     
     private final JTable tabela;
     
-    private final JInternalFrame tela;
+    private final List<?> lista;
     
-    public TableListener(JTable tabela, JInternalFrame tela) {
+    public TableListener(JTable tabela, List<?> lista) {
+        
+        this.lista = lista;
 
         this.tabela = tabela;
-        
-        this.tela = tela;
         
 //      Obtém a instancia do dashboard principal
         dashboardUI =  DashboardUI.getInstance();
@@ -44,22 +42,32 @@ public class TableListener implements ListSelectionListener{
         
         ListSelectionModel lsm = (ListSelectionModel)e.getSource();
         
-        if (lsm.isSelectionEmpty()) return;
-
-//        String firstIndex = "" + e.getFirstIndex();
-//        String lastIndex = "" + e.getLastIndex();
-
-
+//        if (lsm.isSelectionEmpty()) return;
+//
 //        if (!e.getValueIsAdjusting()) {
-//            int indexLinha = lsm.getMinSelectionIndex();
+//            int minIndex = lsm.getMinSelectionIndex();
+//            int maxIndex = lsm.getMaxSelectionIndex();
 //            
-//            tabela.getValueAt(indexLinha, 0);
-//            
-//            LivroCadastroUI livroCadastroUI = new LivroCadastroUI("livro");
+//            for (int i = minIndex; i <= maxIndex; i++) {
+//                if (lsm.isSelectedIndex(i)) {
+
+//                    int index = tabela.getSelectedRow();
+//                    ViewAbstractTableModel model = (ViewAbstractTableModel) tabela.getModel();
+//                    Object objeto = model.getValorDaLinha(index);
+//                    
+//                    this.lista.remove(objeto);
+//                    this.lista.add();
+//                    
+//                    System.out.println(this.lista);
+
+                    
+//                }
+//            }
+            
 //            jDesktopPane.remove(tela);
 //            jDesktopPane.add(livroCadastroUI);
-//
-//    //      Remove barra de título e borda da janela
+
+    //      Remove barra de título e borda da janela
 //            try {
 //                UtilComponentes.removerBarraTituloEBorda(livroCadastroUI);
 //            } catch (Exception ex) {

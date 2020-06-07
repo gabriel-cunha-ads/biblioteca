@@ -31,12 +31,24 @@ public class AutorTableModel extends ViewAbstractTableModel<Autor> {
             case 2: 
                 return autor.isAtivo();    
             case 3: 
-                return autor.isSelecionado();     
+                return autor.isSelecionado();
             default:
                 return null;
-        }
+        }            
     }
     
+     /**
+    * JTable usa esse método para determinar o renderizador padrão editor para 
+    * cada célula. Se não implementássemos esse método, a última coluna 
+    * conteria texto ("true" / "false"), * em vez de uma caixa de seleção.
+    * @param c
+    * @return 
+    */
+    @Override
+    public Class getColumnClass(int c) {
+            return getValueAt(0, c).getClass();
+    }  
+  
     /**
      * Defini o valor de uma célula na posição informada.
      * Esta implementação foi sobrescrita para permitir alterar o valor de 
@@ -47,23 +59,27 @@ public class AutorTableModel extends ViewAbstractTableModel<Autor> {
     */    
     @Override
     public void setValueAt(Object objeto, int linha, int coluna) {
-        Autor autor = linhas.get(linha);
         
-        if (autor.isSelecionado()) {
-            autor.setSelecionado(false);
-        } else {
-            autor.setSelecionado(true);
-        }
-
-        for (Autor autorDaLista : linhas) {
-        
-            if (!autorDaLista.equals(autor) && autorDaLista.isSelecionado()) {
-                autorDaLista.setSelecionado(false);
-                fireTableCellUpdated(linhas.indexOf(autorDaLista), coluna);
-            }
+//          Pega o autor selecionado e altera o valor do selecionado   
+            Autor autorSelecionado = linhas.get(linha); 
+            autorSelecionado.setSelecionado((boolean) objeto);
             
-        }
-        fireTableCellUpdated(linha, coluna);
+//          Atualiza a tabela
+            fireTableCellUpdated(linha, coluna);
     }   
+    
+      /**
+     * Defini se a celula pode ser editavel.
+     * Essa implementação foi sobrescrita para  permitir ser editável somente 
+     * objetos que sejam do tipo Boolean.
+     * @param linha - linha da tabela
+     * @param coluna - coluna da tabela
+     * @return booelan - informando se é permitido a edição da celula.
+     */
+    @Override
+    public boolean isCellEditable(int linha, int coluna) {
+        Object objeto = getValueAt(linha, coluna);
+        return objeto instanceof Boolean;
+    }       
     
 }

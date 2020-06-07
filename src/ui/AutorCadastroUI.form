@@ -34,13 +34,13 @@
                   <Group type="102" alignment="1" attributes="0">
                       <Group type="103" groupAlignment="1" attributes="0">
                           <Group type="102" attributes="0">
-                              <Component id="jButtonIncluirAutor" min="-2" pref="100" max="-2" attributes="0"/>
+                              <Component id="jButtonIncluirSalvarAutor" min="-2" pref="100" max="-2" attributes="0"/>
                               <EmptySpace max="32767" attributes="0"/>
                               <Component id="jButtonSair" min="-2" pref="100" max="-2" attributes="0"/>
                           </Group>
                           <Component id="jSeparator1" alignment="0" max="32767" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="jTextFieldNomeAutor" min="-2" pref="400" max="-2" attributes="0"/>
+                              <Component id="jTextFieldTextoPesquisa" min="-2" pref="400" max="-2" attributes="0"/>
                               <EmptySpace max="32767" attributes="0"/>
                               <Component id="jCheckBoxAtivo" min="-2" max="-2" attributes="0"/>
                           </Group>
@@ -58,14 +58,14 @@
               <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="jTextFieldNomeAutor" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jTextFieldTextoPesquisa" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jCheckBoxAtivo" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="unrelated" pref="176" max="32767" attributes="0"/>
               <Component id="jSeparator1" min="-2" pref="1" max="-2" attributes="0"/>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="jButtonIncluirAutor" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jButtonIncluirSalvarAutor" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jButtonSair" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
@@ -74,12 +74,12 @@
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Component class="javax.swing.JTextField" name="jTextFieldNomeAutor">
+    <Component class="javax.swing.JTextField" name="jTextFieldTextoPesquisa">
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel1">
       <Properties>
         <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
-          <ComponentRef name="jTextFieldNomeAutor"/>
+          <ComponentRef name="jTextFieldTextoPesquisa"/>
         </Property>
         <Property name="text" type="java.lang.String" value="Nome"/>
       </Properties>
@@ -98,13 +98,13 @@
         </Property>
       </Properties>
     </Component>
-    <Component class="javax.swing.JButton" name="jButtonIncluirAutor">
+    <Component class="javax.swing.JButton" name="jButtonIncluirSalvarAutor">
       <Properties>
         <Property name="mnemonic" type="int" value="105"/>
         <Property name="text" type="java.lang.String" value="Inlcuir"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonIncluirAutorActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonIncluirSalvarAutorActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JButton" name="jButtonSair">

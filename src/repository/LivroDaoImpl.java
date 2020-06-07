@@ -48,12 +48,7 @@ public class LivroDaoImpl implements Persistencia<Livro>{
     }
 
     @Override
-    public Livro consultar(Livro e) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Livro consultar(String str) throws Exception {
+    public Object consultar(Object objeto) throws Exception {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

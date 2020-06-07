@@ -27,37 +27,6 @@ public abstract class ViewAbstractTableModel<E> extends AbstractTableModel{
     }
     
     /**
-     * Defini se a celula pode ser editavel.
-     * Essa implementação foi sobrescrita para  permitir ser editável somente 
-     * objetos que sejam do tipo Boolean.
-     * @param linha - linha da tabela
-     * @param coluna - coluna da tabela
-     * @return booelan - informando se é permitido a edição da celula.
-     */
-    @Override
-    public boolean isCellEditable(int linha, int coluna) {
-        Object objeto = getValueAt(linha, coluna);
-        
-        if (objeto instanceof Boolean) {
-            return true;
-        } else {
-            return false;
-        }
-    }      
-    
-   /**
-    * JTable usa esse método para determinar o renderizador padrão editor para 
-    * cada célula. Se não implementássemos esse método, a última coluna 
-    * conteria texto ("true" / "false"), * em vez de uma caixa de seleção.
-    * @param c
-    * @return 
-    */
-    @Override
-    public Class getColumnClass(int c) {
-        return getValueAt(0, c).getClass();
-    }      
-    
-    /**
      * Retorna qual é o nome da coluna na respectiva posição. 
      * A primeira posição de uma coluna é Zero.    
      * @param indexColuna - indice da coluna que quer recupera o nome.

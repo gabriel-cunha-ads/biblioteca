@@ -75,7 +75,7 @@
         <Menu class="javax.swing.JMenu" name="jMenuItemAbrirLivrosOperacoes">
           <Properties>
             <Property name="mnemonic" type="int" value="111"/>
-            <Property name="text" type="java.lang.String" value="Oepra&#xe7;&#xf5;es"/>
+            <Property name="text" type="java.lang.String" value="Opera&#xe7;&#xf5;es"/>
           </Properties>
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem1">

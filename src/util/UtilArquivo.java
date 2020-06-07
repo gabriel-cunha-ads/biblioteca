@@ -1,6 +1,5 @@
 package util;
 
-import entity.Autor;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -13,7 +12,7 @@ import java.util.List;
 public class UtilArquivo {
     
     
-    public static void removerEspacosBranco(String arquivoBancoDados, List<?> lista) throws IOException {
+    public static void removerLinhaSemRegistro(String arquivoBancoDados, List<?> lista) throws IOException {
         FileWriter fw = new FileWriter(arquivoBancoDados);
         
         BufferedWriter bw = new BufferedWriter(fw);

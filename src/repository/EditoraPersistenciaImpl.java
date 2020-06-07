@@ -1,6 +1,6 @@
 package repository;
 
-import entity.Autor;
+import entity.Editora;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -16,14 +16,14 @@ import util.UtilSistema;
  *
  * @author Gabriel Cunha <gabrielcunhadev@gmail.com>
  */
-public class AutorPersistenciaImpl implements Persistencia<Autor>{
+public class EditoraPersistenciaImpl implements Persistencia<Editora>{
     
     private final String arquivoBancoDados;
     
     private final String PATH_BANCO_DADOS;
     
     
-    public AutorPersistenciaImpl(String nomeArquivoBancoDados) throws Exception {
+    public EditoraPersistenciaImpl(String nomeArquivoBancoDados) throws Exception {
         
         PATH_BANCO_DADOS = UtilSistema.getDiretorioBancoDados();
         
@@ -33,28 +33,26 @@ public class AutorPersistenciaImpl implements Persistencia<Autor>{
     }
     
     @Override
-    public void incluir(Object autor) throws Exception {
+    public void incluir(Object editora) throws Exception {
         
-        List<Autor> autoresBanco = listar();
+        List<Editora> editorasBanco = listar();
   
-        UtilArquivo.removerLinhaSemRegistro(arquivoBancoDados, autoresBanco);
+        UtilArquivo.removerLinhaSemRegistro(arquivoBancoDados, editorasBanco);
         
         FileWriter fw = new FileWriter(arquivoBancoDados, true);
         
         BufferedWriter bw = new BufferedWriter(fw);
         
 //      Escreve no arquivo  
-        bw.write(autor.toString());
+        bw.write(editora.toString());
 
 //      Fecha o arquivo
         bw.close();
     }
 
-
-
     @Override
-    public List<Autor> listar() throws Exception {
-        List<Autor> autores = new ArrayList<>();
+    public List<Editora> listar() throws Exception {
+        List<Editora> editoras = new ArrayList<>();
         
         FileReader fr = new FileReader(arquivoBancoDados);
         
@@ -63,17 +61,17 @@ public class AutorPersistenciaImpl implements Persistencia<Autor>{
         String linha = "";
         
         while((linha = br.readLine()) != null && !linha.trim().equals("")) {
-            Autor autor = new Autor(linha);
-            autores.add(autor);
+            Editora editora = new Editora(linha);
+            editoras.add(editora);
         }
         
         br.close();
         
-        return autores;
+        return editoras;
     }
 
     @Override
-    public Object consultar(Object autor) throws Exception {
+    public Object consultar(Object editora) throws Exception {
         
         FileReader fr = new FileReader(arquivoBancoDados);
         
@@ -81,42 +79,42 @@ public class AutorPersistenciaImpl implements Persistencia<Autor>{
         
         String linha = "";
         
-        List<Autor> autoresBanco = new ArrayList<>();
+        List<Editora> editorasBanco = new ArrayList<>();
         
         while((linha = br.readLine()) != null && !linha.trim().equals("")) {
-            Autor a = new Autor(linha);
-            autoresBanco.add(a);
+            Editora a = new Editora(linha);
+            editorasBanco.add(a);
         }
         
-        Autor autorResultado = null;
+        Editora editoraResultado = null;
         
-        for (Autor a : autoresBanco) {
-            if (a.equals(autor)) {
-                autorResultado = a;
+        for (Editora a : editorasBanco) {
+            if (a.equals(editora)) {
+                editoraResultado = a;
             }
         }
-        return autorResultado;
+        return editoraResultado;
     }
 
     @Override
     public void alterar(Object objeto) throws Exception {
-        Autor autorParaAlterar = (Autor) objeto;
+        Editora editoraParaAlterar = (Editora) objeto;
         
-        Autor autorBanco = (Autor) this.consultar(autorParaAlterar);
+        Editora editoraBanco = (Editora) this.consultar(editoraParaAlterar);
         
-        this.excluir(autorBanco);
+        this.excluir(editoraBanco);
 
-        Autor autorAtualizado = autorBanco.from(autorParaAlterar);
+        Editora editoraAtualizada = editoraBanco.from(editoraParaAlterar);
         
-        this.incluir(autorAtualizado);
+        this.incluir(editoraAtualizada);
     }
 
     @Override
     public void excluir(Object objeto) throws Exception {
         
-        Autor autorParaExcluir = (Autor) objeto;
+        Editora editoraParaExcluir = (Editora) objeto;
         
-        List<Autor> autores = new ArrayList<>();
+        List<Editora> editoras = new ArrayList<>();
         
         FileReader fr = new FileReader(arquivoBancoDados);
         
@@ -125,10 +123,10 @@ public class AutorPersistenciaImpl implements Persistencia<Autor>{
         String linha = "";
         
         while((linha = br.readLine()) != null && !linha.trim().equals("")) {
-            Autor autorBanco = new Autor(linha);
+            Editora editoraBanco = new Editora(linha);
             
-            if (!autorBanco.equals(autorParaExcluir)) {
-                autores.add(autorBanco);
+            if (!editoraBanco.equals(editoraParaExcluir)) {
+                editoras.add(editoraBanco);
             }
         }   
         
@@ -137,7 +135,7 @@ public class AutorPersistenciaImpl implements Persistencia<Autor>{
         BufferedWriter bw = new BufferedWriter(fw);
         
 //      Escreve no arquivo  
-        for (Autor a : autores) {
+        for (Editora a : editoras) {
             bw.write(a + "\n");
         }
 //      Fecha o arquivo
@@ -147,7 +145,7 @@ public class AutorPersistenciaImpl implements Persistencia<Autor>{
     @Override
     public Integer consultarUltimoID() throws Exception {
         
-        List<Autor> autores = new ArrayList<>();
+        List<Editora> editoras = new ArrayList<>();
         
         FileReader fr = new FileReader(arquivoBancoDados);
         
@@ -156,15 +154,15 @@ public class AutorPersistenciaImpl implements Persistencia<Autor>{
         String linha = "";
         
         while((linha = br.readLine()) != null && !linha.trim().equals("")) {
-            Autor autorBanco = new Autor(linha);
-            autores.add(autorBanco);
+            Editora editoraBanco = new Editora(linha);
+            editoras.add(editoraBanco);
         }
         
         Integer ultimoId = null;
         
-        if (!autores.isEmpty()) {
-            Autor autor = autores.get(autores.size() -1);
-            ultimoId = autor.getIdAutor();
+        if (!editoras.isEmpty()) {
+            Editora editora = editoras.get(editoras.size() -1);
+            ultimoId = editora.getIdEditora();
         }
         return ultimoId;        
         

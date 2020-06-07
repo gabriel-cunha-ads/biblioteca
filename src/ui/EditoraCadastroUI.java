@@ -1,6 +1,6 @@
 package ui;
 
-import entity.Autor;
+import entity.Editora;
 import entity.EnumOperacaoBanco;
 import exception.RegistroExistenteException;
 import exception.RegistroNaoExistenteException;
@@ -10,48 +10,48 @@ import java.util.logging.Logger;
 import javax.swing.JDesktopPane;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-import service.AutorService;
+import service.EditoraService;
 import util.UtilComponentes;
 
 /**
  *
  * @author Gabriel Cunha <gabrielcunhadev@gmail.com>
  */
-public class AutorCadastroUI extends javax.swing.JInternalFrame {
+public class EditoraCadastroUI extends javax.swing.JInternalFrame {
 
     private JDesktopPane jDesktopPane;
     
     private DashboardUI dashboardUI;
     
-    private boolean editandoAutor;
+    private boolean editandoEditora;
     
-    private Autor autorEmEdicao;
+    private Editora editoraEmEdicao;
     
-    private AutorService autorService;
+    private EditoraService editoraService;
     
     
-    public AutorCadastroUI() throws Exception {
+    public EditoraCadastroUI() throws Exception {
         initComponents();
         inicializarComponentes();
     }
     
-    public AutorCadastroUI(Autor autorEmEdicao) throws Exception {
+    public EditoraCadastroUI(Editora editoraEmEdicao) throws Exception {
         this();
         
 //      Defini o nome do títilo da tela.
-        dashboardUI.setJLabelNomeTela("Editar Autor");     
+        dashboardUI.setJLabelNomeTela("Editar Editora");     
 
 //      Alterar o texto do botão incluir para salvar.
-        jButtonIncluirSalvarAutor.setText("Salvar");
+        jButtonIncluirSalvarEditora.setText("Salvar");
         
 //      Habilita a edição da checkBox ativo
         jCheckBoxAtivo.setEnabled(true);
         
-        editandoAutor = true;
+        editandoEditora = true;
         
-        this.autorEmEdicao = autorEmEdicao;
+        this.editoraEmEdicao = editoraEmEdicao;
         
-        preencherCamposDaTelaComAutorEditando(autorEmEdicao);
+        preencherCamposDaTelaComEditoraEditando(editoraEmEdicao);
     }    
 
     private void inicializarComponentes() throws Exception {
@@ -60,7 +60,7 @@ public class AutorCadastroUI extends javax.swing.JInternalFrame {
         dashboardUI =  DashboardUI.getInstance();
         
 //      Defini o nome do títilo da tela.
-        dashboardUI.setJLabelNomeTela("Cadastrar Autor");
+        dashboardUI.setJLabelNomeTela("Cadastrar Editora");
         
 //      Obtém a instancia do JDesktopPane
         jDesktopPane = dashboardUI.getJDesktopPrincipal();
@@ -69,9 +69,9 @@ public class AutorCadastroUI extends javax.swing.JInternalFrame {
         UtilComponentes.maximizarJInternalFrame(this);
     }
     
-    public void preencherCamposDaTelaComAutorEditando(Autor autorEmEdicao) {
-        jTextFieldTextoPesquisa.setText(autorEmEdicao.getNome());
-        jCheckBoxAtivo.setSelected(autorEmEdicao.isAtivo());
+    public void preencherCamposDaTelaComEditoraEditando(Editora editoraEmEdicao) {
+        jTextFieldTextoPesquisa.setText(editoraEmEdicao.getNome());
+        jCheckBoxAtivo.setSelected(editoraEmEdicao.isAtivo());
     }
     
     
@@ -83,7 +83,7 @@ public class AutorCadastroUI extends javax.swing.JInternalFrame {
         jLabel1 = new javax.swing.JLabel();
         jCheckBoxAtivo = new javax.swing.JCheckBox();
         jSeparator1 = new javax.swing.JSeparator();
-        jButtonIncluirSalvarAutor = new javax.swing.JButton();
+        jButtonIncluirSalvarEditora = new javax.swing.JButton();
         jButtonSair = new javax.swing.JButton();
 
         setPreferredSize(new java.awt.Dimension(800, 600));
@@ -97,11 +97,11 @@ public class AutorCadastroUI extends javax.swing.JInternalFrame {
 
         jSeparator1.setPreferredSize(new java.awt.Dimension(800, 1));
 
-        jButtonIncluirSalvarAutor.setMnemonic('i');
-        jButtonIncluirSalvarAutor.setText("Inlcuir");
-        jButtonIncluirSalvarAutor.addActionListener(new java.awt.event.ActionListener() {
+        jButtonIncluirSalvarEditora.setMnemonic('i');
+        jButtonIncluirSalvarEditora.setText("Inlcuir");
+        jButtonIncluirSalvarEditora.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonIncluirSalvarAutorActionPerformed(evt);
+                jButtonIncluirSalvarEditoraActionPerformed(evt);
             }
         });
 
@@ -126,7 +126,7 @@ public class AutorCadastroUI extends javax.swing.JInternalFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jButtonIncluirSalvarAutor, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jButtonIncluirSalvarEditora, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jButtonSair, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -149,7 +149,7 @@ public class AutorCadastroUI extends javax.swing.JInternalFrame {
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 1, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButtonIncluirSalvarAutor)
+                    .addComponent(jButtonIncluirSalvarEditora)
                     .addComponent(jButtonSair))
                 .addGap(25, 25, 25))
         );
@@ -157,7 +157,7 @@ public class AutorCadastroUI extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButtonIncluirSalvarAutorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonIncluirSalvarAutorActionPerformed
+    private void jButtonIncluirSalvarEditoraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonIncluirSalvarEditoraActionPerformed
         
         String nome = jTextFieldTextoPesquisa.getText().trim();
         
@@ -168,28 +168,28 @@ public class AutorCadastroUI extends javax.swing.JInternalFrame {
         }
         
         try {
-            autorService    = new AutorService();
+            editoraService    = new EditoraService();
             
-            if (!this.editandoAutor) {
-                Autor autor     = new Autor(nome,true);
+            if (!this.editandoEditora) {
+                Editora editora     = new Editora(nome,true);
 
-                autorService.incluir(autor);
+                editoraService.incluir(editora);
                 
                 finalizarAlteracoes(EnumOperacaoBanco.INCLUIR);     
                 
             } else {
 //              Busca no banco de dados (arquivo txt) o registro.
-                Autor autorBanco = autorService.consultar(this.autorEmEdicao);
+                Editora editoraBanco = editoraService.consultar(this.editoraEmEdicao);
                
-                if (autorBanco == null) {
+                if (editoraBanco == null) {
                     throw new RegistroNaoExistenteException();
                 }
                 
 //              Insere os novos valores
-                autorBanco.setNome(jTextFieldTextoPesquisa.getText());
-                autorBanco.setAtivo(jCheckBoxAtivo.isSelected());
+                editoraBanco.setNome(jTextFieldTextoPesquisa.getText());
+                editoraBanco.setAtivo(jCheckBoxAtivo.isSelected());
                 
-                autorService.alterar(autorBanco);
+                editoraService.alterar(editoraBanco);
                 
                 finalizarAlteracoes(EnumOperacaoBanco.ALTERAR);
             } 
@@ -198,7 +198,7 @@ public class AutorCadastroUI extends javax.swing.JInternalFrame {
             UtilComponentes.limparCampos(jTextFieldTextoPesquisa);
             
              JOptionPane.showMessageDialog(this, "Cadastro já existente.",
-                    "Cadastro / Edição de Autor", JOptionPane.DEFAULT_OPTION);
+                    "Cadastro / Edição de Editora", JOptionPane.DEFAULT_OPTION);
              
             SwingUtilities.invokeLater(new Runnable() {
               public void run() {
@@ -210,7 +210,7 @@ public class AutorCadastroUI extends javax.swing.JInternalFrame {
             UtilComponentes.limparCampos(jTextFieldTextoPesquisa);
             
              JOptionPane.showMessageDialog(this, "Cadastro NÃO existente para edição.",
-                    "Cadastro / Edição de Autor", JOptionPane.DEFAULT_OPTION);
+                    "Cadastro / Edição de Editora", JOptionPane.DEFAULT_OPTION);
              
             SwingUtilities.invokeLater(new Runnable() {
               public void run() {
@@ -218,16 +218,16 @@ public class AutorCadastroUI extends javax.swing.JInternalFrame {
               }
             });                
         } catch (Exception e) {
-              JOptionPane.showMessageDialog(this, "Ocorreu um erro ao incluir/salvar o autor. Entre em contato com nosso suporte.",
-                    "Cadastro / Edição de Autor", JOptionPane.DEFAULT_OPTION);
+              JOptionPane.showMessageDialog(this, "Ocorreu um erro ao incluir/salvar o editora. Entre em contato com nosso suporte.",
+                    "Cadastro / Edição de Editora", JOptionPane.DEFAULT_OPTION);
         }
-    }//GEN-LAST:event_jButtonIncluirSalvarAutorActionPerformed
+    }//GEN-LAST:event_jButtonIncluirSalvarEditoraActionPerformed
 
     protected void finalizarAlteracoes(EnumOperacaoBanco operacao) throws HeadlessException, Exception {
         UtilComponentes.limparCampos(jTextFieldTextoPesquisa);
         
         if (EnumOperacaoBanco.INCLUIR.equals(operacao)){
-            JOptionPane.showMessageDialog(this, "Autor incluído com sucesso!");
+            JOptionPane.showMessageDialog(this, "Editora incluído com sucesso!");
 
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
@@ -236,18 +236,18 @@ public class AutorCadastroUI extends javax.swing.JInternalFrame {
             });      
             
         } else if (EnumOperacaoBanco.ALTERAR.equals(operacao)){
-            JOptionPane.showOptionDialog(null, "Autor alterado com sucesso!", "Cadastro de Autor!", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
+            JOptionPane.showOptionDialog(null, "Editora alterado com sucesso!", "Cadastro de Editora!", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
                
             this.dispose();
 
-            dashboardUI.setJLabelNomeTela("Autores");
+            dashboardUI.setJLabelNomeTela("Editoras");
 
             jDesktopPane.remove(this);
 
             try {
-                abrirTelaAutores();            
+                abrirTelaEditoras();            
             } catch (Exception ex) {
-                Logger.getLogger(AutoresUI.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(EditorasUI.class.getName()).log(Level.SEVERE, null, ex);
                 jDesktopPane.add(new DashboardUI());
             }                  
         }
@@ -257,43 +257,43 @@ public class AutorCadastroUI extends javax.swing.JInternalFrame {
         
         this.dispose();
         
-        dashboardUI.setJLabelNomeTela("Autores");
+        dashboardUI.setJLabelNomeTela("Editoras");
         
         jDesktopPane.remove(this);
         
         try {
-            abrirTelaAutores();            
+            abrirTelaEditoras();            
             
         } catch (Exception ex) {
-            Logger.getLogger(AutoresUI.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(EditorasUI.class.getName()).log(Level.SEVERE, null, ex);
             try {
                 jDesktopPane.add(new DashboardUI());
             } catch (Exception ex1) {
-                Logger.getLogger(AutorCadastroUI.class.getName()).log(Level.SEVERE, null, ex1);
+                Logger.getLogger(EditoraCadastroUI.class.getName()).log(Level.SEVERE, null, ex1);
             }
         }        
     }//GEN-LAST:event_jButtonSairActionPerformed
 
-    protected void abrirTelaAutores() throws Exception {
-        AutoresUI autoresUI = new AutoresUI();
+    protected void abrirTelaEditoras() throws Exception {
+        EditorasUI editoraesUI = new EditorasUI();
         
 //      Adiciona a pilha de do JDesktopPane o JInternalFrame LivrosPrincipalUI.
-        jDesktopPane.add(autoresUI);
+        jDesktopPane.add(editoraesUI);
         
 //      Remove barra de título e borda da janela
         try {
-            UtilComponentes.removerBarraTituloEBorda(autoresUI);
+            UtilComponentes.removerBarraTituloEBorda(editoraesUI);
         } catch (Exception ex) {
             Logger.getLogger(DashboardUI.class.getName()).log(Level.SEVERE, null, ex);
         }
         
 //      Mostra a tela LivrosPrincipal.
-        autoresUI.show();
+        editoraesUI.show();
     }
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButtonIncluirSalvarAutor;
+    private javax.swing.JButton jButtonIncluirSalvarEditora;
     private javax.swing.JButton jButtonSair;
     private javax.swing.JCheckBox jCheckBoxAtivo;
     private javax.swing.JLabel jLabel1;

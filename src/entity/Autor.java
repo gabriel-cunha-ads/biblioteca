@@ -3,7 +3,6 @@ package entity;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import service.AutorService;
 
 /**
  *
@@ -11,7 +10,7 @@ import service.AutorService;
  */
 public class Autor {
     
-    private Integer id;
+    private Integer idAutor;
     private String nome;
     private boolean ativo;
     private boolean selecionado = false;
@@ -21,7 +20,7 @@ public class Autor {
     }      
     
     public Autor(Integer id) {
-        this.id = id;
+        this.idAutor = id;
     }    
 
     public Autor(String nome, boolean ativo) {
@@ -30,42 +29,42 @@ public class Autor {
     }
     
     public Autor(Autor autor) {
-        this.id = autor.getId();
+        this.idAutor = autor.getIdAutor();
         this.nome = autor.getNome();
         this.ativo = autor.isAtivo();
     }
     
-//    public Autor(String dados) throws Exception {
-//        
-//        String vetorString[] = dados.split(";");
-//        
-//        if (vetorString.length < 4) {
-//            Logger.getLogger(Autor.class.getName()).log(Level.SEVERE, "Vetor de dados possui tamanho menor que 4. " + dados);
-//            throw new Exception();
-//        }
-//        try {
-//            Integer id = Integer.parseInt(vetorString[0]);
-//            
-////          Se id do vetor for null, atribui 1 para o id.
-//            this.id          = vetorString[0].equals("null") ? 1 : id;  
-//            this.nome        = vetorString[1];
-//            this.ativo       = Boolean.parseBoolean(vetorString[2]);
-//            this.selecionado = Boolean.parseBoolean(vetorString[3]);
-//        } catch(NumberFormatException e) {
-//            Logger.getLogger(Autor.class.getName()).log(Level.SEVERE, "Erro ao fazer o parse do campo id do vetor de dados do autor com nome " + vetorString[1]);
-//            throw new Exception();
-//        } catch(Exception e) {
-//            Logger.getLogger(Autor.class.getName()).log(Level.SEVERE, "Erro ao extrair dados do vetor de dados do autor." + vetorString[1] + "Erro: " + e);
-//            throw new Exception();
-//        }
-//    }
+    public Autor(String dados) throws Exception {
+        
+        String vetorString[] = dados.split(";");
+        
+        if (vetorString.length < 4) {
+            Logger.getLogger(Autor.class.getName()).log(Level.SEVERE, "Vetor de dados possui tamanho menor que 4. " + dados);
+            throw new Exception();
+        }
+        try {
+            Integer id = Integer.parseInt(vetorString[0]);
+            
+//          Se idAutor do vetor for null, atribui 1 para o idAutor.
+            this.idAutor          = vetorString[0].equals("null") ? 1 : id;  
+            this.nome        = vetorString[1];
+            this.ativo       = Boolean.parseBoolean(vetorString[2]);
+            this.selecionado = Boolean.parseBoolean(vetorString[3]);
+        } catch(NumberFormatException e) {
+            Logger.getLogger(Autor.class.getName()).log(Level.SEVERE, "Erro ao fazer o parse do campo id do vetor de dados do autor com nome " + vetorString[1]);
+            throw new Exception();
+        } catch(Exception e) {
+            Logger.getLogger(Autor.class.getName()).log(Level.SEVERE, "Erro ao extrair dados do vetor de dados do autor." + vetorString[1] + "Erro: " + e);
+            throw new Exception();
+        }
+    }
     
-    public Integer getId() {
-        return id;
+    public Integer getIdAutor() {
+        return idAutor;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setIdAutor(Integer idAutor) {
+        this.idAutor = idAutor;
     }
 
     public String getNome() {
@@ -92,38 +91,8 @@ public class Autor {
         this.selecionado = selecionado;
     }
     
-    public Autor from (String dados) throws Exception {
-        String vetorString[] = dados.split(";");
-        
-        if (vetorString.length < 4) {
-            Logger.getLogger(Autor.class.getName()).log(Level.SEVERE, "Vetor de dados possui tamanho menor que 4. " + dados);
-            throw new Exception();
-        }
-        
-        Autor autor = new Autor();
-        
-        try {
-            Integer id = Integer.parseInt(vetorString[0]);
-            
-//          Se id do vetor for null, atribui 1 para o id.
-            autor.id          = vetorString[0].equals("null") ? 1 : id;  
-            autor.nome        = vetorString[1];
-            autor.ativo       = Boolean.parseBoolean(vetorString[2]);
-            autor.selecionado = Boolean.parseBoolean(vetorString[3]);
-            
-        } catch(NumberFormatException e) {
-            Logger.getLogger(Autor.class.getName()).log(Level.SEVERE, "Erro ao fazer o parse do campo id do vetor de dados do autor " + vetorString[1]);
-            throw new Exception();
-        } catch(Exception e) {
-            Logger.getLogger(Autor.class.getName()).log(Level.SEVERE, "Erro ao extrair dados do vetor de dados do autor id = " + vetorString[0] + "Erro: " + e);
-            throw new Exception();
-        }
-        
-        return autor;
-    } 
-    
     public Autor from (Autor autor) throws Exception {
-        this.id = autor.getId();
+        this.idAutor = autor.getIdAutor();
         this.nome = autor.getNome();
         this.ativo = autor.isAtivo();
         
@@ -133,7 +102,7 @@ public class Autor {
     @Override
     public String toString() {
         StringBuffer sb = new StringBuffer();
-        sb.append(id).append(";");
+        sb.append(idAutor).append(";");
         sb.append(nome).append(";");
         sb.append(ativo).append(";");
         sb.append(selecionado).append(";");
@@ -144,7 +113,7 @@ public class Autor {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 61 * hash + Objects.hashCode(this.id);
+        hash = 61 * hash + Objects.hashCode(this.idAutor);
         return hash;
     }
 
@@ -160,7 +129,7 @@ public class Autor {
             return false;
         }
         final Autor other = (Autor) obj;
-        if (!Objects.equals(this.id, other.id)) {
+        if (!Objects.equals(this.idAutor, other.idAutor)) {
             return false;
         }
         return true;

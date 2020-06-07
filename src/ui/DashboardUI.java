@@ -1,7 +1,6 @@
 package ui;
 
 
-import entity.Autor;
 import javax.swing.JFrame;
 import entity.Livro;
 import java.util.ArrayList;
@@ -12,6 +11,7 @@ import javax.swing.JDesktopPane;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import service.AutorService;
+import service.EditoraService;
 import util.UtilComponentes;
 /**
  *
@@ -23,11 +23,17 @@ public class DashboardUI extends javax.swing.JFrame {
     
     private AutorService autorService;
     
-    public DashboardUI() {
+    private EditoraService editoraService;
+    
+    public DashboardUI() throws Exception {
         
         initComponents();
         
         jLabelNomeTela.setText("Dashboard");
+        
+        autorService = new AutorService();
+    
+        editoraService = new EditoraService();        
     }
     
     @SuppressWarnings("unchecked")
@@ -80,10 +86,10 @@ public class DashboardUI extends javax.swing.JFrame {
         mainMenu.setBackground(new java.awt.Color(255, 255, 255));
 
         JMenuLivro.setMnemonic('c');
-        JMenuLivro.setText("Cadastros");
+        JMenuLivro.setText("Cadastro");
 
         JMenuItemAbrirLivrosUI.setMnemonic('l');
-        JMenuItemAbrirLivrosUI.setText("Livro");
+        JMenuItemAbrirLivrosUI.setText("Livros");
         JMenuItemAbrirLivrosUI.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 JMenuItemAbrirLivrosUIActionPerformed(evt);
@@ -92,7 +98,7 @@ public class DashboardUI extends javax.swing.JFrame {
         JMenuLivro.add(JMenuItemAbrirLivrosUI);
 
         jMenuItemAbrirAutoresUI.setMnemonic('a');
-        jMenuItemAbrirAutoresUI.setText("Autor");
+        jMenuItemAbrirAutoresUI.setText("Autores");
         jMenuItemAbrirAutoresUI.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItemAbrirAutoresUIActionPerformed(evt);
@@ -101,12 +107,17 @@ public class DashboardUI extends javax.swing.JFrame {
         JMenuLivro.add(jMenuItemAbrirAutoresUI);
 
         jMenuItemAbrirEditoras.setMnemonic('e');
-        jMenuItemAbrirEditoras.setText("Editora");
+        jMenuItemAbrirEditoras.setText("Editoras");
+        jMenuItemAbrirEditoras.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemAbrirEditorasActionPerformed(evt);
+            }
+        });
         JMenuLivro.add(jMenuItemAbrirEditoras);
         JMenuLivro.add(jSeparator2);
 
         JMenuItemAbrirUsuariosUI.setMnemonic('u');
-        JMenuItemAbrirUsuariosUI.setText("Usuário");
+        JMenuItemAbrirUsuariosUI.setText("Usuários");
         JMenuItemAbrirUsuariosUI.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 JMenuItemAbrirUsuariosUIActionPerformed(evt);
@@ -115,7 +126,7 @@ public class DashboardUI extends javax.swing.JFrame {
         JMenuLivro.add(JMenuItemAbrirUsuariosUI);
 
         JMenuItemAbrirFuncionariosUI.setMnemonic('f');
-        JMenuItemAbrirFuncionariosUI.setText("Funcionário");
+        JMenuItemAbrirFuncionariosUI.setText("Funcionários");
         JMenuItemAbrirFuncionariosUI.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 JMenuItemAbrirFuncionariosUIActionPerformed(evt);
@@ -241,11 +252,7 @@ public class DashboardUI extends javax.swing.JFrame {
     private void jMenuItemAbrirAutoresUIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemAbrirAutoresUIActionPerformed
        
         try {
-//          Busca a lista de autores do banco de dados (arquivo)
-            autorService = new AutorService();
-            List<Autor> autores = autorService.listar();
-
-    //      Cria um instância de AutoreslUI.
+    //      Cria uma instância.
             AutoresUI autoresUI = new AutoresUI();
 
     //      Adiciona a pilha de do JDesktopPane o JInternalFrame AutoresUI.
@@ -254,7 +261,7 @@ public class DashboardUI extends javax.swing.JFrame {
     //      Remove barra de título e borda da janela
             UtilComponentes.removerBarraTituloEBorda(autoresUI);
         
-    //      Mostra a tela AutoresUI.
+    //      Mostra a tela.
             autoresUI.show();
         
         } catch (Exception ex) {
@@ -268,20 +275,44 @@ public class DashboardUI extends javax.swing.JFrame {
         
     }//GEN-LAST:event_jMenuItemAbrirAquisicoesActionPerformed
 
+    private void jMenuItemAbrirEditorasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemAbrirEditorasActionPerformed
+        try {
+    //      Cria uma instância.
+            EditorasUI editorasUI = new EditorasUI();
+
+    //      Adiciona a pilha de do JDesktopPane o JInternalFrame AutoresUI.
+            jDesktopPrincipal.add(editorasUI);
+
+    //      Remove barra de título e borda da janela
+            UtilComponentes.removerBarraTituloEBorda(editorasUI);
+        
+    //      Mostra a tela.
+            editorasUI.show();
+        
+        } catch (Exception ex) {
+            Logger.getLogger(DashboardUI.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this, "Erro ao abrir tela de Editora. Entre com contato com suporte.");
+        }
+    }//GEN-LAST:event_jMenuItemAbrirEditorasActionPerformed
+
     public static void main(String args[]) {
 
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {  
-//              Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-
+                
 //              Obtém a instância do objeto DashboardUI
-                DashboardUI dashboardUI = DashboardUI.getInstance();
-                
-//              Define a resoluçao full para a tela princiapal em qualquer dispositivo.
-                dashboardUI.setExtendedState(JFrame.MAXIMIZED_BOTH); 
-                
-//              Defini com visível
-                dashboardUI.setVisible(true);
+                DashboardUI dashboardUI;
+                try {
+                    dashboardUI = DashboardUI.getInstance();
+
+//                  Define a resoluçao full para a tela princiapal em qualquer dispositivo.
+                    dashboardUI.setExtendedState(JFrame.MAXIMIZED_BOTH); 
+    
+//                  Define com visível
+                    dashboardUI.setVisible(true);
+                } catch (Exception ex) {
+                    Logger.getLogger(DashboardUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }
@@ -298,7 +329,7 @@ public class DashboardUI extends javax.swing.JFrame {
         return jDesktopPrincipal;
     }
     
-    public static DashboardUI getInstance() {
+    public static DashboardUI getInstance() throws Exception {
         if (instance == null) {
             instance = new DashboardUI();
         }

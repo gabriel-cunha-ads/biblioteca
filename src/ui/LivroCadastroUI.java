@@ -14,7 +14,7 @@ public class LivroCadastroUI extends javax.swing.JInternalFrame {
     
     private DashboardUI dashboardUI;
     
-    public LivroCadastroUI(String nomeTela) {
+    public LivroCadastroUI(String nomeTela) throws Exception {
         initComponents();
         inicializarComponentes();
         
@@ -27,7 +27,7 @@ public class LivroCadastroUI extends javax.swing.JInternalFrame {
         preencherLivroParaEditar(livroCadastroUI);
     }
     
-    private void inicializarComponentes() {
+    private void inicializarComponentes() throws Exception {
         
 //      Obtém a instancia do dashboard, inicializa o título da janela.
         dashboardUI =  DashboardUI.getInstance();

@@ -1,7 +1,7 @@
 package ui;
 
 import java.util.List;
-import entity.Autor;
+import entity.Editora;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -12,9 +12,9 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JDesktopPane;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
-import service.AutorService;
+import service.EditoraService;
 import ui.components.AutoComplete;
-import ui.components.AutorTableModel;
+import ui.components.EditoraTableModel;
 import ui.components.ViewAbstractTableModel;
 import util.UtilComponentes;
 import util.UtilTabela;
@@ -23,7 +23,7 @@ import util.UtilTabela;
  * 
  * @author Gabriel Cunha <gabrielcunhadev@gmail.com> 
  */
-public class AutoresUI extends javax.swing.JInternalFrame {
+public class EditorasUI extends javax.swing.JInternalFrame {
 
     private static final String TITULO_COMBOBOX_NOME = "Nome";
     
@@ -35,18 +35,18 @@ public class AutoresUI extends javax.swing.JInternalFrame {
     
     private DashboardUI dashboardUI;
     
-    private AutorService autorService = new AutorService();
+    private EditoraService editoraService = new EditoraService();
     
-    private List<Autor> autoresTabela =  new ArrayList();
+    private List<Editora> editorasTabela =  new ArrayList();
     
     
-    public AutoresUI() throws Exception {
+    public EditorasUI() throws Exception {
         
         initComponents();
         
         inicializarComponentes();
         
-        inicializarTabelaDadosAutores(new ArrayList());
+        inicializarTabelaDadosEditoras(new ArrayList());
         
     }
 
@@ -56,12 +56,12 @@ public class AutoresUI extends javax.swing.JInternalFrame {
         dashboardUI =  DashboardUI.getInstance();
         
 //      Defini o nome do títilo da tela.
-        dashboardUI.setJLabelNomeTela("Autores");
+        dashboardUI.setJLabelNomeTela("Editoras");
         
 //      Obtém a instancia do JDesktopPane
         jDesktopPane = dashboardUI.getJDesktopPrincipal();
         
-        UtilComponentes.habilitarComponentes(false, jButtonEditarAutor, jButtonExcluirAutores, 
+        UtilComponentes.habilitarComponentes(false, jButtonEditarEditora, jButtonExcluirEditoras, 
                 jTextFieldTextoPesquisa);
         
         UtilComponentes.limparCampos(jTextFieldTextoPesquisa);
@@ -72,9 +72,9 @@ public class AutoresUI extends javax.swing.JInternalFrame {
 
 //      Define títulos para a combobox de pesquisa.        
         jComboBoxCampoPesquisa.setModel(new DefaultComboBoxModel<>(new String[] {"Selecione", TITULO_COMBOBOX_ID, TITULO_COMBOBOX_NOME}));  
-       
+
 //      Auto sugestão
-        List<String> nomes = listarNomesAutores();
+        List<String> nomes = listarNomesEditoras();
         jTextFieldTextoPesquisa.setFocusTraversalKeysEnabled(false);
         AutoComplete autoComplete = new AutoComplete(jTextFieldTextoPesquisa, nomes);
         jTextFieldTextoPesquisa.getDocument().addDocumentListener(autoComplete);
@@ -83,37 +83,37 @@ public class AutoresUI extends javax.swing.JInternalFrame {
     }
     
     
-    private void inicializarTabelaDadosAutores(List<Autor> autores) {
+    private void inicializarTabelaDadosEditoras(List<Editora> editoras) {
         
         try {
-            if (autores == null || autores.isEmpty()) {
-                this.autoresTabela = autorService.listar();
+            if (editoras == null || editoras.isEmpty()) {
+                this.editorasTabela = editoraService.listar();
             } else {
-                this.autoresTabela = autores;
+                this.editorasTabela = editoras;
             }
         } catch (Exception ex) {
-            Logger.getLogger(AutoresUI.class.getName()).log(Level.SEVERE, "AutoresUI - ", ex);
+            Logger.getLogger(EditorasUI.class.getName()).log(Level.SEVERE, null, ex);
         }
         
 //      Instancia um novo LivroTableModel passando a lista de objetos.
-        ViewAbstractTableModel autorTableModel = new AutorTableModel(this.autoresTabela);
+        ViewAbstractTableModel editoraTableModel = new EditoraTableModel(this.editorasTabela);
         
-        UtilTabela.inicializarTabela(jTableAutores, autorTableModel);
+        UtilTabela.inicializarTabela(jTableEditoras, editoraTableModel);
         
         addMouseListenerTabela();
     }
     
-    private List<String> listarNomesAutores() {
+    private List<String> listarNomesEditoras() {
         
         List<String> nomes = new ArrayList();
         
         try {
-            List<Autor> listaBanco = autorService.listar();
-            for (Autor a : listaBanco ) {
+            List<Editora> listaBanco = editoraService.listar();
+            for (Editora a : listaBanco ) {
                 nomes.add(a.getNome());
             }
         } catch (Exception ex) {
-            Logger.getLogger(AutoresUI.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(EditorasUI.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         return nomes;
@@ -121,7 +121,7 @@ public class AutoresUI extends javax.swing.JInternalFrame {
     
     public void addMouseListenerTabela() {
         
-        jTableAutores.addMouseListener(new MouseAdapter() {
+        jTableEditoras.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
 
@@ -129,9 +129,9 @@ public class AutoresUI extends javax.swing.JInternalFrame {
 
                     int qtdLinhasSelcionadas = 0;            
 
-        //          Percorre a lista de autores e incrementa(++) na quantidade de 
+        //          Percorre a lista de editoras e incrementa(++) na quantidade de 
         //          linhas selecionadas
-                    for (Autor a : autoresTabela) {
+                    for (Editora a : editorasTabela) {
                         if (a.isSelecionado()) {
                           qtdLinhasSelcionadas++;
                         }
@@ -139,14 +139,14 @@ public class AutoresUI extends javax.swing.JInternalFrame {
 
         //          Regras para habilitar / desabilitar botões 
                     if (qtdLinhasSelcionadas == 1 ) {
-                        jButtonEditarAutor.setEnabled(true);
-                        jButtonExcluirAutores.setEnabled(true);
+                        jButtonEditarEditora.setEnabled(true);
+                        jButtonExcluirEditoras.setEnabled(true);
                     } else if (qtdLinhasSelcionadas > 1){
-                        jButtonEditarAutor.setEnabled(false);
-                        jButtonExcluirAutores.setEnabled(true);
+                        jButtonEditarEditora.setEnabled(false);
+                        jButtonExcluirEditoras.setEnabled(true);
                     } else if (qtdLinhasSelcionadas < 1) {
-                        jButtonEditarAutor.setEnabled(false);
-                        jButtonExcluirAutores.setEnabled(false);                
+                        jButtonEditarEditora.setEnabled(false);
+                        jButtonExcluirEditoras.setEnabled(false);                
                     }
                 } 
             }
@@ -160,13 +160,13 @@ public class AutoresUI extends javax.swing.JInternalFrame {
     private void initComponents() {
 
         jTextFieldTextoPesquisa = new javax.swing.JTextField();
-        jButtonPesquisarAutor = new javax.swing.JButton();
+        jButtonPesquisarEditora = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTableAutores = new javax.swing.JTable();
-        jButtonAbrirAutorCadastroUI = new javax.swing.JButton();
+        jTableEditoras = new javax.swing.JTable();
+        jButtonAbrirEditoraCadastroUI = new javax.swing.JButton();
         jButtonSair = new javax.swing.JButton();
-        jButtonExcluirAutores = new javax.swing.JButton();
-        jButtonEditarAutor = new javax.swing.JButton();
+        jButtonExcluirEditoras = new javax.swing.JButton();
+        jButtonEditarEditora = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JSeparator();
         jSeparator2 = new javax.swing.JSeparator();
         jComboBoxCampoPesquisa = new javax.swing.JComboBox<>();
@@ -176,15 +176,15 @@ public class AutoresUI extends javax.swing.JInternalFrame {
         setNextFocusableComponent(jTextFieldTextoPesquisa);
         setPreferredSize(new java.awt.Dimension(800, 600));
 
-        jButtonPesquisarAutor.setMnemonic('p');
-        jButtonPesquisarAutor.setText("pesquisar");
-        jButtonPesquisarAutor.addActionListener(new java.awt.event.ActionListener() {
+        jButtonPesquisarEditora.setMnemonic('p');
+        jButtonPesquisarEditora.setText("pesquisar");
+        jButtonPesquisarEditora.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonPesquisarAutorActionPerformed(evt);
+                jButtonPesquisarEditoraActionPerformed(evt);
             }
         });
 
-        jTableAutores.setModel(new javax.swing.table.DefaultTableModel(
+        jTableEditoras.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -192,17 +192,17 @@ public class AutoresUI extends javax.swing.JInternalFrame {
 
             }
         ));
-        jTableAutores.setColumnSelectionAllowed(true);
-        jTableAutores.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        jTableAutores.setName(""); // NOI18N
-        jScrollPane1.setViewportView(jTableAutores);
-        jTableAutores.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jTableEditoras.setColumnSelectionAllowed(true);
+        jTableEditoras.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jTableEditoras.setName(""); // NOI18N
+        jScrollPane1.setViewportView(jTableEditoras);
+        jTableEditoras.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
 
-        jButtonAbrirAutorCadastroUI.setMnemonic('i');
-        jButtonAbrirAutorCadastroUI.setText("Incluir");
-        jButtonAbrirAutorCadastroUI.addActionListener(new java.awt.event.ActionListener() {
+        jButtonAbrirEditoraCadastroUI.setMnemonic('i');
+        jButtonAbrirEditoraCadastroUI.setText("Incluir");
+        jButtonAbrirEditoraCadastroUI.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonAbrirAutorCadastroUIActionPerformed(evt);
+                jButtonAbrirEditoraCadastroUIActionPerformed(evt);
             }
         });
 
@@ -214,19 +214,19 @@ public class AutoresUI extends javax.swing.JInternalFrame {
             }
         });
 
-        jButtonExcluirAutores.setMnemonic('x');
-        jButtonExcluirAutores.setText("Excluir");
-        jButtonExcluirAutores.addActionListener(new java.awt.event.ActionListener() {
+        jButtonExcluirEditoras.setMnemonic('x');
+        jButtonExcluirEditoras.setText("Excluir");
+        jButtonExcluirEditoras.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonExcluirAutoresActionPerformed(evt);
+                jButtonExcluirEditorasActionPerformed(evt);
             }
         });
 
-        jButtonEditarAutor.setMnemonic('e');
-        jButtonEditarAutor.setText("Editar");
-        jButtonEditarAutor.addActionListener(new java.awt.event.ActionListener() {
+        jButtonEditarEditora.setMnemonic('e');
+        jButtonEditarEditora.setText("Editar");
+        jButtonEditarEditora.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonEditarAutorActionPerformed(evt);
+                jButtonEditarEditoraActionPerformed(evt);
             }
         });
 
@@ -249,11 +249,11 @@ public class AutoresUI extends javax.swing.JInternalFrame {
                     .addComponent(jSeparator1)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 786, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButtonAbrirAutorCadastroUI)
+                        .addComponent(jButtonAbrirEditoraCadastroUI)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButtonEditarAutor)
+                        .addComponent(jButtonEditarEditora)
                         .addGap(14, 14, 14)
-                        .addComponent(jButtonExcluirAutores)
+                        .addComponent(jButtonExcluirEditoras)
                         .addGap(51, 51, 51)
                         .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 9, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -263,7 +263,7 @@ public class AutoresUI extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jTextFieldTextoPesquisa, javax.swing.GroupLayout.PREFERRED_SIZE, 308, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButtonPesquisarAutor)
+                        .addComponent(jButtonPesquisarEditora)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -273,7 +273,7 @@ public class AutoresUI extends javax.swing.JInternalFrame {
                 .addGap(27, 27, 27)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextFieldTextoPesquisa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonPesquisarAutor)
+                    .addComponent(jButtonPesquisarEditora)
                     .addComponent(jComboBoxCampoPesquisa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 283, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -282,10 +282,10 @@ public class AutoresUI extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jButtonAbrirAutorCadastroUI)
+                        .addComponent(jButtonAbrirEditoraCadastroUI)
                         .addComponent(jButtonSair)
-                        .addComponent(jButtonExcluirAutores)
-                        .addComponent(jButtonEditarAutor))
+                        .addComponent(jButtonExcluirEditoras)
+                        .addComponent(jButtonEditarEditora))
                     .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(101, Short.MAX_VALUE))
         );
@@ -294,29 +294,28 @@ public class AutoresUI extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     
-    private void jButtonAbrirAutorCadastroUIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAbrirAutorCadastroUIActionPerformed
+    private void jButtonAbrirEditoraCadastroUIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAbrirEditoraCadastroUIActionPerformed
         
+        this.dispose();
+        
+        jDesktopPane.remove(this);
+        
+//      Cria um instância de LivroPrincipalUI.
+        EditoraCadastroUI editoraCadastroUI = new EditoraCadastroUI();
+       
+//      Adiciona a pilha de do JDesktopPane o JInternalFrame.
+        jDesktopPane.add(editoraCadastroUI);
+        
+//      Remove barra de título e borda da janela
         try {
-            this.dispose();
-
-            jDesktopPane.remove(this);
-
-    //      Cria um instância de LivroPrincipalUI.
-            AutorCadastroUI autorCadastroUI = new AutorCadastroUI();
-
-    //      Adiciona a pilha de do JDesktopPane o JInternalFrame.
-            jDesktopPane.add(autorCadastroUI);
-
-    //      Remove barra de título e borda da janela
-                UtilComponentes.removerBarraTituloEBorda(autorCadastroUI);
-            
-//          Mostra a tela LivrosPrincipal.
-            autorCadastroUI.show();
+            UtilComponentes.removerBarraTituloEBorda(editoraCadastroUI);
         } catch (Exception ex) {
             Logger.getLogger(DashboardUI.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-    }//GEN-LAST:event_jButtonAbrirAutorCadastroUIActionPerformed
+//      Mostra a tela LivrosPrincipal.
+        editoraCadastroUI.show();
+    }//GEN-LAST:event_jButtonAbrirEditoraCadastroUIActionPerformed
 
     private void jButtonSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSairActionPerformed
         
@@ -327,50 +326,50 @@ public class AutoresUI extends javax.swing.JInternalFrame {
         dashboardUI.setJLabelNomeTela("Dashboard");
     }//GEN-LAST:event_jButtonSairActionPerformed
 
-    private void jButtonExcluirAutoresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonExcluirAutoresActionPerformed
+    private void jButtonExcluirEditorasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonExcluirEditorasActionPerformed
 
 //      Verifica os objetos selecionados para excluir.
-        List<Autor> selecionados = getSelecionados();
+        List<Editora> selecionados = getSelecionados();
         
         try {
             if (selecionados != null) {
                 
                 int opcao = JOptionPane.showOptionDialog(null, "Tem certeza que deseja excluir?"
-                        , "Excluir Autor(s)", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
+                        , "Excluir Editora(s)", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
                 
                 if (opcao == JOptionPane.OK_OPTION ) {
                     
 //                  Remove do banco de dados (arquivo txt)
-                    List<Autor> autoresNaoExlcuidos = autorService.excluir(selecionados);
+                    List<Editora> editorasNaoExlcuidos = editoraService.excluir(selecionados);
                     
 //                  Busca a lista atualizada no banco.
-                    autoresTabela = autorService.listar();
+                    editorasTabela = editoraService.listar();
                     
 //                  Reinicializa a tabela
-                    inicializarTabelaDadosAutores(autoresTabela);
+                    inicializarTabelaDadosEditoras(editorasTabela);
                     
-                    if (autoresNaoExlcuidos != null) {
-                        JOptionPane.showMessageDialog(this, "Não foi possível excluir alguns dos registros selecionados porque existem operações gravadas.");
+                    if (editorasNaoExlcuidos != null && !editorasNaoExlcuidos.isEmpty()) {
+                        JOptionPane.showMessageDialog(this, "Não foi possível excluir alguns dos registros selecionados porque existem operações gravadas.", "Editoras", JOptionPane.DEFAULT_OPTION);
                     }
                     
-                    UtilComponentes.habilitarComponentes(false, jButtonEditarAutor, jButtonExcluirAutores);
+                    UtilComponentes.habilitarComponentes(false, jButtonEditarEditora, jButtonExcluirEditoras);
                     
                 }  else if (opcao == JOptionPane.CANCEL_OPTION) {
-                    autoresTabela = autorService.listar();
-                    inicializarTabelaDadosAutores(autoresTabela);
+                    editorasTabela = editoraService.listar();
+                    inicializarTabelaDadosEditoras(editorasTabela);
                 }
             }                    
 
         } catch (Exception e) {
-            Logger.getLogger(AutoresUI.class.getName()).log(Level.SEVERE, null, e);
-            JOptionPane.showMessageDialog(this, "Não foi possível excluir o(s) registro(s). Entre em contato com nosso suporte.");
+            Logger.getLogger(EditorasUI.class.getName()).log(Level.SEVERE, null, e);
+            JOptionPane.showMessageDialog(this, "Não foi possível excluir o(s) registro(s). Entre em contato com nosso suporte.", "Editoras", JOptionPane.DEFAULT_OPTION);
         }
-    }//GEN-LAST:event_jButtonExcluirAutoresActionPerformed
+    }//GEN-LAST:event_jButtonExcluirEditorasActionPerformed
 
-    private void jButtonEditarAutorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEditarAutorActionPerformed
+    private void jButtonEditarEditoraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEditarEditoraActionPerformed
         
-//      Verifica se tem autor selecionado (isSelecionado) para edição. 
-        List<Autor> selecionados = getSelecionados();
+//      Verifica se tem editora selecionado (isSelecionado) para edição. 
+        List<Editora> selecionados = getSelecionados();
         
         try {
             if (!selecionados.isEmpty() && selecionados.size() == 1) {
@@ -379,51 +378,51 @@ public class AutoresUI extends javax.swing.JInternalFrame {
                 jDesktopPane.remove(this);
 
 //              Cria um instância da tela (UI) que será aberta e passa o selecionado.
-                AutorCadastroUI autorCadastroUI = new AutorCadastroUI(selecionados.get(0));        
+                EditoraCadastroUI editoraCadastroUI = new EditoraCadastroUI(selecionados.get(0));        
 
 //              Adiciona a pilha de do JDesktopPane o JInternalFrame.
-                jDesktopPane.add(autorCadastroUI);
+                jDesktopPane.add(editoraCadastroUI);
 
                 try {
 //                  Remove barra de título e borda da janela
-                    UtilComponentes.removerBarraTituloEBorda(autorCadastroUI);
+                    UtilComponentes.removerBarraTituloEBorda(editoraCadastroUI);
                 } catch (Exception ex) {
-                    Logger.getLogger(AutoresUI.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(EditorasUI.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
 //              Mostra a tela LivrosPrincipal.
-                autorCadastroUI.show();
+                editoraCadastroUI.show();
             }            
         } catch (Exception e) {
-            Logger.getLogger(AutoresUI.class.getName()).log(Level.SEVERE, null, e);
-            JOptionPane.showMessageDialog(this, "Não foi possível editar o autor. Entre em contato com nosso suporte.");            
+            Logger.getLogger(EditorasUI.class.getName()).log(Level.SEVERE, null, e);
+            JOptionPane.showMessageDialog(this, "Não foi possível editar o editora. Entre em contato com nosso suporte.");            
         }
-    }//GEN-LAST:event_jButtonEditarAutorActionPerformed
+    }//GEN-LAST:event_jButtonEditarEditoraActionPerformed
     
-    private List<Autor> getSelecionados() {
-        List<Autor> autoresSelecionados = new ArrayList();
+    private List<Editora> getSelecionados() {
+        List<Editora> editorasSelecionados = new ArrayList();
         
-        for (Autor autor : this.autoresTabela) {
-            if (autor.isSelecionado() ) {
-                autoresSelecionados.add(autor);
+        for (Editora editora : this.editorasTabela) {
+            if (editora.isSelecionado() ) {
+                editorasSelecionados.add(editora);
             }
         }
-        return autoresSelecionados;
+        return editorasSelecionados;
     }
 
-    private void jButtonPesquisarAutorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPesquisarAutorActionPerformed
+    private void jButtonPesquisarEditoraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPesquisarEditoraActionPerformed
         
         String dadosParaPesquisa = jTextFieldTextoPesquisa.getText().trim();
-        Autor autorPesquisado = null;
+        Editora editoraPesquisado = null;
         
         try {
             if (dadosParaPesquisa.equals("")) {
                 
-                List<Autor> autores = autorService.listar();
+                List<Editora> editoras = editoraService.listar();
 
                 inicializarComponentes();
 
-                inicializarTabelaDadosAutores(autores);  
+                inicializarTabelaDadosEditoras(editoras);  
             } else {
                 
                 if (jComboBoxCampoPesquisa.getSelectedItem().equals(TITULO_COMBOBOX_ID)) {
@@ -431,48 +430,48 @@ public class AutoresUI extends javax.swing.JInternalFrame {
 
                     id = Integer.parseInt(dadosParaPesquisa);
 
-                    autorPesquisado = autorService.consultar(new Autor(id));
+                    editoraPesquisado = editoraService.consultar(new Editora(id));
 
-                    this.autoresTabela = Arrays.asList(autorPesquisado);
+                    this.editorasTabela = Arrays.asList(editoraPesquisado);
 
                     inicializarComponentes();
 
-                    inicializarTabelaDadosAutores(this.autoresTabela);
+                    inicializarTabelaDadosEditoras(this.editorasTabela);
 
                 } else if (jComboBoxCampoPesquisa.getSelectedItem().equals(TITULO_COMBOBOX_NOME)) {
 
-                    Autor autorParaPesquisa = new Autor();
-                    autorParaPesquisa.setNome(dadosParaPesquisa);
+                    Editora editoraParaPesquisa = new Editora();
+                    editoraParaPesquisa.setNome(dadosParaPesquisa);
 
-                    autorPesquisado = autorService.consultar(autorParaPesquisa);
+                    editoraPesquisado = editoraService.consultar(editoraParaPesquisa);
 
-                    this.autoresTabela  = Arrays.asList(autorPesquisado);
+                    this.editorasTabela  = Arrays.asList(editoraPesquisado);
 
                     inicializarComponentes();
 
-                    inicializarTabelaDadosAutores(this.autoresTabela );
+                    inicializarTabelaDadosEditoras(this.editorasTabela );
                 }
 
-                if (autorPesquisado == null) {
+                if (editoraPesquisado == null) {
 
-                    this.autoresTabela  = autorService.listar();
+                    this.editorasTabela  = editoraService.listar();
 
                     inicializarComponentes();
 
-                    inicializarTabelaDadosAutores(this.autoresTabela );                
+                    inicializarTabelaDadosEditoras(this.editorasTabela );                
 
-                    JOptionPane.showMessageDialog(this, "Não foram encontrados resultados para a pesquisa." );                
+                    JOptionPane.showMessageDialog(this, "Não foram encontrados resultados para a pesquisa.", "Editoras", JOptionPane.DEFAULT_OPTION );                
                 }                
                 
             }
         } catch (NumberFormatException e) {
             jTextFieldTextoPesquisa.setText("");
-            JOptionPane.showMessageDialog(this, "Por favor, digite um ID válido.");
+            JOptionPane.showMessageDialog(this, "Por favor, digite um ID válido.", "Pesquisa", JOptionPane.DEFAULT_OPTION );
         } catch (Exception ex) {
-            Logger.getLogger(AutoresUI.class.getName()).log(Level.SEVERE, "AutoresUI.jButtonPesquisarAutorActionPerformed().", ex);
-            JOptionPane.showMessageDialog(this, "Não foi possível pesquisar. Entre em contato com nosso suporte.");
+            Logger.getLogger(EditorasUI.class.getName()).log(Level.SEVERE, "EditorasUI.jButtonPesquisarEditoraActionPerformed().", ex);
+            JOptionPane.showMessageDialog(this, "Não foi possível pesquisar. Entre em contato com nosso suporte.", "Editoras", JOptionPane.DEFAULT_OPTION);
         }
-    }//GEN-LAST:event_jButtonPesquisarAutorActionPerformed
+    }//GEN-LAST:event_jButtonPesquisarEditoraActionPerformed
 
     private void jComboBoxCampoPesquisaItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxCampoPesquisaItemStateChanged
         if (jComboBoxCampoPesquisa.getSelectedIndex() != 0) {
@@ -484,16 +483,16 @@ public class AutoresUI extends javax.swing.JInternalFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButtonAbrirAutorCadastroUI;
-    private javax.swing.JButton jButtonEditarAutor;
-    private javax.swing.JButton jButtonExcluirAutores;
-    private javax.swing.JButton jButtonPesquisarAutor;
+    private javax.swing.JButton jButtonAbrirEditoraCadastroUI;
+    private javax.swing.JButton jButtonEditarEditora;
+    private javax.swing.JButton jButtonExcluirEditoras;
+    private javax.swing.JButton jButtonPesquisarEditora;
     private javax.swing.JButton jButtonSair;
     private javax.swing.JComboBox<String> jComboBoxCampoPesquisa;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
-    private javax.swing.JTable jTableAutores;
+    private javax.swing.JTable jTableEditoras;
     private javax.swing.JTextField jTextFieldTextoPesquisa;
     // End of variables declaration//GEN-END:variables
 

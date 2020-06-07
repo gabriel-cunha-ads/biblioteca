@@ -63,7 +63,7 @@ public class Livro {
         String vetorString[]    = linhaTabela.split(";");
         this.idLivro            = Integer.parseInt(vetorString[0]);
         this.titulo             = vetorString[1];
-        this.autor.setId(Integer.parseInt(vetorString[2]));
+        this.autor.setIdAutor(Integer.parseInt(vetorString[2]));
         this.editora            = vetorString[3];
         this.edicao             = vetorString[4];
         this.ano                = vetorString[5];

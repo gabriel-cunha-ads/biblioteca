@@ -5,11 +5,9 @@ import ui.components.LivroTableModel;
 import entity.Livro;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JDesktopPane;
-import ui.components.TableListener;
 import util.UtilComponentes;
 import util.UtilTabela;
 
@@ -24,7 +22,7 @@ public class LivrosUI extends javax.swing.JInternalFrame implements ActionListen
     private DashboardUI dashboardUI;
    
     
-    public LivrosUI(List<Livro> livros) {
+    public LivrosUI(List<Livro> livros) throws Exception {
         
         initComponents();
         
@@ -34,7 +32,7 @@ public class LivrosUI extends javax.swing.JInternalFrame implements ActionListen
         
     }
 
-    private void inicializarComponentes() {
+    private void inicializarComponentes() throws Exception {
 //      Obtém a instancia do dashboard, inicializa o título da janela.
         dashboardUI =  DashboardUI.getInstance();
         
@@ -199,7 +197,12 @@ public class LivrosUI extends javax.swing.JInternalFrame implements ActionListen
 
     private void jButtonAbrirLivroCadastroUIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAbrirLivroCadastroUIActionPerformed
         
-        LivroCadastroUI livroCadastroUI = new LivroCadastroUI("livro");
+        LivroCadastroUI livroCadastroUI = null;
+        try {
+            livroCadastroUI = new LivroCadastroUI("livro");
+        } catch (Exception ex) {
+            Logger.getLogger(LivrosUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
         jDesktopPane.remove(this);
         jDesktopPane.add(livroCadastroUI);
         

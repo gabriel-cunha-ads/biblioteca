@@ -12,13 +12,13 @@
         <Menu class="javax.swing.JMenu" name="JMenuLivro">
           <Properties>
             <Property name="mnemonic" type="int" value="99"/>
-            <Property name="text" type="java.lang.String" value="Cadastros"/>
+            <Property name="text" type="java.lang.String" value="Cadastro"/>
           </Properties>
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="JMenuItemAbrirLivrosUI">
               <Properties>
                 <Property name="mnemonic" type="int" value="108"/>
-                <Property name="text" type="java.lang.String" value="Livro"/>
+                <Property name="text" type="java.lang.String" value="Livros"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="JMenuItemAbrirLivrosUIActionPerformed"/>
@@ -27,7 +27,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemAbrirAutoresUI">
               <Properties>
                 <Property name="mnemonic" type="int" value="97"/>
-                <Property name="text" type="java.lang.String" value="Autor"/>
+                <Property name="text" type="java.lang.String" value="Autores"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItemAbrirAutoresUIActionPerformed"/>
@@ -36,15 +36,18 @@
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemAbrirEditoras">
               <Properties>
                 <Property name="mnemonic" type="int" value="101"/>
-                <Property name="text" type="java.lang.String" value="Editora"/>
+                <Property name="text" type="java.lang.String" value="Editoras"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItemAbrirEditorasActionPerformed"/>
+              </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JPopupMenu$Separator" name="jSeparator2">
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="JMenuItemAbrirUsuariosUI">
               <Properties>
                 <Property name="mnemonic" type="int" value="117"/>
-                <Property name="text" type="java.lang.String" value="Usu&#xe1;rio"/>
+                <Property name="text" type="java.lang.String" value="Usu&#xe1;rios"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="JMenuItemAbrirUsuariosUIActionPerformed"/>
@@ -53,7 +56,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="JMenuItemAbrirFuncionariosUI">
               <Properties>
                 <Property name="mnemonic" type="int" value="102"/>
-                <Property name="text" type="java.lang.String" value="Funcion&#xe1;rio"/>
+                <Property name="text" type="java.lang.String" value="Funcion&#xe1;rios"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="JMenuItemAbrirFuncionariosUIActionPerformed"/>

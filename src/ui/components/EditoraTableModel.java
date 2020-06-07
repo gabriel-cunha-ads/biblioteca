@@ -1,14 +1,14 @@
 package ui.components;
-import entity.Autor;
+import entity.Editora;
 import java.util.List;
 
 /**
  *
  * @author Gabriel Cunha <gabrielcunhadev@gmail.com>
  */
-public class AutorTableModel extends ViewAbstractTableModel<Autor> {
+public class EditoraTableModel extends ViewAbstractTableModel<Editora> {
 
-    public AutorTableModel(List<Autor> linhas) {
+    public EditoraTableModel(List<Editora> linhas) {
         super(linhas);
         // Nomes das colunas do cabeçalho da tabela.
         colunas = new String[] {
@@ -22,16 +22,16 @@ public class AutorTableModel extends ViewAbstractTableModel<Autor> {
 //    Recupera o valor do objeto de uma célula. 
     @Override
     public Object getValueAt(int indexLinha, int indexColuna) {
-        Autor autor = linhas.get(indexLinha);
+        Editora editora = linhas.get(indexLinha);
         switch(indexColuna) {
             case 0: 
-                return autor.getIdAutor();
+                return editora.getIdEditora();
             case 1: 
-                return autor.getNome();
+                return editora.getNome();
             case 2: 
-                return autor.isAtivo();    
+                return editora.isAtivo();    
             case 3: 
-                return autor.isSelecionado();
+                return editora.isSelecionado();
             default:
                 return null;
         }            
@@ -60,9 +60,9 @@ public class AutorTableModel extends ViewAbstractTableModel<Autor> {
     @Override
     public void setValueAt(Object objeto, int linha, int coluna) {
         
-//          Pega o autor selecionado e altera o valor do selecionado   
-            Autor autorSelecionado = linhas.get(linha); 
-            autorSelecionado.setSelecionado((boolean) objeto);
+//          Pega o editora selecionado e altera o valor do selecionado   
+            Editora editoraSelecionada = linhas.get(linha); 
+            editoraSelecionada.setSelecionado((boolean) objeto);
             
 //          Atualiza a tabela
             fireTableCellUpdated(linha, coluna);

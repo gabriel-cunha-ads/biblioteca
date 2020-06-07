@@ -24,7 +24,7 @@ public class TableListener implements ListSelectionListener{
     
     private final List<?> lista;
     
-    public TableListener(JTable tabela, List<?> lista) {
+    public TableListener(JTable tabela, List<?> lista) throws Exception {
         
         this.lista = lista;
 

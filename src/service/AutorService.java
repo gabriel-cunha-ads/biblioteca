@@ -29,7 +29,7 @@ public class AutorService {
 
         Integer id = gerarNovoId();
 
-        autor.setId(id);
+        autor.setIdAutor(id);
 
         autorPersistenciaImpl.incluir(autor);
     }
@@ -40,11 +40,11 @@ public class AutorService {
         
         List<Autor> autoresBanco = autorPersistenciaImpl.listar();
             
-        if (autor.getId() != null) {
+        if (autor.getIdAutor() != null) {
         
 //          Percorrendo a lista com API Stream do java 8 e filtrando pelo id.
             autorBanco = autoresBanco.stream()
-                                            .filter(a -> autor.getId().equals(a.getId())) 
+                                            .filter(a -> autor.getIdAutor().equals(a.getIdAutor())) 
                                             .findFirst()
                                             .orElse(null);
         } else if (!"".equals(autor.getNome())){
@@ -73,10 +73,6 @@ public class AutorService {
         }
   
         autorPersistenciaImpl.alterar(autor);
-        
-//        autorPersistenciaImpl.excluir(autor);
-//
-//        autorPersistenciaImpl.incluir(autor);        
     }    
     
     public void excluir(Autor autor) throws Exception{

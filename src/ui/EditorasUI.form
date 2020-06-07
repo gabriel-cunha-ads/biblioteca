@@ -39,11 +39,11 @@
                   <Component id="jSeparator1" max="32767" attributes="0"/>
                   <Component id="jScrollPane1" pref="786" max="32767" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
-                      <Component id="jButtonAbrirAutorCadastroUI" min="-2" max="-2" attributes="0"/>
+                      <Component id="jButtonAbrirEditoraCadastroUI" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="jButtonEditarAutor" min="-2" max="-2" attributes="0"/>
+                      <Component id="jButtonEditarEditora" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
-                      <Component id="jButtonExcluirAutores" min="-2" max="-2" attributes="0"/>
+                      <Component id="jButtonExcluirEditoras" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="51" max="-2" attributes="0"/>
                       <Component id="jSeparator2" min="-2" pref="9" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
@@ -54,7 +54,7 @@
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="jTextFieldTextoPesquisa" min="-2" pref="308" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="jButtonPesquisarAutor" min="-2" max="-2" attributes="0"/>
+                      <Component id="jButtonPesquisarEditora" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
               </Group>
@@ -68,7 +68,7 @@
               <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jTextFieldTextoPesquisa" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jButtonPesquisarAutor" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jButtonPesquisarEditora" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jComboBoxCampoPesquisa" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="separate" max="-2" attributes="0"/>
@@ -78,10 +78,10 @@
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="jButtonAbrirAutorCadastroUI" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jButtonAbrirEditoraCadastroUI" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jButtonSair" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="jButtonExcluirAutores" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="jButtonEditarAutor" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jButtonExcluirEditoras" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jButtonEditarEditora" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Component id="jSeparator2" alignment="0" min="-2" pref="84" max="-2" attributes="0"/>
               </Group>
@@ -93,13 +93,13 @@
   <SubComponents>
     <Component class="javax.swing.JTextField" name="jTextFieldTextoPesquisa">
     </Component>
-    <Component class="javax.swing.JButton" name="jButtonPesquisarAutor">
+    <Component class="javax.swing.JButton" name="jButtonPesquisarEditora">
       <Properties>
         <Property name="mnemonic" type="int" value="112"/>
         <Property name="text" type="java.lang.String" value="pesquisar"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonPesquisarAutorActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonPesquisarEditoraActionPerformed"/>
       </Events>
     </Component>
     <Container class="javax.swing.JScrollPane" name="jScrollPane1">
@@ -109,7 +109,7 @@
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
       <SubComponents>
-        <Component class="javax.swing.JTable" name="jTableAutores">
+        <Component class="javax.swing.JTable" name="jTableEditoras">
           <Properties>
             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
               <Table columnCount="0" rowCount="0"/>
@@ -129,13 +129,13 @@
         </Component>
       </SubComponents>
     </Container>
-    <Component class="javax.swing.JButton" name="jButtonAbrirAutorCadastroUI">
+    <Component class="javax.swing.JButton" name="jButtonAbrirEditoraCadastroUI">
       <Properties>
         <Property name="mnemonic" type="int" value="105"/>
         <Property name="text" type="java.lang.String" value="Incluir"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonAbrirAutorCadastroUIActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonAbrirEditoraCadastroUIActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JButton" name="jButtonSair">
@@ -147,22 +147,22 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonSairActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="jButtonExcluirAutores">
+    <Component class="javax.swing.JButton" name="jButtonExcluirEditoras">
       <Properties>
         <Property name="mnemonic" type="int" value="120"/>
         <Property name="text" type="java.lang.String" value="Excluir"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonExcluirAutoresActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonExcluirEditorasActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="jButtonEditarAutor">
+    <Component class="javax.swing.JButton" name="jButtonEditarEditora">
       <Properties>
         <Property name="mnemonic" type="int" value="101"/>
         <Property name="text" type="java.lang.String" value="Editar"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonEditarAutorActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonEditarEditoraActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JSeparator" name="jSeparator1">

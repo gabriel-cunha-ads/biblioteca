@@ -14,14 +14,12 @@ public class LivroTableModel extends ViewAbstractTableModel<Livro> {
         colunas = new String[] {
             "id", 
             "Título", 
-            "Autor", 
-            "Editora",
-            "Edição", 
-            "Ano", 
             "ISBN", 
-            "Exemp. Dispon.",
-            "Selecione"};
+            "Data Cadastro",
+            "ativo",
+            "Selecione"
         };
+    };
 
 //    Recupera o valor de uma célula. 
     @Override
@@ -33,18 +31,12 @@ public class LivroTableModel extends ViewAbstractTableModel<Livro> {
             case 1: 
                 return livro.getTitulo();
             case 2: 
-                return livro.getAutor();
+                return livro.getIsbn();
             case 3: 
-                return livro.getEditora();
+                return livro.getDataCadastro();
             case 4: 
-                return livro.getEdicao();
-            case 5: 
-                return livro.getAno();
-            case 6: 
-                return livro.getISBN();
-            case 7: 
-                return livro.getQtdExemplaresDisponiveis();   
-            case 8:
+                return livro.isAtivo();                
+            case 5:
                 return livro.isSelecionado();
             default:
                 return null;

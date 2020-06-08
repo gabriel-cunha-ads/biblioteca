@@ -38,18 +38,17 @@ public class Autor {
         
         String vetorString[] = dados.split(";");
         
-        if (vetorString.length < 4) {
-            Logger.getLogger(Autor.class.getName()).log(Level.SEVERE, "Vetor de dados possui tamanho menor que 4. " + dados);
+        if (vetorString.length < 3) {
+            Logger.getLogger(Autor.class.getName()).log(Level.SEVERE, "Quantidade de colunas do Vetor de dados divergente." + dados);
             throw new Exception();
         }
         try {
             Integer id = Integer.parseInt(vetorString[0]);
             
-//          Se idAutor do vetor for null, atribui 1 para o idAutor.
+//          Se idAutor do vetor for null, atribui 1.
             this.idAutor          = vetorString[0].equals("null") ? 1 : id;  
             this.nome        = vetorString[1];
             this.ativo       = Boolean.parseBoolean(vetorString[2]);
-            this.selecionado = Boolean.parseBoolean(vetorString[3]);
         } catch(NumberFormatException e) {
             Logger.getLogger(Autor.class.getName()).log(Level.SEVERE, "Erro ao fazer o parse do campo id do vetor de dados do autor com nome " + vetorString[1]);
             throw new Exception();
@@ -95,7 +94,6 @@ public class Autor {
         this.idAutor = autor.getIdAutor();
         this.nome = autor.getNome();
         this.ativo = autor.isAtivo();
-        
         return this;
     }    
 
@@ -105,8 +103,6 @@ public class Autor {
         sb.append(idAutor).append(";");
         sb.append(nome).append(";");
         sb.append(ativo).append(";");
-        sb.append(selecionado).append(";");
-        
         return sb.toString();
     }
     

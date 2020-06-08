@@ -2,7 +2,13 @@ package entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -11,77 +17,124 @@ import java.util.Objects;
 public class Livro {
     
     private Integer idLivro;
+    private List<Autor> autores;
+    private Editora editora;
+    private ClassificacaoDecimalDireito cdd;
+    private Usuario usuarioCadastro;
+    private String isbn;
     private String titulo;
     private String descricao;
-    private String isbn;
-    private int exemplar;
-    private Autor autor;
-    private String editora;
+    private Integer anoEdicao;
     private String edicao;
-    private int impressao;
-    private String ano;
     private LocalDate dataCadastro;
-    private String idUsuarioCadatro;
+    private String impressao;
     private boolean ativo;
-    private String motivoInativo;
-    private String qtdExmeplaresDisponíveis;
-    private BigDecimal valorCompra;
-    private Boolean selecionado;
+    private boolean selecionado = false;
     
-    public Livro(Integer idLivro,String titulo, String descricao, String isbn, 
-            Autor autor, String editora, String edicao, int impressao, String ano,
-            String idUsuarioCadastro, String motivoInativo ) {
-        this.idLivro        = idLivro;
-        this.titulo         = titulo;
-        this.descricao      = descricao;
-        this.isbn           = isbn;
-        this.autor          = autor;
-        this.editora        = editora;
-        this.edicao         = edicao;
-        this.impressao      = impressao;
-        this.ano            = ano;
-        this.dataCadastro   = LocalDate.now();
-        this.idUsuarioCadatro = idUsuarioCadastro;
-        this.ativo          = true;
-        this.motivoInativo  = motivoInativo;
-    }
-    
-    public Livro(Integer idLivro, String titulo, Autor autor, String editora, 
-                String edicao, String ano, String isbn, Boolean selecionado) {
-        this.idLivro             = idLivro;
-        this.titulo         = titulo;
-        this.autor          = autor;
-        this.editora        = editora;
-        this.edicao         = edicao;
-        this.ano            = ano;
-        this.isbn           = isbn;
-        this.qtdExmeplaresDisponíveis = getQtdExemplaresDisponiveis();
-        this.selecionado    = selecionado;
-    }
-        
-    public Livro(String linhaTabela) throws Exception{
-        String vetorString[]    = linhaTabela.split(";");
-        this.idLivro            = Integer.parseInt(vetorString[0]);
-        this.titulo             = vetorString[1];
-        this.autor.setIdAutor(Integer.parseInt(vetorString[2]));
-        this.editora            = vetorString[3];
-        this.edicao             = vetorString[4];
-        this.ano                = vetorString[5];
-        this.isbn               = vetorString[6];
-        this.qtdExmeplaresDisponíveis = vetorString[7];   
-    }    
-        
-    public Livro(Livro livro) {
-//      TODO implementar manipulando objeto
-        this.dataCadastro   = LocalDate.now(); 
+
+    public Livro(Integer idLivro) {
+        this.idLivro = idLivro;
     }
 
+    public Livro(String dados) throws Exception {
+        String[] vetorString = dados.split(";");
+        
+        if (vetorString.length < 13) {
+            Logger.getLogger(ClassificacaoDecimalDireito.class.getName()).log(Level.SEVERE, "Quantidade de colunas do Vetor de dados divergente. " + dados);
+            throw new Exception();
+        }
+        try {
+            Integer id = Integer.parseInt(vetorString[0]);
+            DateTimeFormatter formatoData = DateTimeFormatter.ofPattern("dd/MM/yyyy");            
+            
+//          Se id do vetor for null, atribui 1.
+            this.idLivro     = vetorString[0].equals("null") ? 1 : id;  
+            
+//          Prenche a lista de autores do livro.
+            String[] vetorStringIdAutores = vetorString[1].split(",");
+            for (String idAutor : vetorStringIdAutores) {
+                this.autores.add(new Autor(Integer.parseInt(idAutor)));
+            }            
+            
+            Integer idEditora   = Integer.parseInt(vetorString[2]);
+            this.editora        = new Editora(idEditora, vetorString[3], Boolean.parseBoolean(vetorString[4]));
+            
+            Integer idCdd       = Integer.parseInt(vetorString[5]);
+            this.cdd            = new ClassificacaoDecimalDireito(idCdd, vetorString[6], vetorString[7]);
+            
+            this.usuarioCadastro = new Usuario(vetorString[8]);
+            this.isbn           = vetorString[9];
+            this.titulo         = vetorString[10];
+            this.descricao      = vetorString[11];
+            this.anoEdicao      = Integer.parseInt(vetorString[12]);
+            this.edicao         = vetorString[13];
+            this.dataCadastro   = LocalDate.parse(vetorString[14], formatoData);
+            this.impressao      = vetorString[15];
+            this.ativo          = Boolean.parseBoolean(vetorString[16]);
+                    
+        } catch (DateTimeParseException ex) {
+            Logger.getLogger(Autor.class.getName()).log(Level.SEVERE, "Erro ao fazer o parse de String para LocalDate" + vetorString[1]);
+        } catch(NumberFormatException e) {
+            Logger.getLogger(Autor.class.getName()).log(Level.SEVERE, "Erro ao fazer o parse do campo id do vetor de dados do autor com nome " + vetorString[1]);
+        } catch(Exception e) {
+            Logger.getLogger(Autor.class.getName()).log(Level.SEVERE, "Erro ao extrair dados do vetor de dados do autor." + vetorString[1] + "Erro: " + e);
+        }
+    }     
+    
+    
     public Integer getIdLivro() {
         return idLivro;
     }
 
     public void setIdLivro(Integer idLivro) {
         this.idLivro = idLivro;
+    }
+
+    public List<Autor> getAutores() {
+        return autores;
+    }
+
+    public void setAutores(List<Autor> autores) {
+        this.autores = autores;
+    }
+    
+    public void addAutor(Autor autor) {
+        if (this.autores == null) {
+            this.autores = new ArrayList<>();
+        }
+        this.autores.add(autor);
+    }
+
+    public Editora getEditora() {
+        return editora;
+    }
+
+    public void setEditora(Editora editora) {
+        this.editora = editora;
+    }
+
+    public ClassificacaoDecimalDireito getCdd() {
+        return cdd;
+    }
+
+    public void setCdd(ClassificacaoDecimalDireito cdd) {
+        this.cdd = cdd;
+    }
+
+    public Usuario getUsuarioCadastro() {
+        return usuarioCadastro;
+    }
+
+    public void setUsuarioCadastro(Usuario usuarioCadastro) {
+        this.usuarioCadastro = usuarioCadastro;
+    }
+
+    public String getIsbn() {
+        return isbn;
+    }
+
+    public void setIsbn(String isbn) {
+        this.isbn = isbn;
     }
 
     public String getTitulo() {
@@ -100,36 +153,12 @@ public class Livro {
         this.descricao = descricao;
     }
 
-    public String getISBN() {
-        return isbn;
+    public Integer getAnoEdicao() {
+        return anoEdicao;
     }
 
-    public void setISBN(String isbn) {
-        this.isbn = isbn;
-    }
-
-    public int getExemplar() {
-        return exemplar;
-    }
-
-    public void setExemplar(int exemplar) {
-        this.exemplar = exemplar;
-    }
-
-    public Autor getAutor() {
-        return autor;
-    }
-
-    public void setAutor(Autor autor) {
-        this.autor = autor;
-    }
-
-    public String getEditora() {
-        return editora;
-    }
-
-    public void setEditora(String editora) {
-        this.editora = editora;
+    public void setAnoEdicao(Integer anoEdicao) {
+        this.anoEdicao = anoEdicao;
     }
 
     public String getEdicao() {
@@ -140,70 +169,28 @@ public class Livro {
         this.edicao = edicao;
     }
 
-    public int getImpressao() {
-        return impressao;
-    }
-
-    public void setImpressao(int impressao) {
-        this.impressao = impressao;
-    }
-
-    public String getAno() {
-        return ano;
-    }
-
-    public void setAno(String ano) {
-        this.ano = ano;
-    }
-
     public LocalDate getDataCadastro() {
         return dataCadastro;
     }
 
-    public String getIdUsuarioCadatro() {
-        return idUsuarioCadatro;
+    public void setDataCadastro(LocalDate dataCadastro) {
+        this.dataCadastro = dataCadastro;
     }
 
-    public void setIdUsuarioCadatro(String idUsuarioCadatro) {
-        this.idUsuarioCadatro = idUsuarioCadatro;
+    public String getImpressao() {
+        return impressao;
+    }
+
+    public void setImpressao(String impressao) {
+        this.impressao = impressao;
     }
 
     public boolean isAtivo() {
-        return this.ativo;
+        return ativo;
     }
 
     public void setAtivo(boolean ativo) {
         this.ativo = ativo;
-    }
-
-    public String getMotivoInativo() {
-        return motivoInativo;
-    }
-
-    public void setMotivoInativo(String motivoInativo) {
-        this.motivoInativo = motivoInativo;
-    }
-        
-    public String getQtdExemplaresDisponiveis() {
-//       TODO implementar a busca da qtd exemplares
-        
-        return this.qtdExmeplaresDisponíveis = "2";
-    }
-    
-    public void setValorCompra(BigDecimal valorCompra) {
-        this.valorCompra = valorCompra;
-    }    
-    
-    public BigDecimal getValorCompra() {
-        return this.valorCompra;
-    }
-
-    public String getIsbn() {
-        return isbn;
-    }
-
-    public void setIsbn(String isbn) {
-        this.isbn = isbn;
     }
 
     public boolean isSelecionado() {
@@ -213,37 +200,40 @@ public class Livro {
     public void setSelecionado(boolean selecionado) {
         this.selecionado = selecionado;
     }
-
+    
     @Override
     public String toString() {
-        return "Livro{" + "id=" + idLivro + ", titulo=" + titulo + ", descricao=" + descricao + ", isbn=" + isbn + ", exemplar=" + exemplar + ", autor=" + autor + ", editora=" + editora + ", edicao=" + edicao + ", impressao=" + impressao + ", ano=" + ano + ", dataCadastro=" + dataCadastro + ", idUsuarioCadatro=" + idUsuarioCadatro + ", ativo=" + ativo + ", motivoInativo=" + motivoInativo + ", qtdExmeplaresDispon\u00edveis=" + qtdExmeplaresDisponíveis + ", valorCompra=" + valorCompra + ", selecionado=" + selecionado + '}';
-    }
+        DateTimeFormatter formatoData = DateTimeFormatter.ofPattern("dd/MM/yyyy");  
+        
+        StringBuffer sb = new StringBuffer();
+        sb.append(idLivro).append(";");
+        
+        for (Autor autor : autores) {
+            sb.append(autor.getIdAutor()).append(",");
+        }   
+        sb.deleteCharAt(sb.lastIndexOf(","));
+        sb.append(";");
+        
+        sb.append(editora.getIdEditora()).append(";");
+        sb.append(editora.getNome()).append(";");
+        sb.append(editora.isAtivo()).append(";");
+        sb.append(cdd.getIdClassificacaoDecinal()).append(";");
+        sb.append(cdd.getCodigoCDD()).append(";");
+        sb.append(cdd.getDescricao()).append(";");
+        sb.append(usuarioCadastro).append(";");
+        sb.append(isbn).append(";");
+        sb.append(titulo).append(";");
+        sb.append(descricao).append(";");
+        sb.append(anoEdicao).append(";");
+        sb.append(edicao).append(";");
+        sb.append(dataCadastro.format(formatoData)).append(";");
+        sb.append(impressao).append(";");
+        sb.append(ativo).append(";");
+        return sb.toString();
+    }      
 
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Livro other = (Livro) obj;
-        if (!Objects.equals(this.idLivro, other.idLivro)) {
-            return false;
-        }
-        return true;
-    }
     
-    
+  
     
 }
 

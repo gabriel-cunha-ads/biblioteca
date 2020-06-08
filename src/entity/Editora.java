@@ -26,6 +26,12 @@ public class Editora {
         this.nome = nome;
         this.ativo = ativo;
     }
+
+    public Editora(Integer idEditora, String nome, boolean ativo) {
+        this.idEditora = idEditora;
+        this.nome = nome;
+        this.ativo = ativo;
+    }
     
     public Editora(Editora editora) {
         this.idEditora = editora.getIdEditora();
@@ -37,18 +43,17 @@ public class Editora {
         
         String vetorString[] = dados.split(";");
         
-        if (vetorString.length < 4) {
-            Logger.getLogger(Editora.class.getName()).log(Level.SEVERE, "Vetor de dados possui tamanho menor que 4. " + dados);
+        if (vetorString.length < 3) {
+            Logger.getLogger(Editora.class.getName()).log(Level.SEVERE, "Quantidade de colunas do Vetor de dados divergente." + dados);
             throw new Exception();
         }
         try {
             Integer id = Integer.parseInt(vetorString[0]);
             
-//          Se idAutor do vetor for null, atribui 1 para o idAutor.
+//          Se id do vetor for null, atribui 1.
             this.idEditora   = vetorString[0].equals("null") ? 1 : id;  
             this.nome        = vetorString[1];
             this.ativo       = Boolean.parseBoolean(vetorString[2]);
-            this.selecionado = Boolean.parseBoolean(vetorString[3]);
         } catch(NumberFormatException e) {
             Logger.getLogger(Autor.class.getName()).log(Level.SEVERE, "Erro ao fazer o parse do campo id do vetor de dados da editora com nome " + vetorString[1]);
             throw new Exception();
@@ -94,7 +99,6 @@ public class Editora {
         this.idEditora = editora.getIdEditora();
         this.nome = editora.getNome();
         this.ativo = editora.isAtivo();
-        
         return this;
     }     
     
@@ -104,8 +108,6 @@ public class Editora {
         sb.append(idEditora).append(";");
         sb.append(nome).append(";");
         sb.append(ativo).append(";");
-        sb.append(selecionado).append(";");
-        
         return sb.toString();
     }    
     

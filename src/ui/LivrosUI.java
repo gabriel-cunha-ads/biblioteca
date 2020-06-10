@@ -1,13 +1,21 @@
 package ui;
 
 import java.util.List;
-import ui.components.LivroTableModel;
 import entity.Livro;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JDesktopPane;
+import javax.swing.JOptionPane;
+import javax.swing.KeyStroke;
+import service.LivroService;
+import ui.components.AutoComplete;
+import ui.components.LivroTableModel;
+import ui.components.ViewAbstractTableModel;
 import util.UtilComponentes;
 import util.UtilTabela;
 
@@ -15,24 +23,34 @@ import util.UtilTabela;
  * 
  * @author Gabriel Cunha <gabrielcunhadev@gmail.com> 
  */
-public class LivrosUI extends javax.swing.JInternalFrame implements ActionListener  {
+public class LivrosUI extends javax.swing.JInternalFrame {
 
+    private static final String TITULO_COMBOBOX_ID = "Id";   
+    
+    private static final String TITULO_COMBOBOX_TITULO = "Titulo";
+    
+    private static final String COMMIT_ACTION = "commit";    
+    
     private JDesktopPane jDesktopPane;
     
     private DashboardUI dashboardUI;
-   
     
-    public LivrosUI(List<Livro> livros) throws Exception {
+    private LivroService livroService = new LivroService();
+    
+    private List<Livro> livrosTabela =  new ArrayList();
+    
+    
+    public LivrosUI() throws Exception {
         
         initComponents();
         
         inicializarComponentes();
         
-        inicializarTabelaDadosLivros(livros);
-        
+        inicializarTabelaDadosLivros(new ArrayList());
     }
 
     private void inicializarComponentes() throws Exception {
+        
 //      Obtém a instancia do dashboard, inicializa o título da janela.
         dashboardUI =  DashboardUI.getInstance();
         
@@ -42,52 +60,129 @@ public class LivrosUI extends javax.swing.JInternalFrame implements ActionListen
 //      Obtém a instancia do JDesktopPane
         jDesktopPane = dashboardUI.getJDesktopPrincipal();
         
+        UtilComponentes.habilitarComponentes(false, jButtonEditarLivro, jButtonExcluirLivros, 
+                jTextFieldTextoPesquisa);
+        
+        UtilComponentes.limparCampos(jTextFieldTextoPesquisa);
+        
+        jTextFieldTextoPesquisa.setToolTipText(" <<<<<<<- SELECIONE um campo e digite sua pesquisa.");
+        
+        jComboBoxCampoPesquisa.setToolTipText(" Selecione um campo para pesquisa.");
+
+//      Define títulos para a combobox de pesquisa.        
+        jComboBoxCampoPesquisa.setModel(new DefaultComboBoxModel<>(new String[] {"Selecione",
+            TITULO_COMBOBOX_ID, TITULO_COMBOBOX_TITULO, }));  
+       
+//      Auto sugestão
+        List<String> nomes = listarTitulosLivros();
+        jTextFieldTextoPesquisa.setFocusTraversalKeysEnabled(false);
+        AutoComplete autoComplete = new AutoComplete(jTextFieldTextoPesquisa, nomes);
+        jTextFieldTextoPesquisa.getDocument().addDocumentListener(autoComplete);
+        jTextFieldTextoPesquisa.getInputMap().put(KeyStroke.getKeyStroke(title).getKeyStroke("TAB"), COMMIT_ACTION);
+        jTextFieldTextoPesquisa.getActionMap().put(COMMIT_ACTION, autoComplete.new CommitAction());        
     }
     
-    public void inicializarTabelaDadosLivros(List<Livro> livros) {
+    
+    private void inicializarTabelaDadosLivros(List<Livro> livros) {
         
-//      Instancia um novo LivroTableModel passando a lista de livros.
-        LivroTableModel livroTableModel = new LivroTableModel(livros);
-
+        try {
+            if (livros == null || livros.isEmpty()) {
+                this.livrosTabela = livroService.listar();
+            } else {
+                this.livrosTabela = livros;
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(LivrosUI.class.getName()).log(Level.SEVERE, "LivrosUI - ", ex);
+        }
+        
+//      Instancia um novo LivroTableModel passando a lista de objetos.
+        ViewAbstractTableModel livroTableModel = new LivroTableModel(this.livrosTabela);
+        
         UtilTabela.inicializarTabela(jTableLivros, livroTableModel);
-
-    }
-  
-        @Override
-    public void actionPerformed(ActionEvent e) {
         
+        addMouseListenerTabela();
     }
     
+    private List<String> listarTitulosLivros() {
+        
+        List<String> nomes = new ArrayList();
+        
+        try {
+            List<Livro> listaBanco = livroService.listar();
+            for (Livro a : listaBanco ) {
+                nomes.add(a.getTitulo());
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(LivrosUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return nomes;
+    }    
     
+    public void addMouseListenerTabela() {
+        
+        jTableLivros.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+                if (e.getClickCount() == 1) {
+
+                    int qtdLinhasSelcionadas = 0;            
+
+        //          Percorre a lista de livros e incrementa(++) na quantidade de 
+        //          linhas selecionadas
+                    for (Livro a : livrosTabela) {
+                        if (a.isSelecionado()) {
+                          qtdLinhasSelcionadas++;
+                        }
+                    }
+
+        //          Regras para habilitar / desabilitar botões 
+                    if (qtdLinhasSelcionadas == 1 ) {
+                        jButtonEditarLivro.setEnabled(true);
+                        jButtonExcluirLivros.setEnabled(true);
+                    } else if (qtdLinhasSelcionadas > 1){
+                        jButtonEditarLivro.setEnabled(false);
+                        jButtonExcluirLivros.setEnabled(true);
+                    } else if (qtdLinhasSelcionadas < 1) {
+                        jButtonEditarLivro.setEnabled(false);
+                        jButtonExcluirLivros.setEnabled(false);                
+                    }
+                } 
+            }
+        });        
+    }
+    
+
    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         jTextFieldTextoPesquisa = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        jButtonPesquisarLivro = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableLivros = new javax.swing.JTable();
         jButtonAbrirLivroCadastroUI = new javax.swing.JButton();
         jButtonSair = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
-        jButtonAbrirLivroCadastroUI1 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        jButtonExcluirLivros = new javax.swing.JButton();
+        jButtonEditarLivro = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JSeparator();
         jSeparator2 = new javax.swing.JSeparator();
+        jComboBoxCampoPesquisa = new javax.swing.JComboBox<>();
 
         setMaximumSize(new java.awt.Dimension(800, 600));
         setMinimumSize(new java.awt.Dimension(800, 600));
         setNextFocusableComponent(jTextFieldTextoPesquisa);
         setPreferredSize(new java.awt.Dimension(800, 600));
 
-        jTextFieldTextoPesquisa.addActionListener(new java.awt.event.ActionListener() {
+        jButtonPesquisarLivro.setMnemonic('p');
+        jButtonPesquisarLivro.setText("pesquisar");
+        jButtonPesquisarLivro.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextFieldTextoPesquisaActionPerformed(evt);
+                jButtonPesquisarLivroActionPerformed(evt);
             }
         });
-
-        jButton1.setText("pesquisar");
 
         jTableLivros.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -103,6 +198,7 @@ public class LivrosUI extends javax.swing.JInternalFrame implements ActionListen
         jScrollPane1.setViewportView(jTableLivros);
         jTableLivros.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
 
+        jButtonAbrirLivroCadastroUI.setMnemonic('i');
         jButtonAbrirLivroCadastroUI.setText("Incluir");
         jButtonAbrirLivroCadastroUI.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -110,6 +206,7 @@ public class LivrosUI extends javax.swing.JInternalFrame implements ActionListen
             }
         });
 
+        jButtonSair.setMnemonic('s');
         jButtonSair.setText("Sair");
         jButtonSair.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -117,23 +214,30 @@ public class LivrosUI extends javax.swing.JInternalFrame implements ActionListen
             }
         });
 
-        jLabel1.setText("Título");
-
-        jButtonAbrirLivroCadastroUI1.setText("Excluir");
-        jButtonAbrirLivroCadastroUI1.addActionListener(new java.awt.event.ActionListener() {
+        jButtonExcluirLivros.setMnemonic('x');
+        jButtonExcluirLivros.setText("Excluir");
+        jButtonExcluirLivros.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonAbrirLivroCadastroUI1ActionPerformed(evt);
+                jButtonExcluirLivrosActionPerformed(evt);
             }
         });
 
-        jButton3.setText("Editar");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        jButtonEditarLivro.setMnemonic('e');
+        jButtonEditarLivro.setText("Editar");
+        jButtonEditarLivro.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                jButtonEditarLivroActionPerformed(evt);
             }
         });
 
         jSeparator2.setToolTipText("");
+
+        jComboBoxCampoPesquisa.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBoxCampoPesquisa.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jComboBoxCampoPesquisaItemStateChanged(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -143,36 +247,34 @@ public class LivrosUI extends javax.swing.JInternalFrame implements ActionListen
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jSeparator1)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 764, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 786, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jButtonAbrirLivroCadastroUI)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton3)
+                        .addComponent(jButtonEditarLivro)
                         .addGap(14, 14, 14)
-                        .addComponent(jButtonAbrirLivroCadastroUI1)
+                        .addComponent(jButtonExcluirLivros)
                         .addGap(51, 51, 51)
                         .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 9, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButtonSair, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jTextFieldTextoPesquisa, javax.swing.GroupLayout.PREFERRED_SIZE, 294, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jButton1)))
+                        .addComponent(jComboBoxCampoPesquisa, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jTextFieldTextoPesquisa, javax.swing.GroupLayout.PREFERRED_SIZE, 308, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButtonPesquisarLivro)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addGap(5, 5, 5)
+                .addGap(27, 27, 27)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextFieldTextoPesquisa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1))
+                    .addComponent(jButtonPesquisarLivro)
+                    .addComponent(jComboBoxCampoPesquisa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 283, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
@@ -182,70 +284,212 @@ public class LivrosUI extends javax.swing.JInternalFrame implements ActionListen
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jButtonAbrirLivroCadastroUI)
                         .addComponent(jButtonSair)
-                        .addComponent(jButtonAbrirLivroCadastroUI1)
-                        .addComponent(jButton3))
+                        .addComponent(jButtonExcluirLivros)
+                        .addComponent(jButtonEditarLivro))
                     .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(100, Short.MAX_VALUE))
+                .addContainerGap(101, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextFieldTextoPesquisaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldTextoPesquisaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextFieldTextoPesquisaActionPerformed
-
+    
     private void jButtonAbrirLivroCadastroUIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAbrirLivroCadastroUIActionPerformed
         
-        LivroCadastroUI livroCadastroUI = null;
         try {
-            livroCadastroUI = new LivroCadastroUI("livro");
-        } catch (Exception ex) {
-            Logger.getLogger(LivrosUI.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        jDesktopPane.remove(this);
-        jDesktopPane.add(livroCadastroUI);
-        
-//      Remove barra de título e borda da janela
-        try {
-            UtilComponentes.removerBarraTituloEBorda(livroCadastroUI);
-        } catch (Exception ex) {
-            Logger.getLogger(DashboardUI.class.getName()).log(Level.SEVERE, null, ex);
-        }        
-        
-        livroCadastroUI.pack();
-        livroCadastroUI.show();
-        this.dispose();
-        
-        try {
-            livroCadastroUI.setMaximum(true);
+            this.dispose();
+
+            jDesktopPane.remove(this);
+
+    //      Cria um instância de LivroPrincipalUI.
+            LivroCadastroUI livroCadastroUI = new LivroCadastroUI();
+
+    //      Adiciona a pilha de do JDesktopPane o JInternalFrame.
+            jDesktopPane.add(livroCadastroUI);
+
+    //      Remove barra de título e borda da janela
+                UtilComponentes.removerBarraTituloEBorda(livroCadastroUI);
+            
+//          Mostra a tela LivrosPrincipal.
+            livroCadastroUI.show();
         } catch (Exception ex) {
             Logger.getLogger(DashboardUI.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
     }//GEN-LAST:event_jButtonAbrirLivroCadastroUIActionPerformed
 
     private void jButtonSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSairActionPerformed
+        
         this.dispose();
-        dashboardUI.setJLabelNomeTela("Dashboard");
+        
         jDesktopPane.remove(this);
+        
+        dashboardUI.setJLabelNomeTela("Dashboard");
     }//GEN-LAST:event_jButtonSairActionPerformed
 
-    private void jButtonAbrirLivroCadastroUI1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAbrirLivroCadastroUI1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButtonAbrirLivroCadastroUI1ActionPerformed
+    private void jButtonExcluirLivrosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonExcluirLivrosActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton3ActionPerformed
+//      Verifica os objetos selecionados para excluir.
+        List<Livro> selecionados = getSelecionados();
+        
+        try {
+            if (selecionados != null) {
+                
+                int opcao = JOptionPane.showOptionDialog(null, "Tem certeza que deseja excluir?"
+                        , "Excluir Livro(s)", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
+                
+                if (opcao == JOptionPane.OK_OPTION ) {
+                    
+//                  Remove do banco de dados (arquivo txt)
+                    List<Livro> livrosNaoExlcuidos = livroService.excluir(selecionados);
+                    
+//                  Busca a lista atualizada no banco.
+                    livrosTabela = livroService.listar();
+                    
+//                  Reinicializa a tabela
+                    inicializarTabelaDadosLivros(livrosTabela);
+                    
+                    if (!livrosNaoExlcuidos.isEmpty()) {
+                        JOptionPane.showMessageDialog(this, "Não foi possível excluir alguns dos registros selecionados porque existem operações gravadas.");
+                    }
+                    
+                    UtilComponentes.habilitarComponentes(false, jButtonEditarLivro, jButtonExcluirLivros);
+                    
+                }  else if (opcao == JOptionPane.CANCEL_OPTION) {
+                    livrosTabela = livroService.listar();
+                    inicializarTabelaDadosLivros(livrosTabela);
+                }
+            }                    
+
+        } catch (Exception e) {
+            Logger.getLogger(LivrosUI.class.getName()).log(Level.SEVERE, null, e);
+            JOptionPane.showMessageDialog(this, "Não foi possível excluir o(s) registro(s). Entre em contato com nosso suporte.");
+        }
+    }//GEN-LAST:event_jButtonExcluirLivrosActionPerformed
+
+    private void jButtonEditarLivroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEditarLivroActionPerformed
+        
+//      Verifica se tem livro selecionado (isSelecionado) para edição. 
+        List<Livro> selecionados = getSelecionados();
+        
+        try {
+            if (!selecionados.isEmpty() && selecionados.size() == 1) {
+                this.dispose();
+
+                jDesktopPane.remove(this);
+
+//              Cria um instância da tela (UI) que será aberta e passa o selecionado.
+                LivroCadastroUI livroCadastroUI = new LivroCadastroUI(selecionados.get(0));        
+
+//              Adiciona a pilha de do JDesktopPane o JInternalFrame.
+                jDesktopPane.add(livroCadastroUI);
+
+                try {
+//                  Remove barra de título e borda da janela
+                    UtilComponentes.removerBarraTituloEBorda(livroCadastroUI);
+                } catch (Exception ex) {
+                    Logger.getLogger(LivrosUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+//              Mostra a tela LivrosPrincipal.
+                livroCadastroUI.show();
+            }            
+        } catch (Exception e) {
+            Logger.getLogger(LivrosUI.class.getName()).log(Level.SEVERE, null, e);
+            JOptionPane.showMessageDialog(this, "Não foi possível editar o livro. Entre em contato com nosso suporte.");            
+        }
+    }//GEN-LAST:event_jButtonEditarLivroActionPerformed
+    
+    private List<Livro> getSelecionados() {
+        List<Livro> livrosSelecionados = new ArrayList();
+        
+        for (Livro livro : this.livrosTabela) {
+            if (livro.isSelecionado() ) {
+                livrosSelecionados.add(livro);
+            }
+        }
+        return livrosSelecionados;
+    }
+
+    private void jButtonPesquisarLivroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPesquisarLivroActionPerformed
+        
+        String dadosParaPesquisa = jTextFieldTextoPesquisa.getText().trim();
+        Livro livroPesquisado = null;
+        
+        try {
+            if (dadosParaPesquisa.equals("")) {
+                
+                List<Livro> livros = livroService.listar();
+
+                inicializarComponentes();
+
+                inicializarTabelaDadosLivros(livros);  
+            } else {
+                
+                if (jComboBoxCampoPesquisa.getSelectedItem().equals(TITULO_COMBOBOX_ID)) {
+                    Integer id = null;
+
+                    id = Integer.parseInt(dadosParaPesquisa);
+
+                    livroPesquisado = livroService.consultar(new Livro(id));
+
+                    this.livrosTabela = Arrays.asList(livroPesquisado);
+
+                    inicializarComponentes();
+
+                    inicializarTabelaDadosLivros(this.livrosTabela);
+
+                } else if (jComboBoxCampoPesquisa.getSelectedItem().equals(TITULO_COMBOBOX_TITULO)) {
+
+                    Livro livroParaPesquisa = new Livro();
+                    livroParaPesquisa.setTitulo(dadosParaPesquisa);
+
+                    livroPesquisado = livroService.consultar(livroParaPesquisa);
+
+                    this.livrosTabela  = Arrays.asList(livroPesquisado);
+
+                    inicializarComponentes();
+
+                    inicializarTabelaDadosLivros(this.livrosTabela );
+                }
+
+                if (livroPesquisado == null) {
+
+                    this.livrosTabela  = livroService.listar();
+
+                    inicializarComponentes();
+
+                    inicializarTabelaDadosLivros(this.livrosTabela );                
+
+                    JOptionPane.showMessageDialog(this, "Não foram encontrados resultados para a pesquisa." );                
+                }                
+                
+            }
+        } catch (NumberFormatException e) {
+            jTextFieldTextoPesquisa.setText("");
+            JOptionPane.showMessageDialog(this, "Por favor, digite um ID válido.");
+        } catch (Exception ex) {
+            Logger.getLogger(LivrosUI.class.getName()).log(Level.SEVERE, "LivrosUI.jButtonPesquisarLivroActionPerformed().", ex);
+            JOptionPane.showMessageDialog(this, "Não foi possível pesquisar. Entre em contato com nosso suporte.");
+        }
+    }//GEN-LAST:event_jButtonPesquisarLivroActionPerformed
+
+    private void jComboBoxCampoPesquisaItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxCampoPesquisaItemStateChanged
+        if (jComboBoxCampoPesquisa.getSelectedIndex() != 0) {
+            jTextFieldTextoPesquisa.setEnabled(true);
+        } else {
+            jTextFieldTextoPesquisa.setEnabled(false);
+        }
+    }//GEN-LAST:event_jComboBoxCampoPesquisaItemStateChanged
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton3;
     private javax.swing.JButton jButtonAbrirLivroCadastroUI;
-    private javax.swing.JButton jButtonAbrirLivroCadastroUI1;
+    private javax.swing.JButton jButtonEditarLivro;
+    private javax.swing.JButton jButtonExcluirLivros;
+    private javax.swing.JButton jButtonPesquisarLivro;
     private javax.swing.JButton jButtonSair;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JComboBox<String> jComboBoxCampoPesquisa;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
@@ -254,5 +498,5 @@ public class LivrosUI extends javax.swing.JInternalFrame implements ActionListen
     // End of variables declaration//GEN-END:variables
 
 
-}
+ }
 

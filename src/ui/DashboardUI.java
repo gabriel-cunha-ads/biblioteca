@@ -25,6 +25,7 @@ public class DashboardUI extends javax.swing.JFrame {
     
     private EditoraService editoraService;
     
+    
     public DashboardUI() throws Exception {
         
         initComponents();
@@ -204,17 +205,26 @@ public class DashboardUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void JMenuItemAbrirLivrosUIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JMenuItemAbrirLivrosUIActionPerformed
-        List<Livro> livros = new ArrayList<>();
+
+        try {
+    //      Cria uma instância.
+            LivrosUI livrosUI = new LivrosUI();
+
+    //      Adiciona a pilha de do JDesktopPane o JInternalFrame AutoresUI.
+            jDesktopPrincipal.add(livrosUI);
+
+    //      Remove barra de título e borda da janela
+            UtilComponentes.removerBarraTituloEBorda(livrosUI);
         
+    //      Mostra a tela.
+            livrosUI.show();
         
-//        Livro livro1= new Livro("1", "titulo livro 1","Fulano Autor", "Editora Mundial", 
-//                "1º", "2019", "1232319879876", false);   
-//        
-//        livros.add(livro1);
-//                
-//        Livro livro2= new Livro("2", "titulo livro 2","Fulano Autor", "Editora Mundial", 
-//                "8º", "2020", "98761234343", false); 
-//        
+        } catch (Exception ex) {
+            Logger.getLogger(DashboardUI.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this, "Erro ao abrir tela Autores. Entre com contato com suporte.");
+        }        
+        
+
 //        livros.add(livro2);  
 //        
 ////      Cria um instância de LivroPrincipalUI.

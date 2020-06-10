@@ -21,6 +21,7 @@ public class AutorService {
     }
     
     public void incluir(Autor autor) throws Exception {
+        
         Autor autorBanco = (Autor) autorPersistenciaImpl.consultar(autor);
 
         if (autorBanco != null) {
@@ -47,6 +48,7 @@ public class AutorService {
                                             .filter(a -> autor.getIdAutor().equals(a.getIdAutor())) 
                                             .findFirst()
                                             .orElse(null);
+            
         } else if (!"".equals(autor.getNome())){
             
 //          Percorrendo a lista com API Stream do java 8 e filtrando pelo nome.

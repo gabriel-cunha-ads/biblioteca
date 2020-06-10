@@ -70,7 +70,7 @@ public class AutorCadastroUI extends javax.swing.JInternalFrame {
     }
     
     public void preencherCamposDaTelaComAutorEditando(Autor autorEmEdicao) {
-        jTextFieldTextoPesquisa.setText(autorEmEdicao.getNome());
+        jTextFieldNome.setText(autorEmEdicao.getNome());
         jCheckBoxAtivo.setSelected(autorEmEdicao.isAtivo());
     }
     
@@ -79,7 +79,7 @@ public class AutorCadastroUI extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jTextFieldTextoPesquisa = new javax.swing.JTextField();
+        jTextFieldNome = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jCheckBoxAtivo = new javax.swing.JCheckBox();
         jSeparator1 = new javax.swing.JSeparator();
@@ -88,7 +88,7 @@ public class AutorCadastroUI extends javax.swing.JInternalFrame {
 
         setPreferredSize(new java.awt.Dimension(800, 600));
 
-        jLabel1.setLabelFor(jTextFieldTextoPesquisa);
+        jLabel1.setLabelFor(jTextFieldNome);
         jLabel1.setText("Nome");
 
         jCheckBoxAtivo.setSelected(true);
@@ -131,7 +131,7 @@ public class AutorCadastroUI extends javax.swing.JInternalFrame {
                                 .addComponent(jButtonSair, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                .addComponent(jTextFieldTextoPesquisa, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jTextFieldNome, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jCheckBoxAtivo)))
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
@@ -143,7 +143,7 @@ public class AutorCadastroUI extends javax.swing.JInternalFrame {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextFieldTextoPesquisa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextFieldNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jCheckBoxAtivo))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 176, Short.MAX_VALUE)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 1, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -159,11 +159,11 @@ public class AutorCadastroUI extends javax.swing.JInternalFrame {
 
     private void jButtonIncluirSalvarAutorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonIncluirSalvarAutorActionPerformed
         
-        String nome = jTextFieldTextoPesquisa.getText().trim();
+        String nome = jTextFieldNome.getText().trim();
         
         if (nome.equals("")) {
             JOptionPane.showMessageDialog(this, "Campo nome não pode ser nulo.");
-            jTextFieldTextoPesquisa.setFocusable(true);
+            jTextFieldNome.setFocusable(true);
             return;
         }
         
@@ -186,7 +186,7 @@ public class AutorCadastroUI extends javax.swing.JInternalFrame {
                 }
                 
 //              Insere os novos valores
-                autorBanco.setNome(jTextFieldTextoPesquisa.getText());
+                autorBanco.setNome(jTextFieldNome.getText());
                 autorBanco.setAtivo(jCheckBoxAtivo.isSelected());
                 
                 autorService.alterar(autorBanco);
@@ -195,26 +195,26 @@ public class AutorCadastroUI extends javax.swing.JInternalFrame {
             } 
          
         } catch (RegistroExistenteException e) {
-            UtilComponentes.limparCampos(jTextFieldTextoPesquisa);
+            UtilComponentes.limparCampos(jTextFieldNome);
             
              JOptionPane.showMessageDialog(this, "Cadastro já existente.",
                     "Cadastro / Edição de Autor", JOptionPane.DEFAULT_OPTION);
              
             SwingUtilities.invokeLater(new Runnable() {
               public void run() {
-                jTextFieldTextoPesquisa.requestFocus();
+                jTextFieldNome.requestFocus();
               }
             });                
              
         } catch (RegistroNaoExistenteException e) {
-            UtilComponentes.limparCampos(jTextFieldTextoPesquisa);
+            UtilComponentes.limparCampos(jTextFieldNome);
             
              JOptionPane.showMessageDialog(this, "Cadastro NÃO existente para edição.",
                     "Cadastro / Edição de Autor", JOptionPane.DEFAULT_OPTION);
              
             SwingUtilities.invokeLater(new Runnable() {
               public void run() {
-                jTextFieldTextoPesquisa.requestFocus();
+                jTextFieldNome.requestFocus();
               }
             });                
         } catch (Exception e) {
@@ -224,14 +224,14 @@ public class AutorCadastroUI extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButtonIncluirSalvarAutorActionPerformed
 
     protected void finalizarAlteracoes(EnumOperacaoBanco operacao) throws HeadlessException, Exception {
-        UtilComponentes.limparCampos(jTextFieldTextoPesquisa);
+        UtilComponentes.limparCampos(jTextFieldNome);
         
         if (EnumOperacaoBanco.INCLUIR.equals(operacao)){
             JOptionPane.showMessageDialog(this, "Autor incluído com sucesso!");
 
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
-                    jTextFieldTextoPesquisa.requestFocus();
+                    jTextFieldNome.requestFocus();
                 }
             });      
             
@@ -298,7 +298,7 @@ public class AutorCadastroUI extends javax.swing.JInternalFrame {
     private javax.swing.JCheckBox jCheckBoxAtivo;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JTextField jTextFieldTextoPesquisa;
+    private javax.swing.JTextField jTextFieldNome;
     // End of variables declaration//GEN-END:variables
 
 }

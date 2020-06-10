@@ -80,6 +80,14 @@ public class Livro {
             Logger.getLogger(Autor.class.getName()).log(Level.SEVERE, "Erro ao extrair dados do vetor de dados do autor." + vetorString[1] + "Erro: " + e);
         }
     }     
+
+    public Livro() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public Livro(String nome, boolean b) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
     
     public Integer getIdLivro() {
@@ -201,6 +209,23 @@ public class Livro {
         this.selecionado = selecionado;
     }
     
+    public Livro from (Livro livro) throws Exception {
+        this.idLivro    = livro.getIdLivro();
+        this.autores    = livro.getAutores();
+        this.editora    = livro.getEditora();
+        this.cdd        = livro.getCdd();
+        this.usuarioCadastro    = livro.getUsuarioCadastro();
+        this.isbn       = livro.getIsbn();
+        this.titulo     = livro.getTitulo();
+        this.descricao  = livro.getDescricao();
+        this.anoEdicao  = livro.getAnoEdicao();
+        this.edicao     = livro.getEdicao();
+        this.dataCadastro   = livro.getDataCadastro();
+        this.impressao  = livro.getImpressao();
+        this.ativo      = livro.isAtivo();
+        return this;
+    }     
+    
     @Override
     public String toString() {
         DateTimeFormatter formatoData = DateTimeFormatter.ofPattern("dd/MM/yyyy");  
@@ -231,9 +256,4 @@ public class Livro {
         sb.append(ativo).append(";");
         return sb.toString();
     }      
-
-    
-  
-    
 }
-

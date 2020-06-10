@@ -75,6 +75,8 @@ public class AutorPersistenciaImpl implements Persistencia<Autor>{
     @Override
     public Object consultar(Object autor) throws Exception {
         
+        Autor autorParaConsultar = (Autor) autor;
+        
         FileReader fr = new FileReader(arquivoBancoDados);
         
         BufferedReader br = new BufferedReader(fr);
@@ -91,8 +93,14 @@ public class AutorPersistenciaImpl implements Persistencia<Autor>{
         Autor autorResultado = null;
         
         for (Autor a : autoresBanco) {
-            if (a.equals(autor)) {
-                autorResultado = a;
+            if (autorParaConsultar.getIdAutor() == null) {
+                if (a.getNome().trim().equals(autorParaConsultar.getNome().trim())) {
+                    autorResultado = a;
+                } 
+            } else {
+                if (a.equals(autor)) {
+                    autorResultado = a;
+                }                
             }
         }
         return autorResultado;

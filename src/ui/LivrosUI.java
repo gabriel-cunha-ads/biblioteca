@@ -74,9 +74,9 @@ public class LivrosUI extends javax.swing.JInternalFrame {
             TITULO_COMBOBOX_ID, TITULO_COMBOBOX_TITULO, }));  
        
 //      Auto sugestão
-        List<String> nomes = listarTitulosLivros();
+        List<String> titulos = listarTitulosLivros();
         jTextFieldTextoPesquisa.setFocusTraversalKeysEnabled(false);
-        AutoComplete autoComplete = new AutoComplete(jTextFieldTextoPesquisa, nomes);
+        AutoComplete autoComplete = new AutoComplete(jTextFieldTextoPesquisa, titulos);
         jTextFieldTextoPesquisa.getDocument().addDocumentListener(autoComplete);
         jTextFieldTextoPesquisa.getInputMap().put(KeyStroke.getKeyStroke(title).getKeyStroke("TAB"), COMMIT_ACTION);
         jTextFieldTextoPesquisa.getActionMap().put(COMMIT_ACTION, autoComplete.new CommitAction());        
@@ -84,23 +84,23 @@ public class LivrosUI extends javax.swing.JInternalFrame {
     
     
     private void inicializarTabelaDadosLivros(List<Livro> livros) {
-        
         try {
             if (livros == null || livros.isEmpty()) {
                 this.livrosTabela = livroService.listar();
             } else {
                 this.livrosTabela = livros;
             }
+            
+    //      Instancia um novo LivroTableModel passando a lista de objetos.
+            ViewAbstractTableModel livroTableModel = new LivroTableModel(this.livrosTabela);
+
+            UtilTabela.inicializarTabela(jTableLivros, livroTableModel);
+
+            addMouseListenerTabela();
+            
         } catch (Exception ex) {
             Logger.getLogger(LivrosUI.class.getName()).log(Level.SEVERE, "LivrosUI - ", ex);
         }
-        
-//      Instancia um novo LivroTableModel passando a lista de objetos.
-        ViewAbstractTableModel livroTableModel = new LivroTableModel(this.livrosTabela);
-        
-        UtilTabela.inicializarTabela(jTableLivros, livroTableModel);
-        
-        addMouseListenerTabela();
     }
     
     private List<String> listarTitulosLivros() {

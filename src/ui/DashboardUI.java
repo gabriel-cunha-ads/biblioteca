@@ -62,17 +62,19 @@ public class DashboardUI extends javax.swing.JFrame {
         jMenu2 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(850, 770));
 
         jDesktopPrincipal.setBackground(new java.awt.Color(244, 240, 240));
-        jDesktopPrincipal.setMaximumSize(new java.awt.Dimension(800, 600));
+        jDesktopPrincipal.setMaximumSize(new java.awt.Dimension(850, 600));
         jDesktopPrincipal.setMinimumSize(new java.awt.Dimension(500, 300));
-        jDesktopPrincipal.setPreferredSize(new java.awt.Dimension(800, 600));
+        jDesktopPrincipal.setOpaque(false);
+        jDesktopPrincipal.setPreferredSize(new java.awt.Dimension(850, 600));
 
         javax.swing.GroupLayout jDesktopPrincipalLayout = new javax.swing.GroupLayout(jDesktopPrincipal);
         jDesktopPrincipal.setLayout(jDesktopPrincipalLayout);
         jDesktopPrincipalLayout.setHorizontalGroup(
             jDesktopPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 800, Short.MAX_VALUE)
+            .addGap(0, 850, Short.MAX_VALUE)
         );
         jDesktopPrincipalLayout.setVerticalGroup(
             jDesktopPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -82,7 +84,7 @@ public class DashboardUI extends javax.swing.JFrame {
         jLabelNomeTela.setFont(new java.awt.Font("Trebuchet MS", 0, 24)); // NOI18N
         jLabelNomeTela.setText("Dashboard");
 
-        jSeparator1.setPreferredSize(new java.awt.Dimension(800, 1));
+        jSeparator1.setPreferredSize(new java.awt.Dimension(850, 1));
 
         mainMenu.setBackground(new java.awt.Color(255, 255, 255));
 

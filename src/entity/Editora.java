@@ -1,5 +1,6 @@
 package entity;
 
+import entity.vo.EditoraVO;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -101,6 +102,14 @@ public class Editora {
         this.ativo = editora.isAtivo();
         return this;
     }     
+    
+    public EditoraVO toEditoraVO () throws Exception {
+        EditoraVO editoraVO = new EditoraVO();
+        editoraVO.setIdEditora(this.getIdEditora());
+        editoraVO.setNome(this.getNome());
+        editoraVO.setAtivo(this.isAtivo());
+        return editoraVO;
+    }       
     
     @Override
     public String toString() {

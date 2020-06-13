@@ -1,6 +1,7 @@
 package entity;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
@@ -24,12 +25,16 @@ public class Livro {
     private String descricao;
     private Integer anoEdicao;
     private String edicao;
+    private String impressaoReimpressao;
+    private LocalDate dataImpressaoReimpressao;
     private LocalDate dataCadastro;
-    private String impressao;
     private boolean ativo;
     private boolean selecionado = false;
     
 
+    public Livro() {
+    }
+    
     public Livro(Integer idLivro) {
         this.idLivro = idLivro;
     }
@@ -66,9 +71,10 @@ public class Livro {
             this.descricao      = vetorString[11];
             this.anoEdicao      = Integer.parseInt(vetorString[12]);
             this.edicao         = vetorString[13];
-            this.dataCadastro   = LocalDate.parse(vetorString[14], formatoData);
-            this.impressao      = vetorString[15];
-            this.ativo          = Boolean.parseBoolean(vetorString[16]);
+            this.impressaoReimpressao       = vetorString[14];
+            this.dataImpressaoReimpressao   = LocalDate.parse(vetorString[15], formatoData);
+            this.dataCadastro   = LocalDate.parse(vetorString[16], formatoData);
+            this.ativo          = Boolean.parseBoolean(vetorString[17]);
                     
         } catch (DateTimeParseException ex) {
             Logger.getLogger(Autor.class.getName()).log(Level.SEVERE, "Erro ao fazer o parse de String para LocalDate" + vetorString[1]);
@@ -79,12 +85,26 @@ public class Livro {
         }
     }     
 
-    public Livro() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
-    public Livro(String nome, boolean b) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Livro(String titulo, String isbn, Autor autor, Editora editora, 
+            ClassificacaoDecimalDireito cdd, Integer anoeEdicao, String edicao, 
+            String impressao, LocalDate dataImpressao, String descricao,  
+            Usuario usuarioCadastro, boolean ativo) {
+        
+        this.titulo     = titulo;
+        this.isbn       = isbn;
+        addAutor(autor);
+        this.editora    = editora;
+        this.cdd        = cdd;
+        this.anoEdicao  = anoeEdicao;
+        this.edicao     = edicao;
+        this.impressaoReimpressao       = impressao;
+        this.dataImpressaoReimpressao   = dataImpressao;
+        this.descricao          = descricao;
+        this.usuarioCadastro    = usuarioCadastro;
+        this.dataCadastro       = LocalDate.now(ZoneId.systemDefault());
+        this.ativo              = ativo;
+        this.selecionado        =   false;
     }
     
     
@@ -183,12 +203,20 @@ public class Livro {
         this.dataCadastro = dataCadastro;
     }
 
-    public String getImpressao() {
-        return impressao;
+    public String getImpressaoReimpressao() {
+        return impressaoReimpressao;
     }
 
-    public void setImpressao(String impressao) {
-        this.impressao = impressao;
+    public void setImpressaoReimpressao(String impressaoReimpressao) {
+        this.impressaoReimpressao = impressaoReimpressao;
+    }
+
+    public LocalDate getDataImpressaoReimpressao() {
+        return dataImpressaoReimpressao;
+    }
+
+    public void setDataImpressaoReimpressao(LocalDate dataImpressaoReimpressao) {
+        this.dataImpressaoReimpressao = dataImpressaoReimpressao;
     }
 
     public boolean isAtivo() {
@@ -207,6 +235,8 @@ public class Livro {
         this.selecionado = selecionado;
     }
     
+    
+    
     public Livro from (Livro livro) throws Exception {
         this.idLivro    = livro.getIdLivro();
         this.autores    = livro.getAutores();
@@ -219,7 +249,7 @@ public class Livro {
         this.anoEdicao  = livro.getAnoEdicao();
         this.edicao     = livro.getEdicao();
         this.dataCadastro   = livro.getDataCadastro();
-        this.impressao  = livro.getImpressao();
+        this.impressaoReimpressao  = livro.getImpressaoReimpressao();
         this.ativo      = livro.isAtivo();
         return this;
     }     
@@ -240,7 +270,7 @@ public class Livro {
         sb.append(editora.getIdEditora()).append(";");
         sb.append(editora.getNome()).append(";");
         sb.append(editora.isAtivo()).append(";");
-        sb.append(cdd.getIdClassificacaoDecinal()).append(";");
+        sb.append(cdd.getIdClassificacaoDecimal()).append(";");
         sb.append(cdd.getCodigoCDD()).append(";");
         sb.append(cdd.getDescricao()).append(";");
         sb.append(usuarioCadastro).append(";");
@@ -249,8 +279,9 @@ public class Livro {
         sb.append(descricao).append(";");
         sb.append(anoEdicao).append(";");
         sb.append(edicao).append(";");
+        sb.append(impressaoReimpressao).append(";");
+        sb.append(dataImpressaoReimpressao.format(formatoData));
         sb.append(dataCadastro.format(formatoData)).append(";");
-        sb.append(impressao).append(";");
         sb.append(ativo).append(";");
         return sb.toString();
     }      

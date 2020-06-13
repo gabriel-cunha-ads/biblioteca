@@ -1,5 +1,6 @@
 package entity;
 
+import entity.vo.ClassificacaoDecimalDireitoVO;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -34,7 +35,7 @@ public class ClassificacaoDecimalDireito {
     }
     
     public ClassificacaoDecimalDireito(ClassificacaoDecimalDireito cdd) {
-        this.idClassificacaoDecinal = cdd.getIdClassificacaoDecinal();
+        this.idClassificacaoDecinal = cdd.getIdClassificacaoDecimal();
         this.codigoCDD = cdd.getCodigoCDD();
         this.descricao = cdd.getDescricao();
     }    
@@ -49,7 +50,7 @@ public class ClassificacaoDecimalDireito {
         try {
             Integer id = Integer.parseInt(vetorString[0]);
             
-//          Se id do vetor for null, atribui 1..
+//          Se id do vetor for null, atribui 1.
             this.idClassificacaoDecinal = vetorString[0].equals("null") ? 1 : id;  
             this.codigoCDD              = vetorString[1];
             this.descricao              = vetorString[2];
@@ -64,7 +65,7 @@ public class ClassificacaoDecimalDireito {
     }     
     
 
-    public Integer getIdClassificacaoDecinal() {
+    public Integer getIdClassificacaoDecimal() {
         return idClassificacaoDecinal;
     }
 
@@ -97,11 +98,19 @@ public class ClassificacaoDecimalDireito {
     }
     
     public ClassificacaoDecimalDireito from (ClassificacaoDecimalDireito cdd) throws Exception {
-        this.idClassificacaoDecinal = cdd.getIdClassificacaoDecinal();
+        this.idClassificacaoDecinal = cdd.getIdClassificacaoDecimal();
         this.codigoCDD      = cdd.getCodigoCDD();
         this.descricao      = cdd.getCodigoCDD();
         return this;
     }     
+    
+    public ClassificacaoDecimalDireitoVO toClassificacaoDecimalDireitoVO() {
+        ClassificacaoDecimalDireitoVO cddVO = new ClassificacaoDecimalDireitoVO();
+        cddVO.setIdClassificacaoDecinal(this.getIdClassificacaoDecimal());
+        cddVO.setCodigoCDD(this.getCodigoCDD());
+        cddVO.setDescricao(this.getDescricao());
+        return cddVO;
+    }
     
     @Override
     public String toString() {
@@ -111,7 +120,7 @@ public class ClassificacaoDecimalDireito {
         sb.append(descricao).append(";");
         return sb.toString();
     }    
-
+    
     @Override
     public int hashCode() {
         int hash = 5;

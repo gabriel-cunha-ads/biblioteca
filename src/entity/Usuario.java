@@ -14,11 +14,14 @@ public class Usuario {
 
     private Integer idUsuario;
     private Funcionario funcionario;
-    private Integer login;
+    private Integer loginMatricula;
     private String senha;
     private LocalDate dataCadastro;
     private boolean ativo;
     private boolean selecionado = false;
+    
+    public Usuario() {
+    }
 
     public Usuario(Integer idUsuario) {
         this.idUsuario = idUsuario;
@@ -44,7 +47,7 @@ public class Usuario {
             this.funcionario    = new Funcionario(matricula);
             
             this.dataCadastro   = LocalDate.parse(vetorString[4], formatoData);
-            this.login          = Integer.parseInt(vetorString[2]);
+            this.loginMatricula          = Integer.parseInt(vetorString[2]);
             this.ativo          = Boolean.parseBoolean(vetorString[2]);
             
         } catch(NumberFormatException e) {
@@ -72,12 +75,12 @@ public class Usuario {
         this.funcionario = funcionario;
     }
 
-    public Integer getLogin() {
-        return login;
+    public Integer getLoginMatricula() {
+        return loginMatricula;
     }
 
-    public void setLogin(Integer login) {
-        this.login = login;
+    public void setLoginMatricula(Integer loginMatricula) {
+        this.loginMatricula = loginMatricula;
     }
 
     public String getSenha() {
@@ -115,7 +118,7 @@ public class Usuario {
     public Usuario from (Usuario usuario) throws Exception {
         this.idUsuario      = usuario.getIdUsuario();
         this.funcionario    = usuario.getFuncionario();
-        this.login          = usuario.getLogin();
+        this.loginMatricula          = usuario.getLoginMatricula();
         this.senha          = usuario.getSenha();
         this.dataCadastro   = usuario.getDataCadastro();
         this.ativo          = usuario.isAtivo();
@@ -129,7 +132,7 @@ public class Usuario {
         
         StringBuffer sb = new StringBuffer();
         sb.append(funcionario.getMatricula()).append(";");
-        sb.append(login).append(";");
+        sb.append(loginMatricula).append(";");
         sb.append(senha).append(";");
         sb.append(dataCadastro.format(formatoData)).append(";");
         sb.append(ativo).append(";");

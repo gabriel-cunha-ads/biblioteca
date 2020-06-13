@@ -1,10 +1,16 @@
 package service;
 import entity.Autor;
+import entity.Editora;
+import entity.vo.AutorVO;
 import exception.RegistroExistenteException;
 import exception.RegistroNaoExistenteException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import repository.AutorPersistenciaImpl;
+import ui.EditorasUI;
 
 /**
  *
@@ -45,17 +51,17 @@ public class AutorService {
         
 //          Percorrendo a lista com API Stream do java 8 e filtrando pelo id.
             autorBanco = autoresBanco.stream()
-                                            .filter(a -> autor.getIdAutor().equals(a.getIdAutor())) 
-                                            .findFirst()
-                                            .orElse(null);
+                                        .filter(a -> autor.getIdAutor().equals(a.getIdAutor())) 
+                                        .findFirst()
+                                        .orElse(null);
             
         } else if (!"".equals(autor.getNome())){
             
 //          Percorrendo a lista com API Stream do java 8 e filtrando pelo nome.
             autorBanco = autoresBanco.stream()
-                                            .filter(a -> autor.getNome().equals(a.getNome())) 
-                                            .findFirst()
-                                            .orElse(null); 
+                                        .filter(a -> autor.getNome().equals(a.getNome())) 
+                                        .findFirst()
+                                        .orElse(null); 
         } 
         
         return autorBanco;
@@ -112,5 +118,34 @@ public class AutorService {
         return ultimoIdBanco != null ? ++ultimoIdBanco : 1;
     }
     
+    private List<String> getNomesEditoras(List<Autor> autores) {
+        
+        List<String> nomes = new ArrayList();
+        
+        try {
+            List<Autor> listaBanco = this.listar();
+            for (Autor a : listaBanco ) {
+                nomes.add(a.getNome());
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(AutorService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return nomes;
+    }      
+    
+    
+    public Vector<AutorVO> carregarVetorComboBox() throws Exception {
+        
+        List<Autor> autores = this.listar();
+        
+        Vector<AutorVO> autoresVOVector = new Vector();
+        
+        for (Autor autor : autores) {
+            autoresVOVector.add(autor.toAutorVO());
+        }   
+        
+        return autoresVOVector;
+    } 
 
 }

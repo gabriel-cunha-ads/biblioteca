@@ -1,5 +1,6 @@
 package entity;
 
+import entity.vo.AutorVO;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -96,6 +97,14 @@ public class Autor {
         this.ativo = autor.isAtivo();
         return this;
     }    
+    
+     public AutorVO toAutorVO () throws Exception {
+        AutorVO autorVO = new AutorVO();
+        autorVO.setIdAutor(this.getIdAutor());
+        autorVO.setNome(this.getNome());
+        autorVO.setAtivo(this.isAtivo());
+        return autorVO;
+    }      
 
     @Override
     public String toString() {

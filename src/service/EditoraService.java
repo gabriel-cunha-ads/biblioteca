@@ -1,9 +1,11 @@
 package service;
 import entity.Editora;
+import entity.vo.EditoraVO;
 import exception.RegistroExistenteException;
 import exception.RegistroNaoExistenteException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 import repository.EditoraPersistenciaImpl;
 
 /**
@@ -110,5 +112,16 @@ public class EditoraService {
         return ultimoIdBanco != null ? ++ultimoIdBanco : 1;
     }
     
-
+    public Vector<EditoraVO> carregarVetorComboBox() throws Exception {
+        
+        List<Editora> editoras = this.listar();
+        
+        Vector<EditoraVO> editoraVOVector = new Vector();
+        
+        for (Editora editora : editoras) {
+            editoraVOVector.add(editora.toEditoraVO());
+        }   
+        
+        return editoraVOVector;
+    } 
 }

@@ -74,7 +74,7 @@ public class EditorasUI extends javax.swing.JInternalFrame {
         jComboBoxCampoPesquisa.setModel(new DefaultComboBoxModel<>(new String[] {"Selecione", TITULO_COMBOBOX_ID, TITULO_COMBOBOX_NOME}));  
 
 //      Auto sugestão
-        List<String> nomes = listarNomesEditoras();
+        List<String> nomes = getNomesEditoras();
         jTextFieldTextoPesquisa.setFocusTraversalKeysEnabled(false);
         AutoComplete autoComplete = new AutoComplete(jTextFieldTextoPesquisa, nomes);
         jTextFieldTextoPesquisa.getDocument().addDocumentListener(autoComplete);
@@ -103,14 +103,14 @@ public class EditorasUI extends javax.swing.JInternalFrame {
         addMouseListenerTabela();
     }
     
-    private List<String> listarNomesEditoras() {
+    private List<String> getNomesEditoras() {
         
         List<String> nomes = new ArrayList();
         
         try {
             List<Editora> listaBanco = editoraService.listar();
-            for (Editora a : listaBanco ) {
-                nomes.add(a.getNome());
+            for (Editora e : listaBanco ) {
+                nomes.add(e.getNome());
             }
         } catch (Exception ex) {
             Logger.getLogger(EditorasUI.class.getName()).log(Level.SEVERE, null, ex);

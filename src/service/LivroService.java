@@ -24,6 +24,7 @@ public class LivroService {
     
     public void incluir(Livro livro) throws Exception {
         
+//      Consulta se o livro ja existe na base de dados
         Livro livroBanco = (Livro) livroPersistenciaImpl.consultar(livro);
 
         if (livroBanco != null) {

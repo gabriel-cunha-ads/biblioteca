@@ -29,6 +29,8 @@ public class LivrosUI extends javax.swing.JInternalFrame {
     
     private static final String TITULO_COMBOBOX_TITULO = "Titulo";
     
+    private static final String ISBN_COMBOBOX = "ISBN";
+    
     private static final String COMMIT_ACTION = "commit";    
     
     private JDesktopPane jDesktopPane;
@@ -71,7 +73,7 @@ public class LivrosUI extends javax.swing.JInternalFrame {
 
 //      Define títulos para a combobox de pesquisa.        
         jComboBoxCampoPesquisa.setModel(new DefaultComboBoxModel<>(new String[] {"Selecione",
-            TITULO_COMBOBOX_ID, TITULO_COMBOBOX_TITULO, }));  
+            TITULO_COMBOBOX_ID, TITULO_COMBOBOX_TITULO, ISBN_COMBOBOX}));  
        
 //      Auto sugestão
         List<String> titulos = listarTitulosLivros();

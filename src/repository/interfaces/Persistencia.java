@@ -43,8 +43,12 @@ public interface Persistencia<E> {
      */
     Object consultar(Object objeto) throws Exception;
     
-//    Object consultar(String str) throws Exception;
-    
+
+     /**
+     * Responsável por consultar o último id de um objeto.
+     * @return Integer - último id do banco
+     * @throws java.lang.Exception
+     */   
     Integer consultarUltimoID() throws Exception;
     
 }

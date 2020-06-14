@@ -164,6 +164,8 @@ public class AutorCadastroDialog extends javax.swing.JFrame {
                     "Cadastro Autor", JOptionPane.DEFAULT_OPTION);              
         } catch (Exception e) {
              Logger.getLogger(AutorCadastroUI.class.getName()).log(Level.SEVERE, null, e);
+            JOptionPane.showMessageDialog(this, "Ocorreu um erro. Entre em contato com nosso suporte.",
+                    "Cadastro Autor", JOptionPane.DEFAULT_OPTION);                
         }
          
     }//GEN-LAST:event_jButtonInlcuirNovoAutorActionPerformed

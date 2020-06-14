@@ -1,5 +1,6 @@
 package ui;
 
+import entity.Autor;
 import java.util.List;
 import entity.Livro;
 import java.awt.event.MouseAdapter;
@@ -49,6 +50,7 @@ public class LivrosUI extends javax.swing.JInternalFrame {
         inicializarComponentes();
         
         inicializarTabelaDadosLivros(new ArrayList());
+        
     }
 
     private void inicializarComponentes() throws Exception {
@@ -104,6 +106,8 @@ public class LivrosUI extends javax.swing.JInternalFrame {
             Logger.getLogger(LivrosUI.class.getName()).log(Level.SEVERE, "LivrosUI - ", ex);
         }
     }
+    
+   
     
     private List<String> listarTitulosLivros() {
         
@@ -335,7 +339,7 @@ public class LivrosUI extends javax.swing.JInternalFrame {
         List<Livro> selecionados = getSelecionados();
         
         try {
-            if (selecionados != null) {
+            if (selecionados != null && !selecionados.isEmpty()) {
                 
                 int opcao = JOptionPane.showOptionDialog(null, "Tem certeza que deseja excluir?"
                         , "Excluir Livro(s)", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);

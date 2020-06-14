@@ -42,10 +42,10 @@ public class LivroService {
        
         Livro livroBanco = null;
         
-        List<Livro> livroesBanco = livroPersistenciaImpl.listar();
+        List<Livro> livrosBanco = livroPersistenciaImpl.listar();
             
 //      Percorrendo a lista com API Stream do java 8 e filtrando pelo id.
-        livroBanco = livroesBanco.stream()
+        livroBanco = livrosBanco.stream()
                                 .filter(a -> livro.equals(a)) 
                                 .findFirst()
                                 .orElse(null);
@@ -67,9 +67,9 @@ public class LivroService {
     
     public List<Livro> listar() throws Exception {
         
-        List<Livro> livroes = livroPersistenciaImpl.listar();
+        List<Livro> livros = livroPersistenciaImpl.listar();
 
-        return livroes;
+        return livros;
     }      
     
     public void alterar(Livro livro) throws Exception{
@@ -94,22 +94,22 @@ public class LivroService {
         livroPersistenciaImpl.excluir(livro);
     }   
     
-    public List<Livro> excluir(List<Livro> livroes) throws Exception{
+    public List<Livro> excluir(List<Livro> livros) throws Exception{
         
-        List<Livro> livroesNaoExistentesBanco = new ArrayList<>();
+        List<Livro> livrosNaoExistentesBanco = new ArrayList<>();
         
-        for (Livro a : livroes) {
+        for (Livro a : livros) {
             
             Livro livroBanco = (Livro) livroPersistenciaImpl.consultar(a);
             
             if (livroBanco != null) {
                 livroPersistenciaImpl.excluir(a);
             } else {
-                livroesNaoExistentesBanco.add(a);
+                livrosNaoExistentesBanco.add(a);
             }
         }
         
-        return livroesNaoExistentesBanco;
+        return livrosNaoExistentesBanco;
     }        
 
     private Integer gerarNovoId() throws Exception {

@@ -11,11 +11,13 @@ import entity.vo.ClassificacaoDecimalDireitoVO;
 import entity.vo.EditoraVO;
 import exception.RegistroExistenteException;
 import exception.RegistroNaoExistenteException;
-import java.awt.HeadlessException;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
@@ -27,14 +29,18 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JDesktopPane;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import javax.swing.table.TableColumnModel;
 import service.AutorService;
 import service.ClassificacaoDecimalDireitoService;
 import service.EditoraService;
 import service.LivroService;
 import service.UsuarioService;
+import ui.components.AutoresLivroCadastroTableModel;
+import ui.components.ViewAbstractTableModel;
 import ui.dialog.AutorCadastroDialog;
 import ui.dialog.EditoraCadastroDialog;
 import util.UtilComponentes;
+import util.UtilTabela;
 
 /**
  *
@@ -52,22 +58,28 @@ public class LivroCadastroUI extends javax.swing.JInternalFrame {
     
     private Livro livroEmEdicao;
     
-    private LivroService livroService = new LivroService();
+    private LivroService livroService;
     
-    private AutorService autorService = new AutorService();
+    private AutorService autorService;
     
-    private EditoraService editoraService = new EditoraService();
+    private EditoraService editoraService;
     
-    private UsuarioService usuarioService = new UsuarioService();
+    private UsuarioService usuarioService;
     
-    private ClassificacaoDecimalDireitoService cddService = new ClassificacaoDecimalDireitoService();
+    private ClassificacaoDecimalDireitoService cddService;
+    
+    private List<Autor> autoresTabelaLivro;
     
     
-    public LivroCadastroUI() throws Exception {
+    public LivroCadastroUI() {
+        
         initComponents();
+        
         inicializarComponentes();
+        
+        inicializarTabelaAutoresLivro(new ArrayList());
     }
-    
+   
     public LivroCadastroUI(Livro livroEmEdicao) throws Exception {
         this();
         
@@ -87,66 +99,140 @@ public class LivroCadastroUI extends javax.swing.JInternalFrame {
         preencherCamposDaTelaComLivroEditando(livroEmEdicao);
     }    
 
-    private void inicializarComponentes() throws Exception {
+    private void inicializarComponentes() {
         
-//      Obtém a instancia do dashboard, inicializa o título da janela.
-        dashboardUI =  DashboardUI.getInstance();
-        
-//      Defini o nome do títilo da tela.
-        dashboardUI.setJLabelNomeTela("Cadastrar Livro");
-        
-//      Obtém a instancia do JDesktopPane
-        jDesktopPane = dashboardUI.getJDesktopPrincipal();
-        
-//      Maximiza o JInternalFrame para o tamanho do JDesktopPane (pai);
-        UtilComponentes.maximizarJInternalFrame(this);
-        
-//      Data formata dataImpressao
-        jXDatePickerIDataImpressao.setFormats(new String[] {"MM/yyyy"});
-        jXDatePickerIDataImpressao.setLinkDate(System.currentTimeMillis(), "Hoje é {0}");
-        
-//      Inicializa jComboBoxAutores
-        Vector<AutorVO> autoresVO = autorService.carregarVetorComboBox();
-        jComboBoxAutores.setModel(new DefaultComboBoxModel(autoresVO));
+        try {
+            LivroService livroService = new LivroService();
 
-//      Inicializa jComboBoxEditoras
-        Vector<EditoraVO> editorasVO = editoraService.carregarVetorComboBox();
-        jComboBoxEditoras.setModel(new DefaultComboBoxModel(editorasVO));
-        
-//      Inicializa Combobox ClassificacaoDecimalDireito
-        Vector<ClassificacaoDecimalDireitoVO> cddVO = cddService.carregarVetorComboBox();
-        jComboBoxCdds.setModel(new DefaultComboBoxModel(cddVO));  
-        
-//      Inicializa a ComboBox  AnoAno
-        LocalDate dataAtual = LocalDate.now();
-        Vector<Integer> rangeAnosEdicao = IntStream.rangeClosed(1800, dataAtual.getYear())
-                                        .boxed()
-                                        .sorted(Collections.reverseOrder())
-                                        .collect(Collectors.toCollection(Vector::new));
-        
-        jComboBoxAnoEdicao.setModel(new DefaultComboBoxModel(rangeAnosEdicao));  
+            AutorService autorService = new AutorService();
 
-        
-        
-//      Cria um range de um inteiros para edicao e impressao
-        List<Integer> rangeInteiros = IntStream.rangeClosed(1, 99)
+            EditoraService editoraService = new EditoraService();
+
+            UsuarioService usuarioService = new UsuarioService();
+
+            ClassificacaoDecimalDireitoService cddService = new ClassificacaoDecimalDireitoService();  
+
+            List<Autor> autoresTabelaLivro =  new ArrayList();        
+
+
+    //      Obtém a instancia do dashboard, inicializa o título da janela.
+            dashboardUI =  DashboardUI.getInstance();
+
+    //      Defini o nome do títilo da tela.
+            dashboardUI.setJLabelNomeTela("Cadastrar Livro");
+
+    //      Obtém a instancia do JDesktopPane
+            jDesktopPane = dashboardUI.getJDesktopPrincipal();
+
+    //      Maximiza o JInternalFrame para o tamanho do JDesktopPane (pai);
+            UtilComponentes.maximizarJInternalFrame(this);
+
+    //      Data formata dataImpressao
+            jXDatePickerIDataImpressao.setFormats(new String[] {"MM/yyyy"});
+            jXDatePickerIDataImpressao.setLinkDate(System.currentTimeMillis(), "Hoje é {0}");
+
+    //      Inicializa jComboBoxAutores
+            Vector<AutorVO> autoresVO = autorService.carregarVetorComboBox();
+            jComboBoxAutores.setModel(new DefaultComboBoxModel(autoresVO));
+
+    //      Inicializa jComboBoxEditoras
+            Vector<EditoraVO> editorasVO = editoraService.carregarVetorComboBox();
+            jComboBoxEditoras.setModel(new DefaultComboBoxModel(editorasVO));
+
+    //      Inicializa Combobox ClassificacaoDecimalDireito
+            Vector<ClassificacaoDecimalDireitoVO> cddVO = cddService.carregarVetorComboBox();
+            jComboBoxCdds.setModel(new DefaultComboBoxModel(cddVO));  
+
+    //      Inicializa a ComboBox  AnoAno
+            LocalDate dataAtual = LocalDate.now();
+            Vector<Integer> rangeAnosEdicao = IntStream.rangeClosed(1800, dataAtual.getYear())
                                             .boxed()
-                                            .collect(Collectors.toList());  
-        
-//      Passa o range de inteiros para range de Vector<string> inserindo o caractere (º)
-        Vector<String> rangeString = rangeInteiros.stream()
-                                                .map(s -> String.valueOf(s) + "º")
-                                                .collect(Collectors.toCollection(Vector::new));
-        
-//      Inicializa jComboBoxEdicao
-        jComboBoxEdicao.setModel(new DefaultComboBoxModel(rangeString));
-        
-//      Inicializa jComboBoxImpressao
-        jComboBoxImpressao.setModel(new DefaultComboBoxModel(rangeString));
-        
-        
+                                            .sorted(Collections.reverseOrder())
+                                            .collect(Collectors.toCollection(Vector::new));
+
+            jComboBoxAnoEdicao.setModel(new DefaultComboBoxModel(rangeAnosEdicao));  
+
+
+
+    //      Cria um range de um inteiros para edicao e impressao
+            List<Integer> rangeInteiros = IntStream.rangeClosed(1, 99)
+                                                .boxed()
+                                                .collect(Collectors.toList());  
+
+    //      Passa o range de inteiros para range de Vector<string> inserindo o caractere (º)
+            Vector<String> rangeString = rangeInteiros.stream()
+                                                    .map(s -> String.valueOf(s) + "º")
+                                                    .collect(Collectors.toCollection(Vector::new));
+
+    //      Inicializa jComboBoxEdicao
+            jComboBoxEdicao.setModel(new DefaultComboBoxModel(rangeString));
+
+    //      Inicializa jComboBoxImpressao
+            jComboBoxImpressao.setModel(new DefaultComboBoxModel(rangeString));  
+            
+        } catch (Exception e) {
+            Logger.getLogger(LivrosUI.class.getName()).log(Level.SEVERE, "LivrosUI - ", e);            
+        }
         
     }
+    
+    private void inicializarTabelaAutoresLivro(List<Autor> autores) {
+        try {
+            if (autores != null || !autores.isEmpty()) {
+                this.autoresTabelaLivro = autores;
+            }
+            
+    //      Instancia um novo LivroTableModel passando a lista de objetos.
+            ViewAbstractTableModel AutorLivroCadastroTabelModel = new AutoresLivroCadastroTableModel(this.autoresTabelaLivro);
+
+            UtilTabela.inicializarTabela(jTableAutoresLivro, AutorLivroCadastroTabelModel);
+            
+            TableColumnModel tcm = jTableAutoresLivro.getColumnModel();
+            tcm.getColumn(0).setPreferredWidth(20);
+            tcm.getColumn(1).setPreferredWidth(200);
+            tcm.getColumn(2).setPreferredWidth(30);
+            tcm.getColumn(3).setPreferredWidth(20);
+
+            addMouseListenerTabela();
+            
+        } catch (Exception ex) {
+            Logger.getLogger(LivrosUI.class.getName()).log(Level.SEVERE, "LivrosUI - ", ex);
+        }
+    }     
+    
+    public void addMouseListenerTabela() {
+        
+        jTableAutoresLivro.getSelectionModel().addListSelectionListener((e) -> {
+            
+        });
+        
+        jTableAutoresLivro.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+                if (e.getClickCount() == 1) {
+
+                    int qtdLinhasSelcionadas = 0;            
+
+        //          Percorre a lista de livros e incrementa(++) na quantidade de 
+        //          linhas selecionadas
+                    for (Autor a : autoresTabelaLivro) {
+                        if (a.isSelecionado()) {
+                          qtdLinhasSelcionadas++;
+                        }
+                    }
+
+        //          Regras para habilitar / desabilitar botões 
+                    if (qtdLinhasSelcionadas > 0){
+                        jButtonExcluirAutorTabela.setEnabled(true);
+                    } else if (qtdLinhasSelcionadas <= 0) {
+                        jButtonExcluirAutorTabela.setEnabled(false);                
+                    }
+                } 
+//                inicializarTabelaAutoresLivro(autoresTabelaLivro);
+            }
+        });        
+    }    
     
     public void preencherCamposDaTelaComLivroEditando(Livro livroEmEdicao) {
         jTextFieldTitulo.setText(livroEmEdicao.getTitulo());
@@ -154,33 +240,21 @@ public class LivroCadastroUI extends javax.swing.JInternalFrame {
     }
     
     
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jTextFieldTitulo = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
+        jTextFieldTitulo = new javax.swing.JTextField();
         jCheckBoxAtivo = new javax.swing.JCheckBox();
+        jLabel2 = new javax.swing.JLabel();
+        jLabelCDD = new javax.swing.JLabel();
+        jTextFieldIsbn = new javax.swing.JTextField();
+        jComboBoxCdds = new javax.swing.JComboBox<>();
         jSeparator1 = new javax.swing.JSeparator();
         jButtonIncluirSalvarLivro = new javax.swing.JButton();
         jButtonSair = new javax.swing.JButton();
-        jTextFieldIsbn = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
-        jComboBoxEditoras = new javax.swing.JComboBox<>();
-        jButtonIncluirNovoAutor = new javax.swing.JButton();
-        jButtonAddEditora = new javax.swing.JButton();
-        jComboBoxCdds = new javax.swing.JComboBox<>();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
-        jComboBoxEdicao = new javax.swing.JComboBox<>();
-        jLabel7 = new javax.swing.JLabel();
-        jComboBoxImpressao = new javax.swing.JComboBox<>();
-        jLabel8 = new javax.swing.JLabel();
-        jLabel9 = new javax.swing.JLabel();
-        jComboBoxAnoEdicao = new javax.swing.JComboBox<>();
-        jXDatePickerIDataImpressao = new org.jdesktop.swingx.JXDatePicker();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextAreaDescricao = new javax.swing.JTextArea();
         jLabel10 = new javax.swing.JLabel();
@@ -188,9 +262,26 @@ public class LivroCadastroUI extends javax.swing.JInternalFrame {
         jLabel12 = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
+        jXPanel1 = new org.jdesktop.swingx.JXPanel();
+        jComboBoxEditoras = new javax.swing.JComboBox<>();
+        jButtonIncluirNovaEditora = new javax.swing.JButton();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        jComboBoxEdicao = new javax.swing.JComboBox<>();
+        jComboBoxAnoEdicao = new javax.swing.JComboBox<>();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        jComboBoxImpressao = new javax.swing.JComboBox<>();
+        jXDatePickerIDataImpressao = new org.jdesktop.swingx.JXDatePicker();
+        jXPanel2 = new org.jdesktop.swingx.JXPanel();
         jComboBoxAutores = new javax.swing.JComboBox<>();
+        jButtonIncluirNovoAutor = new javax.swing.JButton();
+        jButtonAdicionarAutorTabela = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTableAutoresLivro = new javax.swing.JTable();
+        jButtonExcluirAutorTabela = new javax.swing.JButton();
 
-        setPreferredSize(new java.awt.Dimension(850, 600));
+        setPreferredSize(new java.awt.Dimension(850, 650));
 
         jLabel1.setLabelFor(jTextFieldTitulo);
         jLabel1.setText("Título");
@@ -199,7 +290,13 @@ public class LivroCadastroUI extends javax.swing.JInternalFrame {
         jCheckBoxAtivo.setText("Ativo");
         jCheckBoxAtivo.setEnabled(false);
 
-        jSeparator1.setPreferredSize(new java.awt.Dimension(850, 1));
+        jLabel2.setText("ISBN");
+
+        jLabelCDD.setText("Classificação (CDD)");
+
+        jComboBoxCdds.setMinimumSize(new java.awt.Dimension(33, 30));
+
+        jSeparator1.setPreferredSize(new java.awt.Dimension(800, 1));
 
         jButtonIncluirSalvarLivro.setMnemonic('i');
         jButtonIncluirSalvarLivro.setText("Inlcuir");
@@ -216,53 +313,6 @@ public class LivroCadastroUI extends javax.swing.JInternalFrame {
                 jButtonSairActionPerformed(evt);
             }
         });
-
-        jLabel2.setText("ISBN");
-
-        jComboBoxEditoras.setPreferredSize(new java.awt.Dimension(65, 24));
-
-        jButtonIncluirNovoAutor.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
-        jButtonIncluirNovoAutor.setMnemonic('a');
-        jButtonIncluirNovoAutor.setText("+");
-        jButtonIncluirNovoAutor.setPreferredSize(new java.awt.Dimension(50, 26));
-        jButtonIncluirNovoAutor.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonIncluirNovoAutorActionPerformed(evt);
-            }
-        });
-
-        jButtonAddEditora.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
-        jButtonAddEditora.setMnemonic('e');
-        jButtonAddEditora.setText("+");
-        jButtonAddEditora.setPreferredSize(new java.awt.Dimension(50, 26));
-        jButtonAddEditora.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonAddEditoraActionPerformed(evt);
-            }
-        });
-
-        jLabel3.setText("Autores");
-
-        jLabel4.setText("Editora");
-
-        jLabel5.setText("Classificação (CDD)");
-
-        jLabel6.setText("Edição");
-
-        jComboBoxEdicao.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        jLabel7.setText("Impressão / Reimp.");
-
-        jComboBoxImpressao.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        jLabel8.setText("Data Imp. / Reimp.");
-
-        jLabel9.setText("Ano Edição");
-
-        jComboBoxAnoEdicao.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        jComboBoxAnoEdicao.setPreferredSize(new java.awt.Dimension(65, 24));
-
-        jXDatePickerIDataImpressao.setDate(new java.util.Date(1591920740000L));
 
         jTextAreaDescricao.setColumns(20);
         jTextAreaDescricao.setRows(5);
@@ -287,179 +337,317 @@ public class LivroCadastroUI extends javax.swing.JInternalFrame {
         jLabel14.setForeground(new java.awt.Color(255, 0, 0));
         jLabel14.setText("(*) campos obrigatórios");
 
+        jXPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Editora"));
+
+        jComboBoxEditoras.setPreferredSize(new java.awt.Dimension(65, 24));
+
+        jButtonIncluirNovaEditora.setMnemonic('o');
+        jButtonIncluirNovaEditora.setText("novo");
+        jButtonIncluirNovaEditora.setPreferredSize(new java.awt.Dimension(65, 28));
+        jButtonIncluirNovaEditora.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonIncluirNovaEditoraActionPerformed(evt);
+            }
+        });
+
+        jLabel6.setText("Edição");
+
+        jLabel9.setText("Ano Edição");
+
+        jComboBoxEdicao.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        jComboBoxAnoEdicao.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBoxAnoEdicao.setPreferredSize(new java.awt.Dimension(65, 24));
+
+        jLabel7.setText("Impressão / Reimp.");
+
+        jLabel8.setText("Data Imp. / Reimp.");
+
+        jComboBoxImpressao.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        jXDatePickerIDataImpressao.setDate(new java.util.Date(1591920740000L));
+
+        javax.swing.GroupLayout jXPanel1Layout = new javax.swing.GroupLayout(jXPanel1);
+        jXPanel1.setLayout(jXPanel1Layout);
+        jXPanel1Layout.setHorizontalGroup(
+            jXPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jXPanel1Layout.createSequentialGroup()
+                .addGap(10, 10, 10)
+                .addGroup(jXPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jXPanel1Layout.createSequentialGroup()
+                        .addGap(1, 1, 1)
+                        .addGroup(jXPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jXPanel1Layout.createSequentialGroup()
+                                .addGroup(jXPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel7)
+                                    .addComponent(jComboBoxImpressao, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(jXPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel8)
+                                    .addComponent(jXDatePickerIDataImpressao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(jXPanel1Layout.createSequentialGroup()
+                                .addGroup(jXPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jXPanel1Layout.createSequentialGroup()
+                                        .addComponent(jComboBoxEdicao, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(42, 42, 42))
+                                    .addGroup(jXPanel1Layout.createSequentialGroup()
+                                        .addComponent(jLabel6)
+                                        .addGap(104, 104, 104)))
+                                .addGroup(jXPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel9)
+                                    .addComponent(jComboBoxAnoEdicao, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                    .addGroup(jXPanel1Layout.createSequentialGroup()
+                        .addComponent(jComboBoxEditoras, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonIncluirNovaEditora, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(20, 20, 20))
+        );
+        jXPanel1Layout.setVerticalGroup(
+            jXPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jXPanel1Layout.createSequentialGroup()
+                .addGap(12, 12, 12)
+                .addGroup(jXPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(jButtonIncluirNovaEditora, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jComboBoxEditoras, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jXPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jXPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel9)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jComboBoxAnoEdicao, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jXPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jComboBoxEdicao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(30, 30, 30)
+                .addGroup(jXPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(jLabel8)
+                    .addComponent(jLabel7))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jXPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jComboBoxImpressao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jXDatePickerIDataImpressao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jXPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Autor"));
+
         jComboBoxAutores.setPreferredSize(new java.awt.Dimension(65, 24));
+
+        jButtonIncluirNovoAutor.setMnemonic('n');
+        jButtonIncluirNovoAutor.setText("novo");
+        jButtonIncluirNovoAutor.setPreferredSize(new java.awt.Dimension(65, 28));
+        jButtonIncluirNovoAutor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonIncluirNovoAutorActionPerformed(evt);
+            }
+        });
+
+        jButtonAdicionarAutorTabela.setMnemonic('a');
+        jButtonAdicionarAutorTabela.setText("add");
+        jButtonAdicionarAutorTabela.setPreferredSize(new java.awt.Dimension(65, 28));
+        jButtonAdicionarAutorTabela.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonAdicionarAutorTabelaActionPerformed(evt);
+            }
+        });
+
+        jTableAutoresLivro.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {},
+                {},
+                {},
+                {}
+            },
+            new String [] {
+
+            }
+        ));
+        jScrollPane2.setViewportView(jTableAutoresLivro);
+
+        jButtonExcluirAutorTabela.setText("excluir");
+        jButtonExcluirAutorTabela.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonExcluirAutorTabelaActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jXPanel2Layout = new javax.swing.GroupLayout(jXPanel2);
+        jXPanel2.setLayout(jXPanel2Layout);
+        jXPanel2Layout.setHorizontalGroup(
+            jXPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jXPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jXPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jXPanel2Layout.createSequentialGroup()
+                        .addComponent(jComboBoxAutores, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonAdicionarAutorTabela, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonIncluirNovoAutor, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jXPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(jButtonExcluirAutorTabela)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 327, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(10, 10, 10))
+        );
+        jXPanel2Layout.setVerticalGroup(
+            jXPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jXPanel2Layout.createSequentialGroup()
+                .addGroup(jXPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jXPanel2Layout.createSequentialGroup()
+                        .addGap(11, 11, 11)
+                        .addGroup(jXPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                            .addComponent(jButtonAdicionarAutorTabela, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jComboBoxAutores, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButtonIncluirNovoAutor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jXPanel2Layout.createSequentialGroup()
+                        .addGap(50, 50, 50)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 11, Short.MAX_VALUE)
+                .addComponent(jButtonExcluirAutorTabela)
+                .addContainerGap())
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(20, 20, 20)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel11)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                    .addComponent(jLabel3)
-                                                    .addComponent(jComboBoxAutores, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(jButtonIncluirNovoAutor, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                    .addComponent(jLabel9)
-                                                    .addComponent(jComboBoxAnoEdicao, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                    .addComponent(jComboBoxEdicao, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                    .addComponent(jLabel6))))
-                                        .addGap(30, 30, 30)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                                    .addGroup(layout.createSequentialGroup()
-                                                        .addComponent(jComboBoxEditoras, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addGap(5, 5, 5)
-                                                        .addComponent(jButtonAddEditora, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                    .addComponent(jLabel4))
-                                                .addGap(30, 30, 30)
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                    .addGroup(layout.createSequentialGroup()
-                                                        .addComponent(jLabel5)
-                                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                        .addComponent(jLabel13))
-                                                    .addComponent(jComboBoxCdds, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                    .addComponent(jComboBoxImpressao, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                    .addComponent(jLabel7))
-                                                .addGap(30, 30, 30)
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                    .addComponent(jLabel8)
-                                                    .addComponent(jXDatePickerIDataImpressao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                                .addComponent(jLabel1)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(jLabel11))
-                                            .addComponent(jTextFieldTitulo, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 460, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGap(30, 30, 30)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addComponent(jTextFieldIsbn, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addGap(18, 18, 18)
-                                                .addComponent(jCheckBoxAtivo))
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addComponent(jLabel2)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(jLabel12))))
-                                    .addComponent(jLabel10)
-                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 572, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel14))
-                                .addGap(0, 30, Short.MAX_VALUE)))
-                        .addContainerGap())
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addComponent(jButtonIncluirSalvarLivro, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jButtonSair, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(20, 20, 20))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButtonIncluirSalvarLivro, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButtonSair, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(30, 30, 30))))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel14))
+                            .addComponent(jLabel10)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jTextFieldIsbn, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addComponent(jLabel2)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                            .addComponent(jLabel12)))
+                                    .addGap(18, 18, 18)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addComponent(jLabelCDD)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(jLabel13))
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addComponent(jComboBoxCdds, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(jCheckBoxAtivo))))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jXPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGap(40, 40, 40)
+                                    .addComponent(jXPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jTextFieldTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 719, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addContainerGap(30, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(25, 25, 25)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGap(11, 11, 11)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jLabel1)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel11)
-                    .addComponent(jLabel12))
+                    .addComponent(jLabel11))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTextFieldTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextFieldTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jCheckBoxAtivo)
-                    .addComponent(jTextFieldIsbn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(30, 30, 30)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel4)
-                    .addComponent(jLabel5)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel12)
+                    .addComponent(jLabelCDD)
                     .addComponent(jLabel13))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jComboBoxEditoras, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonIncluirNovoAutor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonAddEditora, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jComboBoxCdds, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBoxAutores, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(35, 35, 35)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel6)
-                    .addComponent(jLabel7)
-                    .addComponent(jLabel8)
-                    .addComponent(jLabel9))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jComboBoxEdicao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jComboBoxImpressao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jComboBoxAnoEdicao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jXDatePickerIDataImpressao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTextFieldIsbn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jCheckBoxAtivo))
+                .addGap(20, 20, 20)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jXPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jXPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addComponent(jLabel10)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 81, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(20, 20, 20)
                 .addComponent(jLabel14)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 1, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 19, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(20, 20, 20)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonIncluirSalvarLivro)
                     .addComponent(jButtonSair))
-                .addGap(25, 25, 25))
+                .addGap(31, 31, 31))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    
     private void jButtonIncluirSalvarLivroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonIncluirSalvarLivroActionPerformed
         
-        String titulo       = jTextFieldTitulo.getText().trim();
-        String isbn         = jTextFieldIsbn.getText().trim();
-        AutorVO autorVO     = (AutorVO) jComboBoxAutores.getSelectedItem();
-        EditoraVO editoraVO = (EditoraVO) jComboBoxEditoras.getSelectedItem();
-        ClassificacaoDecimalDireitoVO cddVO = (ClassificacaoDecimalDireitoVO) jComboBoxCdds.getSelectedItem();
-        Integer anoeEdicao  = (Integer) this.jComboBoxAnoEdicao.getSelectedItem();
-        String edicao       = (String) this.jComboBoxEdicao.getSelectedItem();
-        String impressao = (String) this.jComboBoxImpressao.getSelectedItem();
-        String descricao = jTextAreaDescricao.getText();
-        LocalDate dataImpressao = jXDatePickerIDataImpressao.getDate()
-                                                            .toInstant()
-                                                            .atZone(ZoneId.systemDefault())
-                                                            .toLocalDate();
-        
-        if (titulo.equals("") || isbn.equals("")) {
-            JOptionPane.showMessageDialog(this, "Preencha os campos obrigatórios (*)");
-            jTextFieldTitulo.setFocusable(true);
-            return;
-        }
-        
         try {
-            Autor autor = autorVO.toAutor();
+            String titulo       = jTextFieldTitulo.getText().trim();
+            String isbn         = jTextFieldIsbn.getText().trim();
+            EditoraVO editoraVO = (EditoraVO) jComboBoxEditoras.getSelectedItem();
+            ClassificacaoDecimalDireitoVO cddVO = (ClassificacaoDecimalDireitoVO) jComboBoxCdds.getSelectedItem();
+            Integer anoeEdicao  = (Integer) this.jComboBoxAnoEdicao.getSelectedItem();
+            String edicao       = (String) this.jComboBoxEdicao.getSelectedItem();
+            String impressao = (String) this.jComboBoxImpressao.getSelectedItem();
+            String descricao = jTextAreaDescricao.getText();
+            LocalDate dataImpressao = jXDatePickerIDataImpressao.getDate()
+                                                                .toInstant()
+                                                                .atZone(ZoneId.systemDefault())
+                                                                .toLocalDate();
+
+            if (titulo.equals("") || isbn.equals("")) {
+                JOptionPane.showMessageDialog(this, "Preencha os campos obrigatórios (*)");
+                jTextFieldTitulo.setFocusable(true);
+                return;
+            }
+        
             Editora editora = editoraVO.toEditora();
-            ClassificacaoDecimalDireito cdd = cddVO.toClassificacaoDecimalDireito();
-            Usuario usuario = usuarioService.consultarLogado();
+            
+//          TODO: implementar codigo do Aires  
+//            ClassificacaoDecimalDireito cdd = cddVO.toClassificacaoDecimalDireito();
+            ClassificacaoDecimalDireito cdd = new ClassificacaoDecimalDireito();
+            
+//          TODO: implementar login depois consultarLogado.
+//            Usuario usuario = usuarioService.consultarLogado();
+            Usuario usuario = new Usuario();
             
             if (!this.editandoLivro) {
                 
-                Livro livro = new Livro(titulo,isbn, autor, editora, cdd, anoeEdicao, 
+                if (this.autoresTabelaLivro.isEmpty()) {
+                    AutorVO autorVO = (AutorVO) jComboBoxAutores.getSelectedItem();
+                    this.autoresTabelaLivro.add(autorVO.toAutor());
+                }
+                
+                Livro livro = new Livro(titulo,isbn, this.autoresTabelaLivro, editora, cdd, anoeEdicao, 
                         edicao, impressao, dataImpressao, descricao, usuario, true);
-
+                
+                livroService = new LivroService();
+                
                 livroService.incluir(livro);
                 
                 finalizarAlteracoes(EnumOperacaoBanco.INCLUIR);     
@@ -511,7 +699,23 @@ public class LivroCadastroUI extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButtonIncluirSalvarLivroActionPerformed
 
     protected void finalizarAlteracoes(EnumOperacaoBanco operacao) throws Exception {
-        UtilComponentes.limparCampos(jTextFieldTitulo);
+//        UtilComponentes.limparCampos(jTextFieldTitulo, jTextFieldIsbn);
+
+            this.dispose();
+
+            jDesktopPane.remove(this);
+
+    //      Cria um instância de LivroPrincipalUI.
+            LivroCadastroUI livroCadastroUI = new LivroCadastroUI();
+
+    //      Adiciona a pilha de do JDesktopPane o JInternalFrame.
+            jDesktopPane.add(livroCadastroUI);
+
+    //      Remove barra de título e borda da janela
+             UtilComponentes.removerBarraTituloEBorda(livroCadastroUI);
+            
+//          Mostra a tela LivrosPrincipal.
+            livroCadastroUI.show();
         
         if (EnumOperacaoBanco.INCLUIR.equals(operacao)){
             JOptionPane.showMessageDialog(this, "Livro incluído com sucesso!");
@@ -570,11 +774,66 @@ public class LivroCadastroUI extends javax.swing.JInternalFrame {
         autorCadastroDialog.setVisible(true);
     }//GEN-LAST:event_jButtonIncluirNovoAutorActionPerformed
 
-    private void jButtonAddEditoraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddEditoraActionPerformed
+    private void jButtonIncluirNovaEditoraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonIncluirNovaEditoraActionPerformed
         EditoraCadastroDialog editoraCadastroDialog = new EditoraCadastroDialog(jComboBoxEditoras);
         editoraCadastroDialog.setVisible(true);
-    }//GEN-LAST:event_jButtonAddEditoraActionPerformed
+    }//GEN-LAST:event_jButtonIncluirNovaEditoraActionPerformed
 
+    private void jButtonAdicionarAutorTabelaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAdicionarAutorTabelaActionPerformed
+        try {
+            AutorVO autorVO = (AutorVO) jComboBoxAutores.getSelectedItem();
+            
+            Autor autor = autorVO.toAutor();
+            
+            for (Autor a : this.autoresTabelaLivro) {
+                if (autor.getIdAutor().equals(a.getIdAutor())) {
+                    
+                    JOptionPane.showMessageDialog(this, "Já existe na tabela.",
+                    "Tabela Autores", JOptionPane.DEFAULT_OPTION);
+                    
+                    inicializarTabelaAutoresLivro(autoresTabelaLivro);
+                    
+                    jButtonExcluirAutorTabela.setEnabled(false);
+                    
+                    return;
+                }
+            }
+            
+            this.autoresTabelaLivro.add(autor);
+            
+            inicializarTabelaAutoresLivro(autoresTabelaLivro);
+            
+            jButtonExcluirAutorTabela.setEnabled(false);            
+            
+        } catch (Exception ex) {
+            Logger.getLogger(LivroCadastroUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButtonAdicionarAutorTabelaActionPerformed
+
+    
+    
+    private void jButtonExcluirAutorTabelaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonExcluirAutorTabelaActionPerformed
+        List<Autor> selecionados = getSelecionados();
+        
+//      Remove os itens selecionados da lista que popula a tabela
+        this.autoresTabelaLivro.removeIf(a -> selecionados.contains(a));
+        
+        inicializarTabelaAutoresLivro(this.autoresTabelaLivro);
+        
+        jButtonExcluirAutorTabela.setEnabled(false);
+    }//GEN-LAST:event_jButtonExcluirAutorTabelaActionPerformed
+
+    private List<Autor> getSelecionados() {
+        List<Autor> autoresSelecionado = new ArrayList();
+        
+        for (Autor a : this.autoresTabelaLivro) {
+            if (a.isSelecionado() ) {
+                autoresSelecionado.add(a);
+            }
+        }
+        return autoresSelecionado;
+    }    
+    
     protected void abrirTelaLivros() throws Exception {
         LivrosUI livrosUI = new LivrosUI();
         
@@ -594,7 +853,9 @@ public class LivroCadastroUI extends javax.swing.JInternalFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButtonAddEditora;
+    private javax.swing.JButton jButtonAdicionarAutorTabela;
+    private javax.swing.JButton jButtonExcluirAutorTabela;
+    private javax.swing.JButton jButtonIncluirNovaEditora;
     private javax.swing.JButton jButtonIncluirNovoAutor;
     private javax.swing.JButton jButtonIncluirSalvarLivro;
     private javax.swing.JButton jButtonSair;
@@ -612,19 +873,21 @@ public class LivroCadastroUI extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JLabel jLabelCDD;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JTable jTableAutoresLivro;
     private javax.swing.JTextArea jTextAreaDescricao;
     private javax.swing.JTextField jTextFieldIsbn;
     private javax.swing.JTextField jTextFieldTitulo;
     private org.jdesktop.swingx.JXDatePicker jXDatePickerIDataImpressao;
+    private org.jdesktop.swingx.JXPanel jXPanel1;
+    private org.jdesktop.swingx.JXPanel jXPanel2;
     // End of variables declaration//GEN-END:variables
 
 }

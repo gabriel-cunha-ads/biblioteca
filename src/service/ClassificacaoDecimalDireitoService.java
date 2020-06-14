@@ -132,7 +132,6 @@ public class ClassificacaoDecimalDireitoService {
         return nomes;
     }      
     
-    
     public Vector<ClassificacaoDecimalDireitoVO> carregarVetorComboBox() throws Exception {
         
         List<ClassificacaoDecimalDireito> cdds = this.listar();

@@ -27,7 +27,7 @@ public class AutorCadastroUI extends javax.swing.JInternalFrame {
     
     private Autor autorEmEdicao;
     
-    private AutorService autorService;
+    private AutorService autorService = new AutorService();
     
     
     public AutorCadastroUI() throws Exception {
@@ -168,8 +168,6 @@ public class AutorCadastroUI extends javax.swing.JInternalFrame {
         }
         
         try {
-            autorService    = new AutorService();
-            
             if (!this.editandoAutor) {
                 Autor autor     = new Autor(nome,true);
 

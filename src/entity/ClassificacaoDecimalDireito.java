@@ -41,7 +41,7 @@ public class ClassificacaoDecimalDireito {
     }    
 
     public ClassificacaoDecimalDireito(String dados) throws Exception {
-      String vetorString[] = dados.split(";");
+        String vetorString[] = dados.split(";");
         
         if (vetorString.length < 3) {
             Logger.getLogger(ClassificacaoDecimalDireito.class.getName()).log(Level.SEVERE, "Quantidade de colunas do Vetor de dados divergente. " + dados);

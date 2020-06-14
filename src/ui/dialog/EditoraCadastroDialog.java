@@ -7,13 +7,17 @@ package ui.dialog;
 
 import entity.Editora;
 import entity.vo.EditoraVO;
+import exception.RegistroExistenteException;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import service.EditoraService;
+import ui.AutorCadastroUI;
 import util.UtilComponentes;
 
 /**
@@ -153,10 +157,15 @@ public class EditoraCadastroDialog extends javax.swing.JFrame {
             box.setSelectedItem(editorasVO.lastElement());
             SwingUtilities.updateComponentTreeUI(box);
             
-        } catch (Exception e) {
+        } catch (RegistroExistenteException e) {
             JOptionPane.showMessageDialog(this, "Cadastro já existente. Tente novamente.",
                     "Cadastro Editora", JOptionPane.DEFAULT_OPTION);              
+        } catch (Exception e) {
+             Logger.getLogger(AutorCadastroUI.class.getName()).log(Level.SEVERE, null, e);
+            JOptionPane.showMessageDialog(this, "Ocorreu um erro. Entre em contato com nosso suporte.",
+                    "Cadastro Editora", JOptionPane.DEFAULT_OPTION);                
         }
+         
     }//GEN-LAST:event_jButtonInlcuirNovaEditoraActionPerformed
 
     /**

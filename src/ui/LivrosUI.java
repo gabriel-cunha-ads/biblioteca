@@ -13,6 +13,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JDesktopPane;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
+import javax.swing.table.TableColumnModel;
 import service.LivroService;
 import ui.components.AutoComplete;
 import ui.components.LivroTableModel;
@@ -99,6 +100,13 @@ public class LivrosUI extends javax.swing.JInternalFrame {
             ViewAbstractTableModel livroTableModel = new LivroTableModel(this.livrosTabela);
 
             UtilTabela.inicializarTabela(jTableLivros, livroTableModel);
+            TableColumnModel tcm = jTableLivros.getColumnModel();
+            tcm.getColumn(0).setPreferredWidth(10);
+            tcm.getColumn(1).setPreferredWidth(280);
+            tcm.getColumn(2).setPreferredWidth(90);
+            tcm.getColumn(3).setPreferredWidth(50);      
+            tcm.getColumn(4).setPreferredWidth(10);            
+            tcm.getColumn(5).setPreferredWidth(10);            
 
             addMouseListenerTabela();
             

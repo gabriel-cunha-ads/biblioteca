@@ -1,4 +1,5 @@
 package ui.components;
+import entity.Autor;
 import entity.Livro;
 import java.util.List;
 
@@ -17,7 +18,7 @@ public class LivroTableModel extends ViewAbstractTableModel<Livro> {
             "ISBN", 
             "Data Cadastro",
             "ativo",
-            "Selecione"
+            "X"
         };
     };
 
@@ -44,6 +45,18 @@ public class LivroTableModel extends ViewAbstractTableModel<Livro> {
     }
     
     /**
+    * JTable usa esse método para determinar o renderizador padrão editor para 
+    * cada célula. Se não implementássemos esse método, a última coluna 
+    * conteria texto ("true" / "false"), * em vez de uma caixa de seleção.
+    * @param c
+    * @return 
+    */
+    @Override
+    public Class getColumnClass(int c) {
+            return getValueAt(0, c).getClass();
+    }  
+  
+    /**
      * Defini o valor de uma célula na posição informada.
      * Esta implementação foi sobrescrita para permitir alterar o valor de 
      * uma célula somente se o tipo de dado for Boolean.
@@ -53,22 +66,26 @@ public class LivroTableModel extends ViewAbstractTableModel<Livro> {
     */    
     @Override
     public void setValueAt(Object objeto, int linha, int coluna) {
-        Livro livro = linhas.get(linha);
         
-        if (livro.isSelecionado()) {
-            livro.setSelecionado(false);
-        } else {
-            livro.setSelecionado(true);
-        }
-
-        for (Livro livroDaLista : linhas) {
+//          Pega o autor selecionado e altera o valor do selecionado   
+            Livro livroSelecionado = linhas.get(linha); 
+            livroSelecionado.setSelecionado((boolean) objeto);
             
-            if (!livroDaLista.equals(livro) && livroDaLista.isSelecionado()) {
-                livroDaLista.setSelecionado(false);
-            } 
-            
-            fireTableCellUpdated(linhas.indexOf(livroDaLista), coluna);
-        }
-        fireTableCellUpdated(linha, coluna);
+//          Atualiza a tabela
+            fireTableCellUpdated(linha, coluna);
     }   
+    
+      /**
+     * Defini se a celula pode ser editavel.
+     * Essa implementação foi sobrescrita para  permitir ser editável somente 
+     * objetos que sejam do tipo Boolean.
+     * @param linha - linha da tabela
+     * @param coluna - coluna da tabela
+     * @return booelan - informando se é permitido a edição da celula.
+     */
+    @Override
+    public boolean isCellEditable(int linha, int coluna) {
+        Object objeto = getValueAt(linha, coluna);
+        return objeto instanceof Boolean;
+    }       
 }

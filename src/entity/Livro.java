@@ -60,7 +60,7 @@ public class Livro {
 //          Prenche a lista de autores do livro.
             String[] vetorStringIdAutores = vetorString[5].split(",");
             for (String idAutor : vetorStringIdAutores) {
-                this.autores.add(new Autor(Integer.parseInt(idAutor)));
+                addAutor(new Autor(Integer.parseInt(idAutor)));
             }            
             
             this.editora        = new Editora(Integer.parseInt(vetorString[6]));
@@ -68,7 +68,7 @@ public class Livro {
             this.anoEdicao      = Integer.parseInt(vetorString[8]);
             this.impressaoReimpressao       = vetorString[9];
             this.dataImpressaoReimpressao   = LocalDate.parse(vetorString[10], formatoData);
-            this.usuarioCadastro = new Usuario(vetorString[11]);
+            this.usuarioCadastro = new Usuario(Integer.parseInt(vetorString[11]));
             this.dataCadastro   = LocalDate.parse(vetorString[12], formatoData);
             this.ativo          = Boolean.parseBoolean(vetorString[13]);
                     
@@ -100,7 +100,6 @@ public class Livro {
         this.usuarioCadastro            = usuarioCadastro;
         this.dataCadastro               = LocalDate.now(ZoneId.systemDefault());
         this.ativo                      = ativo;
-        this.selecionado        =          false;
     }
     
     
@@ -260,7 +259,8 @@ public class Livro {
         sb.append(titulo).append(";");
         sb.append(descricao).append(";");
         sb.append(isbn).append(";");
-        sb.append(cdd.getIdClassificacaoDecimal()).append(";");
+        Integer idCdd = cdd.getIdClassificacaoDecimal() == null ? 999 : cdd.getIdClassificacaoDecimal();
+        sb.append(idCdd).append(";");
         
         for (Autor autor : autores) {
             sb.append(autor.getIdAutor()).append(",");
@@ -273,8 +273,8 @@ public class Livro {
         sb.append(edicao).append(";");
         sb.append(anoEdicao).append(";");
         sb.append(impressaoReimpressao).append(";");
-        sb.append(dataImpressaoReimpressao.format(formatoData));
-        sb.append(usuarioCadastro.getIdUsuario()).append(";");
+        sb.append(dataImpressaoReimpressao.format(formatoData)).append(";");
+        sb.append(usuarioCadastro.getIdUsuario() == null ? 999 :  usuarioCadastro.getIdUsuario()).append(";");
         sb.append(dataCadastro.format(formatoData)).append(";");
         sb.append(ativo).append(";");
         return sb.toString();

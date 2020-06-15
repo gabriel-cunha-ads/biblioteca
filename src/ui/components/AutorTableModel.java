@@ -15,7 +15,7 @@ public class AutorTableModel extends ViewAbstractTableModel<Autor> {
             "id", 
             "Nome",
             "ativo",
-            "Selecione"
+            "X"
         };
     };
 

@@ -693,14 +693,12 @@ public class LivroCadastroUI extends javax.swing.JInternalFrame {
               }
             });                
         } catch (Exception e) {
-              JOptionPane.showMessageDialog(this, "Ocorreu um erro ao incluir/salvar o livro. Entre em contato com nosso suporte.",
+               JOptionPane.showMessageDialog(this, "Ocorreu um erro ao incluir/salvar o livro. Entre em contato com nosso suporte.",
                     "Cadastro / Edição de Livro", JOptionPane.DEFAULT_OPTION);
         }
     }//GEN-LAST:event_jButtonIncluirSalvarLivroActionPerformed
 
     protected void finalizarAlteracoes(EnumOperacaoBanco operacao) throws Exception {
-//        UtilComponentes.limparCampos(jTextFieldTitulo, jTextFieldIsbn);
-
             this.dispose();
 
             jDesktopPane.remove(this);

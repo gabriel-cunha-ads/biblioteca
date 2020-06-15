@@ -15,7 +15,7 @@ public class EditoraTableModel extends ViewAbstractTableModel<Editora> {
             "id", 
             "Nome",
             "ativo",
-            "Selecionar"
+            "X"
         };
     };
 

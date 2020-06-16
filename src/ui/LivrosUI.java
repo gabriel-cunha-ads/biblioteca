@@ -1,6 +1,7 @@
 package ui;
 
 import entity.Autor;
+import entity.EnumFiltroLivro;
 import java.util.List;
 import entity.Livro;
 import java.awt.event.MouseAdapter;
@@ -27,11 +28,11 @@ import util.UtilTabela;
  */
 public class LivrosUI extends javax.swing.JInternalFrame {
 
-    private static final String TITULO_COMBOBOX_ID = "Id";   
+    private static final String CAMPO_COMBOBOX_ID = "Id";   
     
-    private static final String TITULO_COMBOBOX_TITULO = "Titulo";
+    private static final String CAMPO_COMBOBOX_TITULO = "Titulo";
     
-    private static final String ISBN_COMBOBOX = "ISBN";
+    private static final String CAMPO_COMBOBOX_ISBN = "ISBN";
     
     private static final String COMMIT_ACTION = "commit";    
     
@@ -76,15 +77,15 @@ public class LivrosUI extends javax.swing.JInternalFrame {
 
 //      Define títulos para a combobox de pesquisa.        
         jComboBoxCampoPesquisa.setModel(new DefaultComboBoxModel<>(new String[] {"Selecione",
-            TITULO_COMBOBOX_ID, TITULO_COMBOBOX_TITULO, ISBN_COMBOBOX}));  
+            CAMPO_COMBOBOX_ID, CAMPO_COMBOBOX_TITULO, CAMPO_COMBOBOX_ISBN}));  
        
 //      Auto sugestão
-        List<String> titulos = listarTitulosLivros();
-        jTextFieldTextoPesquisa.setFocusTraversalKeysEnabled(false);
-        AutoComplete autoComplete = new AutoComplete(jTextFieldTextoPesquisa, titulos);
-        jTextFieldTextoPesquisa.getDocument().addDocumentListener(autoComplete);
-        jTextFieldTextoPesquisa.getInputMap().put(KeyStroke.getKeyStroke(title).getKeyStroke("TAB"), COMMIT_ACTION);
-        jTextFieldTextoPesquisa.getActionMap().put(COMMIT_ACTION, autoComplete.new CommitAction());        
+//        List<String> titulos = listarTitulosLivros();
+//        jTextFieldTextoPesquisa.setFocusTraversalKeysEnabled(false);
+//        AutoComplete autoComplete = new AutoComplete(jTextFieldTextoPesquisa, titulos);
+//        jTextFieldTextoPesquisa.getDocument().addDocumentListener(autoComplete);
+//        jTextFieldTextoPesquisa.getInputMap().put(KeyStroke.getKeyStroke(title).getKeyStroke("TAB"), COMMIT_ACTION);
+//        jTextFieldTextoPesquisa.getActionMap().put(COMMIT_ACTION, autoComplete.new CommitAction());         
     }
     
     
@@ -121,18 +122,18 @@ public class LivrosUI extends javax.swing.JInternalFrame {
     
     private List<String> listarTitulosLivros() {
         
-        List<String> nomes = new ArrayList();
+        List<String> titulos = new ArrayList();
         
         try {
             List<Livro> listaBanco = livroService.listar();
             for (Livro a : listaBanco ) {
-                nomes.add(a.getTitulo());
+                titulos.add(a.getTitulo());
             }
         } catch (Exception ex) {
             Logger.getLogger(LivrosUI.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        return nomes;
+        return titulos;
     }    
     
     public void addMouseListenerTabela() {
@@ -442,12 +443,12 @@ public class LivrosUI extends javax.swing.JInternalFrame {
                 inicializarTabelaDadosLivros(livros);  
             } else {
                 
-                if (jComboBoxCampoPesquisa.getSelectedItem().equals(TITULO_COMBOBOX_ID)) {
+                if (jComboBoxCampoPesquisa.getSelectedItem().equals(CAMPO_COMBOBOX_ID)) {
                     Integer id = null;
 
                     id = Integer.parseInt(dadosParaPesquisa);
 
-                    livroPesquisado = livroService.consultar(new Livro(id));
+                    livroPesquisado = livroService.consultar(new Livro(id), EnumFiltroLivro.ID);
 
                     this.livrosTabela = Arrays.asList(livroPesquisado);
 
@@ -455,19 +456,33 @@ public class LivrosUI extends javax.swing.JInternalFrame {
 
                     inicializarTabelaDadosLivros(this.livrosTabela);
 
-                } else if (jComboBoxCampoPesquisa.getSelectedItem().equals(TITULO_COMBOBOX_TITULO)) {
+                } else if (jComboBoxCampoPesquisa.getSelectedItem().equals(CAMPO_COMBOBOX_TITULO)) {
 
                     Livro livroParaPesquisa = new Livro();
+                    
                     livroParaPesquisa.setTitulo(dadosParaPesquisa);
 
-                    livroPesquisado = livroService.consultar(livroParaPesquisa);
+                    livroPesquisado = livroService.consultar(livroParaPesquisa, EnumFiltroLivro.TITULO);
 
                     this.livrosTabela  = Arrays.asList(livroPesquisado);
 
                     inicializarComponentes();
 
                     inicializarTabelaDadosLivros(this.livrosTabela );
-                }
+                } else if (jComboBoxCampoPesquisa.getSelectedItem().equals(CAMPO_COMBOBOX_ISBN)) {
+
+                    Livro livroParaPesquisa = new Livro();
+                    
+                    livroParaPesquisa.setTitulo(dadosParaPesquisa);
+
+                    livroPesquisado = livroService.consultar(livroParaPesquisa, EnumFiltroLivro.ISBN);
+
+                    this.livrosTabela  = Arrays.asList(livroPesquisado);
+
+                    inicializarComponentes();
+
+                    inicializarTabelaDadosLivros(this.livrosTabela );
+                } 
 
                 if (livroPesquisado == null) {
 

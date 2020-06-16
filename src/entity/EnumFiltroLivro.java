@@ -2,6 +2,8 @@ package entity;
 
 import service.strategy.livro.LivroPorId;
 import service.strategy.FiltroStrategy;
+import service.strategy.livro.LivroPorISBN;
+import service.strategy.livro.LivroPorTitulo;
 
 /**
  *
@@ -15,22 +17,16 @@ public enum EnumFiltroLivro {
             return new LivroPorId();
         }
     },
-    NOME {
-        @Override
-        public FiltroStrategy filtrarPor() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-    },
     TITULO {
         @Override
         public FiltroStrategy filtrarPor() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            return new LivroPorTitulo();
         }
     },
     ISBN {
         @Override
         public FiltroStrategy filtrarPor() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            return new LivroPorISBN();
         }
     };
     

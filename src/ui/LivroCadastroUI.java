@@ -19,6 +19,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -92,9 +93,9 @@ public class LivroCadastroUI extends javax.swing.JInternalFrame {
 //      Habilita a edição da checkBox ativo
         jCheckBoxAtivo.setEnabled(true);
         
-        editandoLivro = true;
-        
         this.livroEmEdicao = livroEmEdicao;
+
+        editandoLivro = true;
         
         preencherCamposDaTelaComLivroEditando(livroEmEdicao);
     }    
@@ -102,18 +103,15 @@ public class LivroCadastroUI extends javax.swing.JInternalFrame {
     private void inicializarComponentes() {
         
         try {
-            LivroService livroService = new LivroService();
-
-            AutorService autorService = new AutorService();
-
-            EditoraService editoraService = new EditoraService();
-
+            autorService = new AutorService();
+            
+            editoraService = new EditoraService();
+            
             UsuarioService usuarioService = new UsuarioService();
 
-            ClassificacaoDecimalDireitoService cddService = new ClassificacaoDecimalDireitoService();  
-
+            ClassificacaoDecimalDireitoService cddService = new ClassificacaoDecimalDireitoService();     
+            
             List<Autor> autoresTabelaLivro =  new ArrayList();        
-
 
     //      Obtém a instancia do dashboard, inicializa o título da janela.
             dashboardUI =  DashboardUI.getInstance();
@@ -132,7 +130,7 @@ public class LivroCadastroUI extends javax.swing.JInternalFrame {
             jXDatePickerIDataImpressao.setLinkDate(System.currentTimeMillis(), "Hoje é {0}");
 
     //      Inicializa jComboBoxAutores
-            Vector<AutorVO> autoresVO = autorService.carregarVetorComboBox();
+            Vector<AutorVO> autoresVO = autorService.carregarTodosAutoresVetorComboBox();
             jComboBoxAutores.setModel(new DefaultComboBoxModel(autoresVO));
 
     //      Inicializa jComboBoxEditoras
@@ -187,6 +185,7 @@ public class LivroCadastroUI extends javax.swing.JInternalFrame {
 
             UtilTabela.inicializarTabela(jTableAutoresLivro, AutorLivroCadastroTabelModel);
             
+//          Define o tamanho das colunas da tabela.
             TableColumnModel tcm = jTableAutoresLivro.getColumnModel();
             tcm.getColumn(0).setPreferredWidth(20);
             tcm.getColumn(1).setPreferredWidth(200);
@@ -201,10 +200,6 @@ public class LivroCadastroUI extends javax.swing.JInternalFrame {
     }     
     
     public void addMouseListenerTabela() {
-        
-        jTableAutoresLivro.getSelectionModel().addListSelectionListener((e) -> {
-            
-        });
         
         jTableAutoresLivro.addMouseListener(new MouseAdapter() {
             @Override
@@ -235,8 +230,37 @@ public class LivroCadastroUI extends javax.swing.JInternalFrame {
     }    
     
     public void preencherCamposDaTelaComLivroEditando(Livro livroEmEdicao) {
-        jTextFieldTitulo.setText(livroEmEdicao.getTitulo());
-        jCheckBoxAtivo.setSelected(livroEmEdicao.isAtivo());
+        try {
+            jTextFieldTitulo.setText(livroEmEdicao.getTitulo());
+            jTextFieldIsbn.setText(livroEmEdicao.getIsbn());
+            jComboBoxCdds.setSelectedItem(livroEmEdicao.getCdd().toClassificacaoDecimalDireitoVO());
+ 
+////         Inicializa jComboBoxAutores
+//            Vector<AutorVO> autoresVO = autorService.carregarTodosAutoresVetorComboBox();
+//            jComboBoxAutores.setModel(new DefaultComboBoxModel(autoresVO));
+            
+//          Consulta os autores pelo id e preenche a lista de autores da tabela.
+            autorService = new AutorService();
+            for (Autor a : livroEmEdicao.getAutores()) {
+                 autoresTabelaLivro.add(autorService.consultar(a));
+            }
+            inicializarTabelaAutoresLivro(autoresTabelaLivro);      
+            
+////          Inicializa jComboBoxEditoras
+//            Vector<EditoraVO> editorasVO = editoraService.carregarVetorComboBox();
+//            jComboBoxEditoras.setModel(new DefaultComboBoxModel(editorasVO));
+            
+            jComboBoxEdicao.setSelectedItem(livroEmEdicao.getEdicao());
+            jComboBoxAnoEdicao.setSelectedItem(livroEmEdicao.getAnoEdicao());
+            jComboBoxImpressao.setSelectedItem(livroEmEdicao.getImpressaoReimpressao());
+            jTextAreaDescricao.setText(livroEmEdicao.getDescricao());
+            jXDatePickerIDataImpressao.setDate(Date.from(livroEmEdicao.getDataImpressaoReimpressao().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+            
+        } catch (Exception e) {
+            Logger.getLogger(LivroCadastroUI.class.getName()).log(Level.SEVERE, null, e);
+            JOptionPane.showMessageDialog(this, "Ocorreu um erro ao preencher os dados para edição do livro. Entre em contato com nosso suporte.",
+                    "Cadastro de Livros", JOptionPane.DEFAULT_OPTION);            
+        }
     }
     
     
@@ -559,7 +583,7 @@ public class LivroCadastroUI extends javax.swing.JInternalFrame {
                                     .addGap(40, 40, 40)
                                     .addComponent(jXPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addComponent(jTextFieldTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 719, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addContainerGap(30, Short.MAX_VALUE))))
+                        .addGap(30, 30, 30))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -607,9 +631,11 @@ public class LivroCadastroUI extends javax.swing.JInternalFrame {
     private void jButtonIncluirSalvarLivroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonIncluirSalvarLivroActionPerformed
         
         try {
+            livroService = new LivroService();
             String titulo       = jTextFieldTitulo.getText().trim();
             String isbn         = jTextFieldIsbn.getText().trim();
             EditoraVO editoraVO = (EditoraVO) jComboBoxEditoras.getSelectedItem();
+            Editora editora = editoraVO.toEditora();
             ClassificacaoDecimalDireitoVO cddVO = (ClassificacaoDecimalDireitoVO) jComboBoxCdds.getSelectedItem();
             Integer anoeEdicao  = (Integer) this.jComboBoxAnoEdicao.getSelectedItem();
             String edicao       = (String) this.jComboBoxEdicao.getSelectedItem();
@@ -625,46 +651,33 @@ public class LivroCadastroUI extends javax.swing.JInternalFrame {
                 jTextFieldTitulo.setFocusable(true);
                 return;
             }
-        
-            Editora editora = editoraVO.toEditora();
             
 //          TODO: implementar codigo do Aires  
-//            ClassificacaoDecimalDireito cdd = cddVO.toClassificacaoDecimalDireito();
+//          ClassificacaoDecimalDireito cdd = cddVO.toClassificacaoDecimalDireito();
             ClassificacaoDecimalDireito cdd = new ClassificacaoDecimalDireito();
             
 //          TODO: implementar login depois consultarLogado.
-//            Usuario usuario = usuarioService.consultarLogado();
+//          Usuario usuario = usuarioService.consultarLogado();
             Usuario usuario = new Usuario();
             
+            if (this.autoresTabelaLivro.isEmpty()) {
+                AutorVO autorVO = (AutorVO) jComboBoxAutores.getSelectedItem();
+                this.autoresTabelaLivro.add(autorVO.toAutor());
+            }
+
+            Livro livro = new Livro(titulo,isbn, this.autoresTabelaLivro, editora, cdd, anoeEdicao, 
+                edicao, impressao, dataImpressao, descricao, usuario, true);                    
+            
             if (!this.editandoLivro) {
-                
-                if (this.autoresTabelaLivro.isEmpty()) {
-                    AutorVO autorVO = (AutorVO) jComboBoxAutores.getSelectedItem();
-                    this.autoresTabelaLivro.add(autorVO.toAutor());
-                }
-                
-                Livro livro = new Livro(titulo,isbn, this.autoresTabelaLivro, editora, cdd, anoeEdicao, 
-                        edicao, impressao, dataImpressao, descricao, usuario, true);
-                
-                livroService = new LivroService();
                 
                 livroService.incluir(livro);
                 
                 finalizarAlteracoes(EnumOperacaoBanco.INCLUIR);     
                 
             } else {
-//              Busca no banco de dados (arquivo txt) o registro.
-                Livro livroBanco = livroService.consultar(this.livroEmEdicao);
-               
-                if (livroBanco == null) {
-                    throw new RegistroNaoExistenteException();
-                }
+                livro.setIdLivro(livroEmEdicao.getIdLivro());
                 
-//              Insere os novos valores
-                livroBanco.setTitulo(jTextFieldTitulo.getText());
-                livroBanco.setAtivo(jCheckBoxAtivo.isSelected());
-                
-                livroService.alterar(livroBanco);
+                livroService.alterar(livro);
                 
                 finalizarAlteracoes(EnumOperacaoBanco.ALTERAR);
             } 
@@ -699,6 +712,8 @@ public class LivroCadastroUI extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButtonIncluirSalvarLivroActionPerformed
 
     protected void finalizarAlteracoes(EnumOperacaoBanco operacao) throws Exception {
+        
+        if (EnumOperacaoBanco.INCLUIR.equals(operacao)){
             this.dispose();
 
             jDesktopPane.remove(this);
@@ -713,9 +728,8 @@ public class LivroCadastroUI extends javax.swing.JInternalFrame {
              UtilComponentes.removerBarraTituloEBorda(livroCadastroUI);
             
 //          Mostra a tela LivrosPrincipal.
-            livroCadastroUI.show();
-        
-        if (EnumOperacaoBanco.INCLUIR.equals(operacao)){
+            livroCadastroUI.show();            
+            
             JOptionPane.showMessageDialog(this, "Livro incluído com sucesso!");
 
             SwingUtilities.invokeLater(new Runnable() {
@@ -729,9 +743,9 @@ public class LivroCadastroUI extends javax.swing.JInternalFrame {
                
             this.dispose();
 
-            dashboardUI.setJLabelNomeTela("Livros");
-
             jDesktopPane.remove(this);
+
+            dashboardUI.setJLabelNomeTela("Livros");
 
             try {
                 abrirTelaLivros();            

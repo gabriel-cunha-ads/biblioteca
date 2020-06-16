@@ -1,7 +1,8 @@
 package entity;
 
 import java.util.Objects;
-
+import java.util.logging.Level;
+import java.util.logging.Logger;
 /**
  *
  * @author Gabriel Cunha <gabrielcunhadev@gmail.com>
@@ -12,13 +13,49 @@ public class Cargo {
     private String descricao;
     private boolean selecionado = false;
 
-    public Cargo() {
-    }
 
     public Cargo(Integer idCargo, String descricao) {
         this.idCargo = idCargo;
         this.descricao = descricao;
     }
+    public Cargo(String descricao, boolean selecionado){
+        this.descricao=descricao;
+        this.selecionado=selecionado;
+    }
+    public Cargo(Integer idCargo,String descricao, boolean selecionado){
+        this.idCargo=idCargo;
+        this.descricao=descricao;
+        this.selecionado=selecionado;
+    }
+    public Cargo(Cargo cargo){
+        this.idCargo=cargo.idCargo;
+        this.descricao=cargo.descricao;
+        this.selecionado=cargo.selecionado;
+    }
+    
+    
+    public Cargo(String dados) throws Exception {
+        
+        String vetorString[] = dados.split(";");
+        
+        if (vetorString.length < 2) {
+            Logger.getLogger(Cargo.class.getName()).log(Level.SEVERE, "Quantidade de colunas do Vetor de dados divergente." + dados);
+            throw new Exception();
+        }
+        try {
+            Integer id = Integer.parseInt(vetorString[0]);
+            
+//          Se id do vetor for null, atribui 1.
+            this.idCargo   = vetorString[0].equals("null") ? 1 : id;  
+            this.descricao        = vetorString[1];
+        } catch(NumberFormatException e) {
+            Logger.getLogger(Autor.class.getName()).log(Level.SEVERE, "Erro ao fazer o parse do campo id do vetor de dados da editora com nome " + vetorString[1]);
+            throw new Exception();
+        } catch(Exception e) {
+            Logger.getLogger(Autor.class.getName()).log(Level.SEVERE, "Erro ao extrair dados do vetor de dados da editora." + vetorString[1] + "Erro: " + e);
+            throw new Exception();
+        }
+    }        
     
     public Integer getIdCargo() {
         return idCargo;
@@ -84,9 +121,6 @@ public class Cargo {
         }
         return true;
     }
-    
-    
-    
-    
+
     
 }

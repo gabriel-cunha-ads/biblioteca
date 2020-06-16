@@ -1,6 +1,11 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package repository;
 
-import entity.Livro;
+import entity.Cargo;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -14,16 +19,15 @@ import util.UtilSistema;
 
 /**
  *
- * @author Gabriel Cunha <gabrielcunhadev@gmail.com>
+ * @author CroK
  */
-public class LivroPersistenciaImpl implements Persistencia<Livro>{
+public class CargoPersistenciaImpl implements Persistencia<Cargo> {
+        private final String arquivoBancoDados;
     
-    private final String arquivoBancoDados;
-    
-    private final String PATH_BANCO_DADOS;
+        private final String PATH_BANCO_DADOS;
     
     
-    public LivroPersistenciaImpl(String nomeArquivoBancoDados) throws Exception {
+    public CargoPersistenciaImpl(String nomeArquivoBancoDados) throws Exception {
         
         PATH_BANCO_DADOS = UtilSistema.getDiretorioBancoDados();
         
@@ -33,28 +37,26 @@ public class LivroPersistenciaImpl implements Persistencia<Livro>{
     }
     
     @Override
-    public void incluir(Object livro) throws Exception {
+    public void incluir(Object Cargo) throws Exception {
         
-        List<Livro> livrosBanco = listar();
+        List<Cargo> cargosBanco = listar();
   
-        UtilArquivo.removerLinhaSemRegistro(arquivoBancoDados, livrosBanco);
+        UtilArquivo.removerLinhaSemRegistro(arquivoBancoDados, cargosBanco);
         
         FileWriter fw = new FileWriter(arquivoBancoDados, true);
         
         BufferedWriter bw = new BufferedWriter(fw);
         
 //      Escreve no arquivo  
-        bw.write(livro.toString());
+        bw.write(Cargo.toString());
 
 //      Fecha o arquivo
         bw.close();
     }
 
-
-
     @Override
-    public List<Livro> listar() throws Exception {
-        List<Livro> livros = new ArrayList<>();
+    public List<Cargo> listar() throws Exception {
+        List<Cargo> cargos = new ArrayList<>();
         
         FileReader fr = new FileReader(arquivoBancoDados);
         
@@ -63,19 +65,17 @@ public class LivroPersistenciaImpl implements Persistencia<Livro>{
         String linha = "";
         
         while((linha = br.readLine()) != null && !linha.trim().equals("")) {
-            Livro livro = new Livro(linha);
-            livros.add(livro);
+            Cargo cargo = new Cargo(linha);
+            cargos.add(cargo);
         }
         
         br.close();
         
-        return livros;
+        return cargos;
     }
 
     @Override
-    public Object consultar(Object livro) throws Exception {
-        
-        Livro livroParaConsultar = (Livro) livro;
+    public Object consultar(Object cargo) throws Exception {
         
         FileReader fr = new FileReader(arquivoBancoDados);
         
@@ -83,54 +83,42 @@ public class LivroPersistenciaImpl implements Persistencia<Livro>{
         
         String linha = "";
         
-        List<Livro> livrosBanco = new ArrayList<>();
+        List<Cargo> cargosBanco = new ArrayList<>();
         
         while((linha = br.readLine()) != null && !linha.trim().equals("")) {
-            Livro a = new Livro(linha);
-            livrosBanco.add(a);
+            Cargo a = new Cargo(linha);
+            cargosBanco.add(a);
         }
         
-        Livro livroResultado = null;
+        Cargo cargoResultado = null;
         
-        for (Livro a : livrosBanco) {
-            if (livroParaConsultar.getIdLivro() != null) {
-                if (a.getIdLivro() ==  livroParaConsultar.getIdLivro()) {
-                    livroResultado = a;
-                }
-            } else if (livroParaConsultar.getIdLivro() == null) {
-                if (a.getIsbn().trim().equals(livroParaConsultar.getIsbn().trim()) 
-                        || (a.getTitulo().trim().equals(livroParaConsultar.getTitulo().trim()) 
-                        && a.getCdd().getCodigoCDD().equals(livroParaConsultar.getCdd().getCodigoCDD()) )) {
-                    
-                    livroResultado = a;
-                }                 
-            } 
-            else {
-                if (a.equals(livro)) {
-                    livroResultado = a;
-                }                
+        for (Cargo a : cargosBanco) {
+            if (a.equals(cargo)) {
+                cargoResultado = a;
             }
         }
-        return livroResultado;
+        return cargoResultado;
     }
 
     @Override
     public void alterar(Object objeto) throws Exception {
-        Livro livroParaAlterar = (Livro) objeto;
+        Cargo cargoParaAlterar = (Cargo) objeto;
         
-        this.excluir(livroParaAlterar);
+        Cargo cargoBanco = (Cargo) this.consultar(cargoParaAlterar);
+        
+        this.excluir(cargoBanco);
 
-        Livro livroAtualizado = livroParaAlterar.from(livroParaAlterar);
+        Cargo cargoAtualizada = cargoBanco.from(cargoParaAlterar);
         
-        this.incluir(livroAtualizado);
+        this.incluir(cargoAtualizada);
     }
 
     @Override
     public void excluir(Object objeto) throws Exception {
         
-        Livro livroParaExcluir = (Livro) objeto;
+        Cargo cargoParaExcluir = (Cargo) objeto;
         
-        List<Livro> livros = new ArrayList<>();
+        List<Cargo> cargos = new ArrayList<>();
         
         FileReader fr = new FileReader(arquivoBancoDados);
         
@@ -139,10 +127,10 @@ public class LivroPersistenciaImpl implements Persistencia<Livro>{
         String linha = "";
         
         while((linha = br.readLine()) != null && !linha.trim().equals("")) {
-            Livro livroBanco = new Livro(linha);
+            Cargo cargoBanco = new Cargo(linha);
             
-            if (!livroBanco.getIdLivro().equals(livroParaExcluir.getIdLivro())) {
-                livros.add(livroBanco);
+            if (!cargoBanco.equals(cargoParaExcluir)) {
+                cargos.add(cargoBanco);
             }
         }   
         
@@ -151,7 +139,7 @@ public class LivroPersistenciaImpl implements Persistencia<Livro>{
         BufferedWriter bw = new BufferedWriter(fw);
         
 //      Escreve no arquivo  
-        for (Livro a : livros) {
+        for (Cargo a : cargos) {
             bw.write(a + "\n");
         }
 //      Fecha o arquivo
@@ -161,7 +149,7 @@ public class LivroPersistenciaImpl implements Persistencia<Livro>{
     @Override
     public Integer consultarUltimoID() throws Exception {
         
-        List<Livro> livros = new ArrayList<>();
+        List<Cargo> cargos = new ArrayList<>();
         
         FileReader fr = new FileReader(arquivoBancoDados);
         
@@ -170,15 +158,15 @@ public class LivroPersistenciaImpl implements Persistencia<Livro>{
         String linha = "";
         
         while((linha = br.readLine()) != null && !linha.trim().equals("")) {
-            Livro livroBanco = new Livro(linha);
-            livros.add(livroBanco);
+            Cargo cargoBanco = new Cargo(linha);
+            cargos.add(cargoBanco);
         }
         
         Integer ultimoId = null;
         
-        if (!livros.isEmpty()) {
-            Livro livro = livros.get(livros.size() -1);
-            ultimoId = livro.getIdLivro();
+        if (!cargos.isEmpty()) {
+            Cargo cargo = cargos.get(cargos.size() -1);
+            ultimoId = cargo.getIdCargo();
         }
         return ultimoId;        
         

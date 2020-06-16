@@ -44,11 +44,20 @@ public class LivroService {
         
         List<Livro> livrosBanco = livroPersistenciaImpl.listar();
             
+        if (livro.getIdLivro() != null) {
 //      Percorrendo a lista com API Stream do java 8 e filtrando pelo id.
+        livroBanco = livrosBanco.stream()
+                                .filter(a -> livro.getIdLivro().equals(a.getIdLivro())) 
+                                .findFirst()
+                                .orElse(null);
+        } else {
+//      Percorrendo a lista com API Stream do java 8 e filtrando pelo objeto.
         livroBanco = livrosBanco.stream()
                                 .filter(a -> livro.equals(a)) 
                                 .findFirst()
                                 .orElse(null);
+        }
+        
         return livroBanco;
     }  
     

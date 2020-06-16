@@ -100,6 +100,8 @@ public class LivrosUI extends javax.swing.JInternalFrame {
             ViewAbstractTableModel livroTableModel = new LivroTableModel(this.livrosTabela);
 
             UtilTabela.inicializarTabela(jTableLivros, livroTableModel);
+            
+//          Defini tamanho das colunas
             TableColumnModel tcm = jTableLivros.getColumnModel();
             tcm.getColumn(0).setPreferredWidth(10);
             tcm.getColumn(1).setPreferredWidth(280);
@@ -395,7 +397,7 @@ public class LivrosUI extends javax.swing.JInternalFrame {
 //              Cria um instância da tela (UI) que será aberta e passa o selecionado.
                 LivroCadastroUI livroCadastroUI = new LivroCadastroUI(selecionados.get(0));        
 
-//              Adiciona a pilha de do JDesktopPane o JInternalFrame.
+//              Adiciona à pilha do JDesktopPane o JInternalFrame.
                 jDesktopPane.add(livroCadastroUI);
 
                 try {

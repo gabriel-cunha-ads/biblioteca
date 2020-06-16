@@ -8,16 +8,17 @@ import entity.ClassificacaoDecimalDireito;
  */
 public class ClassificacaoDecimalDireitoVO {
 
-    private Integer idClassificacaoDecinal;
+    private Integer idClassificacaoDecimal;
     private String codigoCDD;
     private String descricao;
+    private boolean ativo;
 
-    public Integer getIdClassificacaoDecinal() {
-        return idClassificacaoDecinal;
+    public Integer getIdClassificacaoDecimal() {
+        return idClassificacaoDecimal;
     }
 
-    public void setIdClassificacaoDecinal(Integer idClassificacaoDecinal) {
-        this.idClassificacaoDecinal = idClassificacaoDecinal;
+    public void setIdClassificacaoDecimal(Integer idClassificacaoDecimal) {
+        this.idClassificacaoDecimal = idClassificacaoDecimal;
     }
 
     public String getCodigoCDD() {
@@ -35,12 +36,21 @@ public class ClassificacaoDecimalDireitoVO {
     public void setDescricao(String descricao) {
         this.descricao = descricao;
     }
+
+    public boolean isAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(boolean ativo) {
+        this.ativo = ativo;
+    }
     
      public ClassificacaoDecimalDireito toClassificacaoDecimalDireito () throws Exception {
         ClassificacaoDecimalDireito cdd = new ClassificacaoDecimalDireito();
-        cdd.setIdClassificacaoDecinal(this.getIdClassificacaoDecinal());
+        cdd.setIdClassificacaoDecimal(this.getIdClassificacaoDecimal());
         cdd.setCodigoCDD(this.getCodigoCDD());
         cdd.setDescricao(this.getDescricao());
+        cdd.setAtivo(this.isAtivo());
         return cdd;
     }      
 

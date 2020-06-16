@@ -154,7 +154,7 @@ public class AutorCadastroDialog extends javax.swing.JFrame {
                 "Cadastro Autor", JOptionPane.DEFAULT_OPTION); 
             
 //          Atualiza jComboBox
-            Vector<AutorVO> autoresVO = autorService.carregarVetorComboBox();
+            Vector<AutorVO> autoresVO = autorService.carregarTodosAutoresVetorComboBox();
             box.setModel(new DefaultComboBoxModel(autoresVO));
             box.setSelectedItem(autoresVO.lastElement());
             SwingUtilities.updateComponentTreeUI(box);

@@ -10,67 +10,84 @@ import java.util.logging.Logger;
  * @author Gabriel Cunha <gabrielcunhadev@gmail.com>
  */
 public class ClassificacaoDecimalDireito {
-
-    private Integer idClassificacaoDecinal;
+    
+    private Integer idClassificacaoDecimal;
     private String codigoCDD;
     private String descricao;
+    private boolean ativo;
     private boolean selecionado = false;
 
     public ClassificacaoDecimalDireito() {
     }
     
-    public ClassificacaoDecimalDireito(Integer idClassificacaoDecinal) {
-        this.idClassificacaoDecinal = idClassificacaoDecinal;
-    }
+    public ClassificacaoDecimalDireito(Integer idClassificacaoDecimal) {
+        this.idClassificacaoDecimal = idClassificacaoDecimal;
+    }    
 
-    public ClassificacaoDecimalDireito(Integer idClassificacaoDecinal, String codigoCDD) {
-        this.idClassificacaoDecinal = idClassificacaoDecinal;
-        this.codigoCDD = codigoCDD;
-    }
-
-    public ClassificacaoDecimalDireito(Integer idClassificacaoDecinal, String codigoCDD, String descricao) {
-        this.idClassificacaoDecinal = idClassificacaoDecinal;
+    public ClassificacaoDecimalDireito(String descricao, String codigoCDD) {
         this.codigoCDD = codigoCDD;
         this.descricao = descricao;
     }
     
+    public ClassificacaoDecimalDireito(String descricao, String codigoCDD, boolean ativo) {
+        this.codigoCDD = codigoCDD;
+        this.descricao = descricao;
+        this.ativo     = ativo;
+    }    
+    public ClassificacaoDecimalDireito(Integer idClassificacaoDecimal, String descricao, String codigoCDD) {
+        this.idClassificacaoDecimal = idClassificacaoDecimal;
+        this.codigoCDD = codigoCDD;
+        this.descricao = descricao;
+    }
+    public ClassificacaoDecimalDireito(Integer idClassificacaoDecimal, String descricao,String codigoCDD, boolean ativo) {
+        this.idClassificacaoDecimal = idClassificacaoDecimal;
+        this.codigoCDD = codigoCDD;
+        this.descricao = descricao;
+        this.ativo = ativo;
+    }
+    
     public ClassificacaoDecimalDireito(ClassificacaoDecimalDireito cdd) {
-        this.idClassificacaoDecinal = cdd.getIdClassificacaoDecimal();
+        this.idClassificacaoDecimal = cdd.getIdClassificacaoDecimal();
         this.codigoCDD = cdd.getCodigoCDD();
         this.descricao = cdd.getDescricao();
-    }    
-
+        this.ativo = cdd.isAtivo();
+    }
+    
     public ClassificacaoDecimalDireito(String dados) throws Exception {
         String vetorString[] = dados.split(";");
         
-        if (vetorString.length < 3) {
-            Logger.getLogger(ClassificacaoDecimalDireito.class.getName()).log(Level.SEVERE, "Quantidade de colunas do Vetor de dados divergente. " + dados);
+        if (vetorString.length < 4) {
+            Logger.getLogger(ClassificacaoDecimalDireito.class.getName()).log(Level.SEVERE, "Quantidade de colunas do Vetor de dados divergente." + dados);
             throw new Exception();
         }
         try {
             Integer id = Integer.parseInt(vetorString[0]);
             
-//          Se id do vetor for null, atribui 1.
-            this.idClassificacaoDecinal = vetorString[0].equals("null") ? 1 : id;  
-            this.codigoCDD              = vetorString[1];
-            this.descricao              = vetorString[2];
-            
+//          Se idClassificacaoDecimal do vetor for null, atribui 1.
+            this.idClassificacaoDecimal          = vetorString[0].equals("null") ? 1 : id;  
+            this.codigoCDD      = vetorString[1];
+            this.descricao      = vetorString[2];
+            this.ativo       = Boolean.parseBoolean(vetorString[3]);
         } catch(NumberFormatException e) {
-            Logger.getLogger(Autor.class.getName()).log(Level.SEVERE, "Erro ao fazer o parse do campo id do vetor de dados do autor com nome " + vetorString[1]);
+            Logger.getLogger(ClassificacaoDecimalDireito.class.getName()).log(Level.SEVERE, "Erro ao fazer o parse do campo id do vetor de dados do cdd com descricao " + vetorString[1]);
             throw new Exception();
         } catch(Exception e) {
-            Logger.getLogger(Autor.class.getName()).log(Level.SEVERE, "Erro ao extrair dados do vetor de dados do autor." + vetorString[1] + "Erro: " + e);
+            Logger.getLogger(ClassificacaoDecimalDireito.class.getName()).log(Level.SEVERE, "Erro ao extrair dados do vetor de dados do cdd." + vetorString[1] + "Erro: " + e);
             throw new Exception();
         }
-    }     
+    }
+
+    public ClassificacaoDecimalDireito(ClassificacaoDecimalDireito cdd, boolean b) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
 
     public Integer getIdClassificacaoDecimal() {
-        return idClassificacaoDecinal;
+        return idClassificacaoDecimal;
     }
 
-    public void setIdClassificacaoDecinal(Integer idClassificacaoDecinal) {
-        this.idClassificacaoDecinal = idClassificacaoDecinal;
+    public void setIdClassificacaoDecimal(Integer idClassificacaoDecimal) {
+        this.idClassificacaoDecimal = idClassificacaoDecimal;
     }
 
     public String getCodigoCDD() {
@@ -89,6 +106,14 @@ public class ClassificacaoDecimalDireito {
         this.descricao = descricao;
     }
 
+    public boolean isAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(boolean ativo) {
+        this.ativo = ativo;
+    }
+
     public boolean isSelecionado() {
         return selecionado;
     }
@@ -98,15 +123,16 @@ public class ClassificacaoDecimalDireito {
     }
     
     public ClassificacaoDecimalDireito from (ClassificacaoDecimalDireito cdd) throws Exception {
-        this.idClassificacaoDecinal = cdd.getIdClassificacaoDecimal();
-        this.codigoCDD      = cdd.getCodigoCDD();
-        this.descricao      = cdd.getCodigoCDD();
+        this.idClassificacaoDecimal = cdd.getIdClassificacaoDecimal();
+        this.codigoCDD = cdd.getCodigoCDD();
+        this.descricao = cdd.getDescricao();
+        this.ativo = cdd.isAtivo();
         return this;
     }     
     
-    public ClassificacaoDecimalDireitoVO toClassificacaoDecimalDireitoVO() {
+     public ClassificacaoDecimalDireitoVO toClassificacaoDecimalDireitoVO () throws Exception {
         ClassificacaoDecimalDireitoVO cddVO = new ClassificacaoDecimalDireitoVO();
-        cddVO.setIdClassificacaoDecinal(this.getIdClassificacaoDecimal());
+        cddVO.setIdClassificacaoDecimal(this.getIdClassificacaoDecimal());
         cddVO.setCodigoCDD(this.getCodigoCDD());
         cddVO.setDescricao(this.getDescricao());
         return cddVO;
@@ -115,16 +141,17 @@ public class ClassificacaoDecimalDireito {
     @Override
     public String toString() {
         StringBuffer sb = new StringBuffer();
-        sb.append(idClassificacaoDecinal).append(";");
+        sb.append(idClassificacaoDecimal).append(";");
         sb.append(codigoCDD).append(";");
         sb.append(descricao).append(";");
+        sb.append(ativo).append(";");
         return sb.toString();
     }    
     
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 23 * hash + Objects.hashCode(this.idClassificacaoDecinal);
+        hash = 23 * hash + Objects.hashCode(this.idClassificacaoDecimal);
         return hash;
     }
 
@@ -140,7 +167,7 @@ public class ClassificacaoDecimalDireito {
             return false;
         }
         final ClassificacaoDecimalDireito other = (ClassificacaoDecimalDireito) obj;
-        if (!Objects.equals(this.idClassificacaoDecinal, other.idClassificacaoDecinal)) {
+        if (!Objects.equals(this.idClassificacaoDecimal, other.idClassificacaoDecimal)) {
             return false;
         }
         return true;

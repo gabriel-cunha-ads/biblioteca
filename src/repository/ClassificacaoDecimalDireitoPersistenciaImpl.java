@@ -93,8 +93,11 @@ public class ClassificacaoDecimalDireitoPersistenciaImpl implements Persistencia
         ClassificacaoDecimalDireito cddResultado = null;
         
         for (ClassificacaoDecimalDireito c : cddsBanco) {
-            if (cddParaConsultar.getIdClassificacaoDecimal()== null) {
-                if (c.getCodigoCDD().trim().equals(cddParaConsultar.getCodigoCDD().trim())) {
+            if (cddParaConsultar.getIdClassificacaoDecimal() == null) {
+                if (c.getCodigoCDD().trim().equals(cddParaConsultar.getCodigoCDD().trim())) {   //
+                    cddResultado = c;
+                } 
+                if (c.getDescricao().trim().equals(cddParaConsultar.getDescricao().trim())) {
                     cddResultado = c;
                 } 
             } else {

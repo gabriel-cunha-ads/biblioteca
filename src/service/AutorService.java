@@ -135,7 +135,7 @@ public class AutorService {
     }      
     
     
-    public Vector<AutorVO> carregarVetorComboBox() throws Exception {
+    public Vector<AutorVO> carregarTodosAutoresVetorComboBox() throws Exception {
         
         List<Autor> autores = this.listar();
         
@@ -147,5 +147,16 @@ public class AutorService {
         
         return autoresVOVector;
     } 
+    
+    public Vector<AutorVO> carregarTodosAutoresVetorComboBox(List<Autor> autores) throws Exception {
+        
+        Vector<AutorVO> autoresVOVector = new Vector();
+        
+        for (Autor autor : autores) {
+            autoresVOVector.add(autor.toAutorVO());
+        }   
+        
+        return autoresVOVector;
+    }     
 
 }

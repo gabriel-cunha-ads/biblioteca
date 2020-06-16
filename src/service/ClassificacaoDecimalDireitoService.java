@@ -18,10 +18,10 @@ public class ClassificacaoDecimalDireitoService {
 
     private ClassificacaoDecimalDireitoPersistenciaImpl cddPersistenciaImpl;
     
-    private final String NOME_ARQUIVO_BANCO_AUTOR = "cddBd.txt";
+    private final String NOME_ARQUIVO_BANCO_CDD = "cddBd.txt";
 
     public ClassificacaoDecimalDireitoService() throws Exception {
-        this.cddPersistenciaImpl = new ClassificacaoDecimalDireitoPersistenciaImpl(NOME_ARQUIVO_BANCO_AUTOR);
+        this.cddPersistenciaImpl = new ClassificacaoDecimalDireitoPersistenciaImpl(NOME_ARQUIVO_BANCO_CDD);
     }
     
     public void incluir(ClassificacaoDecimalDireito cdd) throws Exception {
@@ -34,7 +34,7 @@ public class ClassificacaoDecimalDireitoService {
 
         Integer id = gerarNovoId();
 
-        cdd.setIdClassificacaoDecinal(id);
+        cdd.setIdClassificacaoDecimal(id);
 
         cddPersistenciaImpl.incluir(cdd);
     }
@@ -51,15 +51,23 @@ public class ClassificacaoDecimalDireitoService {
             cddBanco = cddsBanco.stream()
                                 .filter(a -> cdd.getIdClassificacaoDecimal().equals(a.getIdClassificacaoDecimal())) 
                                 .findFirst()
-                                .orElse(null);
-            
-        } else if (!"".equals(cdd.getCodigoCDD())){
-            
+                                .orElse(null);}
+        
+        if (cdd.getCodigoCDD()!= null) {
+        
 //          Percorrendo a lista com API Stream do java 8 e filtrando pelo codigoCDD.
             cddBanco = cddsBanco.stream()
-                                        .filter(a -> cdd.getCodigoCDD().equals(a.getCodigoCDD())) 
-                                        .findFirst()
-                                        .orElse(null); 
+                                .filter(a -> cdd.getCodigoCDD().equals(a.getCodigoCDD())) 
+                                .findFirst()
+                                .orElse(null);
+            
+        } else if (!"".equals(cdd.getDescricao())){
+            
+//          Percorrendo a lista com API Stream do java 8 e filtrando pelo descricao.
+            cddBanco = cddsBanco.stream()
+                                .filter(a -> cdd.getDescricao().equals(a.getDescricao())) 
+                                .findFirst()
+                                .orElse(null); 
         } 
         
         return cddBanco;
@@ -116,20 +124,36 @@ public class ClassificacaoDecimalDireitoService {
         return ultimoIdBanco != null ? ++ultimoIdBanco : 1;
     }
     
-    private List<String> getCodigosCdds(List<ClassificacaoDecimalDireito> cdds) {
+     private List<String> getCodigoCDD(List<ClassificacaoDecimalDireito> cdds) {
         
-        List<String> nomes = new ArrayList();
+        List<String> codigos = new ArrayList();
         
         try {
             List<ClassificacaoDecimalDireito> listaBanco = this.listar();
             for (ClassificacaoDecimalDireito cdd : listaBanco ) {
-                nomes.add(cdd.getCodigoCDD());
+                codigos.add(cdd.getCodigoCDD());
             }
         } catch (Exception ex) {
             Logger.getLogger(ClassificacaoDecimalDireitoService.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        return nomes;
+        return codigos;
+    }      
+    
+    private List<String> getDescricaoClassificacoesDecimalDireito(List<ClassificacaoDecimalDireito> cdds) {
+        
+        List<String> descricao = new ArrayList();
+        
+        try {
+            List<ClassificacaoDecimalDireito> listaBanco = this.listar();
+            for (ClassificacaoDecimalDireito cdd : listaBanco ) {
+                descricao.add(cdd.getDescricao());
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(ClassificacaoDecimalDireitoService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return descricao;
     }      
     
     public Vector<ClassificacaoDecimalDireitoVO> carregarVetorComboBox() throws Exception {

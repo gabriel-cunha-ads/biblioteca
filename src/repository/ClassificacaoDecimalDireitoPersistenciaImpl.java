@@ -49,9 +49,46 @@ public class ClassificacaoDecimalDireitoPersistenciaImpl implements Persistencia
 //      Fecha o arquivo
         bw.close();
     }
+    
+    public void incluir(List<ClassificacaoDecimalDireito> cdds) throws Exception {
+        
+        UtilArquivo.removerLinhaSemRegistro(arquivoBancoDados, cdds);
+        
+        FileWriter fw = new FileWriter(arquivoBancoDados, false);
+        
+        BufferedWriter bw = new BufferedWriter(fw);
+        
+        for (ClassificacaoDecimalDireito cdd : cdds) {
+    //      Escreve no arquivo  
+            bw.write(cdd.toString() + "\n");
+        }
 
-
-
+//      Fecha o arquivo
+        bw.close();
+    }    
+    
+    
+    
+    public List<ClassificacaoDecimalDireito> lerArquivoImportacao(File arquivo) throws Exception {
+        List<ClassificacaoDecimalDireito> listaNovoCDD = new ArrayList();
+        
+        FileReader fr = new FileReader(arquivo);
+        
+        BufferedReader br = new BufferedReader(fr);
+        
+        String linha = "";
+        
+        while((linha = br.readLine()) != null && !linha.trim().equals("")) {
+            ClassificacaoDecimalDireito cdd = new ClassificacaoDecimalDireito(linha, true);
+            listaNovoCDD.add(cdd);
+        }
+        
+        br.close();
+        
+        return listaNovoCDD;
+    }    
+    
+ 
     @Override
     public List<ClassificacaoDecimalDireito> listar() throws Exception {
         List<ClassificacaoDecimalDireito> cdds = new ArrayList<>();
@@ -86,7 +123,7 @@ public class ClassificacaoDecimalDireitoPersistenciaImpl implements Persistencia
         List<ClassificacaoDecimalDireito> cddsBanco = new ArrayList<>();
         
         while((linha = br.readLine()) != null && !linha.trim().equals("")) {
-            ClassificacaoDecimalDireito a = new ClassificacaoDecimalDireito(linha);
+            ClassificacaoDecimalDireito a = new ClassificacaoDecimalDireito(linha, false);
             cddsBanco.add(a);
         }
         
@@ -136,7 +173,7 @@ public class ClassificacaoDecimalDireitoPersistenciaImpl implements Persistencia
         String linha = "";
         
         while((linha = br.readLine()) != null && !linha.trim().equals("")) {
-            ClassificacaoDecimalDireito cddBanco = new ClassificacaoDecimalDireito(linha);
+            ClassificacaoDecimalDireito cddBanco = new ClassificacaoDecimalDireito(linha, false);
             
             if (!cddBanco.equals(cddParaExcluir)) {
                 cdds.add(cddBanco);
@@ -167,7 +204,7 @@ public class ClassificacaoDecimalDireitoPersistenciaImpl implements Persistencia
         String linha = "";
         
         while((linha = br.readLine()) != null && !linha.trim().equals("")) {
-            ClassificacaoDecimalDireito cddBanco = new ClassificacaoDecimalDireito(linha);
+            ClassificacaoDecimalDireito cddBanco = new ClassificacaoDecimalDireito(linha, false);
             cdds.add(cddBanco);
         }
         

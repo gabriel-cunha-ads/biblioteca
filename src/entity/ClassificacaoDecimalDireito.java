@@ -1,6 +1,7 @@
 package entity;
 
 import entity.vo.ClassificacaoDecimalDireitoVO;
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,6 +17,7 @@ public class ClassificacaoDecimalDireito {
     private String descricao;
     private boolean ativo;
     private boolean selecionado = false;
+    
 
     public ClassificacaoDecimalDireito() {
     }
@@ -54,34 +56,54 @@ public class ClassificacaoDecimalDireito {
     }
     
     public ClassificacaoDecimalDireito(String dados) throws Exception {
+
         String vetorString[] = dados.split(";");
-        
+
         if (vetorString.length < 4) {
             Logger.getLogger(ClassificacaoDecimalDireito.class.getName()).log(Level.SEVERE, "Quantidade de colunas do Vetor de dados divergente." + dados);
             throw new Exception();
         }
+        
         try {
             Integer id = Integer.parseInt(vetorString[0]);
-            
+
 //          Se idClassificacaoDecimal do vetor for null, atribui 1.
             this.idClassificacaoDecimal          = vetorString[0].equals("null") ? 1 : id;  
             this.codigoCDD      = vetorString[1];
             this.descricao      = vetorString[2];
             this.ativo       = Boolean.parseBoolean(vetorString[3]);
+            
+        } catch(NumberFormatException e) {
+            Logger.getLogger(ClassificacaoDecimalDireito.class.getName()).log(Level.SEVERE, 
+                    "Erro ao fazer o parse do campo id do vetor de dados do cdd com descricao." + vetorString[0]);
+            throw new Exception();
+        } catch(Exception e) {
+            Logger.getLogger(ClassificacaoDecimalDireito.class.getName()).log(Level.SEVERE, "Erro ao extrair dados do vetor de dados do cdd." + vetorString[1] + "Erro: " + e);
+            throw new Exception();
+        }            
+    }  
+
+    public ClassificacaoDecimalDireito(String dados, boolean importando) throws Exception {
+        
+        String vetorString[] = dados.split(";");
+
+        if (vetorString.length < 2) {
+            Logger.getLogger(ClassificacaoDecimalDireito.class.getName()).log(Level.SEVERE, "Quantidade de colunas do Vetor de dados divergente." + dados);
+            throw new Exception();
+        }
+        try {
+            this.codigoCDD      = vetorString[0];
+            this.descricao      = vetorString[1];
         } catch(NumberFormatException e) {
             Logger.getLogger(ClassificacaoDecimalDireito.class.getName()).log(Level.SEVERE, "Erro ao fazer o parse do campo id do vetor de dados do cdd com descricao " + vetorString[1]);
             throw new Exception();
         } catch(Exception e) {
             Logger.getLogger(ClassificacaoDecimalDireito.class.getName()).log(Level.SEVERE, "Erro ao extrair dados do vetor de dados do cdd." + vetorString[1] + "Erro: " + e);
             throw new Exception();
-        }
-    }
-
-    public ClassificacaoDecimalDireito(ClassificacaoDecimalDireito cdd, boolean b) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+        }              
+    }      
     
-
+    
     public Integer getIdClassificacaoDecimal() {
         return idClassificacaoDecimal;
     }

@@ -13,7 +13,7 @@ public class ClassificacaoDecimalDireitoTableModel extends ViewAbstractTableMode
         // Nomes das colunas do cabeçalho da tabela.
         colunas = new String[] {
             "id", 
-            "Código",
+            "Código Decimal",
             "Descrição",
             "ativo",
             "X"
@@ -40,7 +40,7 @@ public class ClassificacaoDecimalDireitoTableModel extends ViewAbstractTableMode
         }            
     }
     
-     /**
+    /**
     * JTable usa esse método para determinar o renderizador padrão editor para 
     * cada célula. Se não implementássemos esse método, a última coluna 
     * conteria texto ("true" / "false"), * em vez de uma caixa de seleção.
@@ -63,9 +63,9 @@ public class ClassificacaoDecimalDireitoTableModel extends ViewAbstractTableMode
     @Override
     public void setValueAt(Object objeto, int linha, int coluna) {
         
-//          Pega o classificacaoDecimalDireito selecionado e altera o valor do selecionado   
-            ClassificacaoDecimalDireito classificacaoDecimalDireitoSelecionado = linhas.get(linha); 
-            classificacaoDecimalDireitoSelecionado.setSelecionado((boolean) objeto);
+//          Pega o autor selecionado e altera o valor do selecionado   
+            ClassificacaoDecimalDireito cdd = linhas.get(linha); 
+            cdd.setSelecionado((boolean) objeto);
             
 //          Atualiza a tabela
             fireTableCellUpdated(linha, coluna);

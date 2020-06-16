@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.stage.FileChooser;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JDesktopPane;
 import javax.swing.JOptionPane;
@@ -312,6 +313,8 @@ public class AutoresUI extends javax.swing.JInternalFrame {
             
 //          Mostra a tela LivrosPrincipal.
             autorCadastroUI.show();
+            
+            
         } catch (Exception ex) {
             Logger.getLogger(DashboardUI.class.getName()).log(Level.SEVERE, null, ex);
         }

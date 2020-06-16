@@ -4,12 +4,14 @@ import java.util.List;
 import entity.ClassificacaoDecimalDireito;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JDesktopPane;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import service.ClassificacaoDecimalDireitoService;
@@ -37,7 +39,7 @@ public class ClassificacoesDecimalDireitoUI extends javax.swing.JInternalFrame {
     
     private DashboardUI dashboardUI;
     
-    private ClassificacaoDecimalDireitoService classificacaoDecimalDireitoService = new ClassificacaoDecimalDireitoService();
+    private ClassificacaoDecimalDireitoService cddService = new ClassificacaoDecimalDireitoService();
     
     private List<ClassificacaoDecimalDireito> cddsTabela =  new ArrayList();
     
@@ -49,7 +51,6 @@ public class ClassificacoesDecimalDireitoUI extends javax.swing.JInternalFrame {
         inicializarComponentes();
         
         inicializarTabelaDadosCDDs(new ArrayList());
-        
     }
 
     private void inicializarComponentes() throws Exception {
@@ -89,7 +90,7 @@ public class ClassificacoesDecimalDireitoUI extends javax.swing.JInternalFrame {
         
         try {
             if (cdds == null || cdds.isEmpty()) {
-                this.cddsTabela = classificacaoDecimalDireitoService.listar();
+                this.cddsTabela = cddService.listar();
             } else {
                 this.cddsTabela = cdds;
             }
@@ -103,6 +104,7 @@ public class ClassificacoesDecimalDireitoUI extends javax.swing.JInternalFrame {
         UtilTabela.inicializarTabela(jTableCDD, classificacaoDecimalDireitoTableModel);
         
         addMouseListenerTabela();
+        
     }
     
     private List<String> listarNomesCDDs() {
@@ -110,7 +112,7 @@ public class ClassificacoesDecimalDireitoUI extends javax.swing.JInternalFrame {
         List<String> nomes = new ArrayList();
         
         try {
-            List<ClassificacaoDecimalDireito> listaBanco = classificacaoDecimalDireitoService.listar();
+            List<ClassificacaoDecimalDireito> listaBanco = cddService.listar();
             for (ClassificacaoDecimalDireito a : listaBanco ) {
                 nomes.add(a.getDescricao());
             }
@@ -161,6 +163,7 @@ public class ClassificacoesDecimalDireitoUI extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jFileChooser1 = new javax.swing.JFileChooser();
         jTextFieldTextoPesquisa = new javax.swing.JTextField();
         jButtonPesquisarCDD = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -171,8 +174,12 @@ public class ClassificacoesDecimalDireitoUI extends javax.swing.JInternalFrame {
         jButtonEditarCDD = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JSeparator();
         jSeparator2 = new javax.swing.JSeparator();
-        jComboBoxCampoPesquisa = new javax.swing.JComboBox<String>();
+        jComboBoxCampoPesquisa = new javax.swing.JComboBox<>();
         jButtonImportarCDDUI = new javax.swing.JButton();
+        jPanelSelecionarArquivo = new javax.swing.JPanel();
+        jFileChooserSelecionarArquivo = new javax.swing.JFileChooser();
+
+        jFileChooser1.setApproveButtonText("");
 
         setMaximumSize(new java.awt.Dimension(800, 600));
         setMinimumSize(new java.awt.Dimension(800, 600));
@@ -235,7 +242,7 @@ public class ClassificacoesDecimalDireitoUI extends javax.swing.JInternalFrame {
 
         jSeparator2.setToolTipText("");
 
-        jComboBoxCampoPesquisa.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBoxCampoPesquisa.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         jComboBoxCampoPesquisa.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 jComboBoxCampoPesquisaItemStateChanged(evt);
@@ -249,6 +256,31 @@ public class ClassificacoesDecimalDireitoUI extends javax.swing.JInternalFrame {
             }
         });
 
+        jPanelSelecionarArquivo.setEnabled(false);
+
+        jFileChooserSelecionarArquivo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jFileChooserSelecionarArquivoActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanelSelecionarArquivoLayout = new javax.swing.GroupLayout(jPanelSelecionarArquivo);
+        jPanelSelecionarArquivo.setLayout(jPanelSelecionarArquivoLayout);
+        jPanelSelecionarArquivoLayout.setHorizontalGroup(
+            jPanelSelecionarArquivoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelSelecionarArquivoLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jFileChooserSelecionarArquivo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(30, Short.MAX_VALUE))
+        );
+        jPanelSelecionarArquivoLayout.setVerticalGroup(
+            jPanelSelecionarArquivoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelSelecionarArquivoLayout.createSequentialGroup()
+                .addContainerGap(22, Short.MAX_VALUE)
+                .addComponent(jFileChooserSelecionarArquivo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -257,7 +289,7 @@ public class ClassificacoesDecimalDireitoUI extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jSeparator1)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 786, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jButtonIncluirCDDUI, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -276,8 +308,12 @@ public class ClassificacoesDecimalDireitoUI extends javax.swing.JInternalFrame {
                         .addComponent(jTextFieldTextoPesquisa, javax.swing.GroupLayout.PREFERRED_SIZE, 308, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jButtonPesquisarCDD)
-                        .addGap(0, 263, Short.MAX_VALUE)))
+                        .addGap(0, 447, Short.MAX_VALUE)))
                 .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addGap(209, 209, 209)
+                .addComponent(jPanelSelecionarArquivo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -300,7 +336,9 @@ public class ClassificacoesDecimalDireitoUI extends javax.swing.JInternalFrame {
                         .addComponent(jButtonEditarCDD)
                         .addComponent(jButtonImportarCDDUI))
                     .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(103, Short.MAX_VALUE))
+                .addGap(34, 34, 34)
+                .addComponent(jPanelSelecionarArquivo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(294, Short.MAX_VALUE))
         );
 
         pack();
@@ -354,10 +392,10 @@ public class ClassificacoesDecimalDireitoUI extends javax.swing.JInternalFrame {
                 if (opcao == JOptionPane.OK_OPTION ) {
                     
 //                  Remove do banco de dados (arquivo txt)
-                    List<ClassificacaoDecimalDireito> cddsNaoExlcuidos = classificacaoDecimalDireitoService.excluir(selecionados);
+                    List<ClassificacaoDecimalDireito> cddsNaoExlcuidos = cddService.excluir(selecionados);
                     
 //                  Busca a lista atualizada no banco.
-                    cddsTabela = classificacaoDecimalDireitoService.listar();
+                    cddsTabela = cddService.listar();
                     
 //                  Reinicializa a tabela
                     inicializarTabelaDadosCDDs(cddsTabela);
@@ -369,7 +407,7 @@ public class ClassificacoesDecimalDireitoUI extends javax.swing.JInternalFrame {
                     UtilComponentes.habilitarComponentes(false, jButtonEditarCDD, jButtonExcluirCDD);
                     
                 }  else if (opcao == JOptionPane.CANCEL_OPTION) {
-                    cddsTabela = classificacaoDecimalDireitoService.listar();
+                    cddsTabela = cddService.listar();
                     inicializarTabelaDadosCDDs(cddsTabela);
                 }
             }                    
@@ -432,7 +470,7 @@ public class ClassificacoesDecimalDireitoUI extends javax.swing.JInternalFrame {
         try {
             if (dadosParaPesquisa.equals("")) {
                 
-                List<ClassificacaoDecimalDireito> cdds = classificacaoDecimalDireitoService.listar();
+                List<ClassificacaoDecimalDireito> cdds = cddService.listar();
 
                 inicializarComponentes();
 
@@ -444,7 +482,7 @@ public class ClassificacoesDecimalDireitoUI extends javax.swing.JInternalFrame {
 
                     id = Integer.parseInt(dadosParaPesquisa);
 
-                    classificacaoDecimalDireitoPesquisado = classificacaoDecimalDireitoService.consultar(new ClassificacaoDecimalDireito(id));
+                    classificacaoDecimalDireitoPesquisado = cddService.consultar(new ClassificacaoDecimalDireito(id));
 
                     this.cddsTabela = Arrays.asList(classificacaoDecimalDireitoPesquisado);
 
@@ -457,7 +495,7 @@ public class ClassificacoesDecimalDireitoUI extends javax.swing.JInternalFrame {
                     ClassificacaoDecimalDireito classificacaoDecimalDireitoParaPesquisa = new ClassificacaoDecimalDireito();
                     classificacaoDecimalDireitoParaPesquisa.setDescricao(dadosParaPesquisa);
 
-                    classificacaoDecimalDireitoPesquisado = classificacaoDecimalDireitoService.consultar(classificacaoDecimalDireitoParaPesquisa);
+                    classificacaoDecimalDireitoPesquisado = cddService.consultar(classificacaoDecimalDireitoParaPesquisa);
 
                     this.cddsTabela  = Arrays.asList(classificacaoDecimalDireitoPesquisado);
 
@@ -468,7 +506,7 @@ public class ClassificacoesDecimalDireitoUI extends javax.swing.JInternalFrame {
 
                 if (classificacaoDecimalDireitoPesquisado == null) {
 
-                    this.cddsTabela  = classificacaoDecimalDireitoService.listar();
+                    this.cddsTabela  = cddService.listar();
 
                     inicializarComponentes();
 
@@ -496,28 +534,28 @@ public class ClassificacoesDecimalDireitoUI extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jComboBoxCampoPesquisaItemStateChanged
 
     private void jButtonImportarCDDUIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonImportarCDDUIActionPerformed
-        // TODO add your handling code here:
-    try {
-            this.dispose();
-
-            jDesktopPane.remove(this);
-
-    //      Cria um instância de CDDPrincipalUI.
-            ClassificacaoDecimalDireitoImportarUI classificacaoDecimalDireitoImportarUI = new ClassificacaoDecimalDireitoImportarUI();
-
-    //      Adiciona a pilha de do JDesktopPane o JInternalFrame.
-            jDesktopPane.add(classificacaoDecimalDireitoImportarUI);
-
-    //      Remove barra de título e borda da janela
-                UtilComponentes.removerBarraTituloEBorda(classificacaoDecimalDireitoImportarUI);
-            
-//          Mostra a tela Principal.
-            classificacaoDecimalDireitoImportarUI.show();
-        } catch (Exception ex) {
-            Logger.getLogger(DashboardUI.class.getName()).log(Level.SEVERE, null, ex);
-        }
-               
+        int returnValue = jFileChooserSelecionarArquivo.showOpenDialog(this);
+        
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            try {
+                File arquivoSelecionado = jFileChooserSelecionarArquivo.getSelectedFile();
+                
+                cddService.importar(arquivoSelecionado);
+                
+                JOptionPane.showMessageDialog(this, "Arquivo importado com sucesso!");
+    
+                
+            } catch (Exception ex) {
+                Logger.getLogger(ClassificacoesDecimalDireitoUI.class.getName()).log(Level.SEVERE, null, ex);
+                JOptionPane.showMessageDialog(this, "ccorreu um erro ao abrir a tela Classificação Decimal. Entre em contato com nosso suporte.");
+            }
+        }        
     }//GEN-LAST:event_jButtonImportarCDDUIActionPerformed
+
+    
+    private void jFileChooserSelecionarArquivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jFileChooserSelecionarArquivoActionPerformed
+
+    }//GEN-LAST:event_jFileChooserSelecionarArquivoActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -528,6 +566,9 @@ public class ClassificacoesDecimalDireitoUI extends javax.swing.JInternalFrame {
     private javax.swing.JButton jButtonPesquisarCDD;
     private javax.swing.JButton jButtonSair;
     private javax.swing.JComboBox<String> jComboBoxCampoPesquisa;
+    private javax.swing.JFileChooser jFileChooser1;
+    private javax.swing.JFileChooser jFileChooserSelecionarArquivo;
+    private javax.swing.JPanel jPanelSelecionarArquivo;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;

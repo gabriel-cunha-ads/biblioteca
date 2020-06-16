@@ -94,7 +94,9 @@ public class AutorPersistenciaImpl implements Persistencia<Autor>{
         
         for (Autor a : autoresBanco) {
             if (autorParaConsultar.getIdAutor() == null) {
-                if (a.getNome().trim().equals(autorParaConsultar.getNome().trim())) {
+                if (a.getIdAutor().equals(autorParaConsultar.getIdAutor())) {
+                    autorResultado = a;
+                } else if (a.getNome().trim().equals(autorParaConsultar.getNome().trim())) {
                     autorResultado = a;
                 } 
             } else {

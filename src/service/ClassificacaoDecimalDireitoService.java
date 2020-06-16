@@ -3,6 +3,7 @@ import entity.ClassificacaoDecimalDireito;
 import entity.vo.ClassificacaoDecimalDireitoVO;
 import exception.RegistroExistenteException;
 import exception.RegistroNaoExistenteException;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -19,6 +20,7 @@ public class ClassificacaoDecimalDireitoService {
     private ClassificacaoDecimalDireitoPersistenciaImpl cddPersistenciaImpl;
     
     private final String NOME_ARQUIVO_BANCO_CDD = "cddBd.txt";
+    
 
     public ClassificacaoDecimalDireitoService() throws Exception {
         this.cddPersistenciaImpl = new ClassificacaoDecimalDireitoPersistenciaImpl(NOME_ARQUIVO_BANCO_CDD);
@@ -124,7 +126,17 @@ public class ClassificacaoDecimalDireitoService {
         return ultimoIdBanco != null ? ++ultimoIdBanco : 1;
     }
     
-     private List<String> getCodigoCDD(List<ClassificacaoDecimalDireito> cdds) {
+    private List<ClassificacaoDecimalDireito> gerarIdImportacao(List<ClassificacaoDecimalDireito> cdds) throws Exception {
+        int idCdd = 1;
+        for (int i = 0; i < cdds.size(); i++) {
+            cdds.get(i).setIdClassificacaoDecimal(idCdd);
+             cdds.get(i).setAtivo(true);
+             idCdd++;
+        }
+        return cdds;
+    }    
+    
+     private List<String> getIdCDD(List<ClassificacaoDecimalDireito> cdds) {
         
         List<String> codigos = new ArrayList();
         
@@ -138,7 +150,8 @@ public class ClassificacaoDecimalDireitoService {
         }
         
         return codigos;
-    }      
+    }  
+     
     
     private List<String> getDescricaoClassificacoesDecimalDireito(List<ClassificacaoDecimalDireito> cdds) {
         
@@ -168,5 +181,16 @@ public class ClassificacaoDecimalDireitoService {
         
         return cddsVOVector;
     } 
+
+    public void importar(File arquivoSelecionado) throws Exception {
+
+//      Ler o arquivo importado e transforma em uma lista de objetos  
+        List<ClassificacaoDecimalDireito> cddLista = cddPersistenciaImpl.lerArquivoImportacao(arquivoSelecionado);
+        
+        this.gerarIdImportacao(cddLista);
+        
+        cddPersistenciaImpl.incluir(cddLista);
+        
+    }
 
 }

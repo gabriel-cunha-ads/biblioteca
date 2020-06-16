@@ -5,7 +5,6 @@
  */
 package ui;
 
-import entity.Autor;
 import entity.Cargo;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -15,10 +14,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JDesktopPane;
-import javax.swing.JOptionPane;
-import service.AutorService;
 import service.CargoService;
-import ui.components.AutorTableModel;
 import ui.components.CargoTableModel;
 import ui.components.ViewAbstractTableModel;
 import util.UtilComponentes;
@@ -76,7 +72,7 @@ public class CargosUI extends javax.swing.JInternalFrame {
         jComboBoxCampoPesquisa.setModel(new DefaultComboBoxModel<>(new String[] {"Selecione", TITULO_COMBOBOX_ID, TITULO_COMBOBOX_DESCRICAO}));          
     }    
     
-    private void inicializarTabelaDadosCargos(ArrayList cargos) {
+    private void inicializarTabelaDadosCargos(List<Cargo> cargos) {
         try {
             if (cargos == null || cargos.isEmpty()) {
                 this.cargosTabela = cargoService.listar();

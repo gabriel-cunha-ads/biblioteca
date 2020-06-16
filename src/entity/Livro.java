@@ -30,7 +30,6 @@ public class Livro {
     private LocalDate dataCadastro;
     private boolean ativo;
     private boolean selecionado = false;
-    
 
     public Livro() {
     }

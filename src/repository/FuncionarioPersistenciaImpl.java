@@ -1,6 +1,6 @@
 package repository;
 
-import entity.Usuario;
+import entity.Funcionario;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -16,14 +16,14 @@ import util.UtilSistema;
  *
  * @author Gabriel Cunha <gabrielcunhadev@gmail.com>
  */
-public class UsuarioPersistenciaImpl implements Persistencia<Usuario>{
+public class FuncionarioPersistenciaImpl implements Persistencia<Funcionario>{
     
     private final String arquivoBancoDados;
     
     private final String PATH_BANCO_DADOS;
     
     
-    public UsuarioPersistenciaImpl(String nomeArquivoBancoDados) throws Exception {
+    public FuncionarioPersistenciaImpl(String nomeArquivoBancoDados) throws Exception {
         
         PATH_BANCO_DADOS = UtilSistema.getDiretorioBancoDados();
         
@@ -33,26 +33,26 @@ public class UsuarioPersistenciaImpl implements Persistencia<Usuario>{
     }
     
     @Override
-    public void incluir(Object usuario) throws Exception {
+    public void incluir(Object funcionario) throws Exception {
         
-        List<Usuario> usuariosBanco = listar();
+        List<Funcionario> funcionariosBanco = listar();
   
-        UtilArquivo.removerLinhaSemRegistro(arquivoBancoDados, usuariosBanco);
+        UtilArquivo.removerLinhaSemRegistro(arquivoBancoDados, funcionariosBanco);
         
         FileWriter fw = new FileWriter(arquivoBancoDados, true);
         
         BufferedWriter bw = new BufferedWriter(fw);
         
 //      Escreve no arquivo  
-        bw.write(usuario.toString());
+        bw.write(funcionario.toString());
 
 //      Fecha o arquivo
         bw.close();
     }
 
     @Override
-    public List<Usuario> listar() throws Exception {
-        List<Usuario> usuarios = new ArrayList<>();
+    public List<Funcionario> listar() throws Exception {
+        List<Funcionario> funcionarios = new ArrayList<>();
         
         FileReader fr = new FileReader(arquivoBancoDados);
         
@@ -61,19 +61,19 @@ public class UsuarioPersistenciaImpl implements Persistencia<Usuario>{
         String linha = "";
         
         while((linha = br.readLine()) != null && !linha.trim().equals("")) {
-            Usuario usuario = new Usuario(linha);
-            usuarios.add(usuario);
+            Funcionario funcionario = new Funcionario(linha);
+            funcionarios.add(funcionario);
         }
         
         br.close();
         
-        return usuarios;
+        return funcionarios;
     }
 
     @Override
-    public Object consultar(Object usuario) throws Exception {
+    public Object consultar(Object funcionario) throws Exception {
         
-        Usuario usuarioParaConsultar = (Usuario) usuario;
+        Funcionario funcionarioParaConsultar = (Funcionario) funcionario;
         
         FileReader fr = new FileReader(arquivoBancoDados);
         
@@ -81,52 +81,48 @@ public class UsuarioPersistenciaImpl implements Persistencia<Usuario>{
         
         String linha = "";
         
-        List<Usuario> usuariosBanco = new ArrayList<>();
+        List<Funcionario> funcionariosBanco = new ArrayList<>();
         
         while((linha = br.readLine()) != null && !linha.trim().equals("")) {
-            Usuario a = new Usuario(linha);
-            usuariosBanco.add(a);
+            Funcionario a = new Funcionario(linha);
+            funcionariosBanco.add(a);
         }
         
-        Usuario usuarioResultado = null;
+        Funcionario funcionarioResultado = null;
         
-        for (Usuario a : usuariosBanco) {
-            if (usuarioParaConsultar.getIdUsuario() == null) {
-                if (a.getLoginMatricula().equals(usuarioParaConsultar.getLoginMatricula())) {
-                    usuarioResultado = a;
+        for (Funcionario a : funcionariosBanco) {
+            if (funcionarioParaConsultar.getMatricula() == null) {
+                if (a.getMatricula().equals(funcionarioParaConsultar.getMatricula())) {
+                    funcionarioResultado = a;
+                } else if (a.getNome().trim().equals(funcionarioParaConsultar.getNome().trim())) {
+                    funcionarioResultado = a;
                 } 
-            } else if (a.getFuncionario() != null) {
-                if (a.getFuncionario().equals(usuarioParaConsultar.getFuncionario())) {
-                    usuarioResultado = a;
-                }                                
             } else {
-                    if (a.equals(usuarioParaConsultar)) {
-                    usuarioResultado = a;
-                }
+                if (a.equals(funcionario)) {
+                    funcionarioResultado = a;
+                }                
             }
         }
-        return usuarioResultado;
+        return funcionarioResultado;
     }
 
     @Override
     public void alterar(Object objeto) throws Exception {
-        Usuario usuarioParaAlterar = (Usuario) objeto;
+        Funcionario funcionarioParaAlterar = (Funcionario) objeto;
         
-        Usuario usuarioBanco = (Usuario) this.consultar(usuarioParaAlterar);
+        Funcionario funcionarioBanco = (Funcionario) this.consultar(funcionarioParaAlterar);
         
-        this.excluir(usuarioBanco);
+        this.excluir(funcionarioBanco);
 
-        Usuario usuarioAtualizado = usuarioBanco.from(usuarioParaAlterar);
-        
-        this.incluir(usuarioAtualizado);
+        this.incluir(funcionarioParaAlterar);
     }
 
     @Override
     public void excluir(Object objeto) throws Exception {
         
-        Usuario usuarioParaExcluir = (Usuario) objeto;
+        Funcionario funcionarioParaExcluir = (Funcionario) objeto;
         
-        List<Usuario> usuarios = new ArrayList<>();
+        List<Funcionario> funcionarios = new ArrayList<>();
         
         FileReader fr = new FileReader(arquivoBancoDados);
         
@@ -135,10 +131,10 @@ public class UsuarioPersistenciaImpl implements Persistencia<Usuario>{
         String linha = "";
         
         while((linha = br.readLine()) != null && !linha.trim().equals("")) {
-            Usuario usuarioBanco = new Usuario(linha);
+            Funcionario funcionarioBanco = new Funcionario(linha);
             
-            if (!usuarioBanco.equals(usuarioParaExcluir)) {
-                usuarios.add(usuarioBanco);
+            if (!funcionarioBanco.equals(funcionarioParaExcluir)) {
+                funcionarios.add(funcionarioBanco);
             }
         }   
         
@@ -147,7 +143,7 @@ public class UsuarioPersistenciaImpl implements Persistencia<Usuario>{
         BufferedWriter bw = new BufferedWriter(fw);
         
 //      Escreve no arquivo  
-        for (Usuario a : usuarios) {
+        for (Funcionario a : funcionarios) {
             bw.write(a + "\n");
         }
 //      Fecha o arquivo
@@ -157,7 +153,7 @@ public class UsuarioPersistenciaImpl implements Persistencia<Usuario>{
     @Override
     public Integer consultarUltimoID() throws Exception {
         
-        List<Usuario> usuarios = new ArrayList<>();
+        List<Funcionario> funcionarios = new ArrayList<>();
         
         FileReader fr = new FileReader(arquivoBancoDados);
         
@@ -166,20 +162,17 @@ public class UsuarioPersistenciaImpl implements Persistencia<Usuario>{
         String linha = "";
         
         while((linha = br.readLine()) != null && !linha.trim().equals("")) {
-            Usuario usuarioBanco = new Usuario(linha);
-            usuarios.add(usuarioBanco);
+            Funcionario funcionarioBanco = new Funcionario(linha);
+            funcionarios.add(funcionarioBanco);
         }
         
         Integer ultimoId = null;
         
-        if (!usuarios.isEmpty()) {
-            Usuario usuario = usuarios.get(usuarios.size() -1);
-            ultimoId = usuario.getIdUsuario();
+        if (!funcionarios.isEmpty()) {
+            Funcionario funcionario = funcionarios.get(funcionarios.size() -1);
+            ultimoId = funcionario.getMatricula();
         }
         return ultimoId;        
-    }    
-    
-    public void consultarLogado() {
         
-    }
+    }    
 }

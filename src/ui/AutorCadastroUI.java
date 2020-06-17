@@ -189,7 +189,7 @@ public class AutorCadastroUI extends javax.swing.JInternalFrame {
                 
                 autorService.alterar(autorBanco);
                 
-                finalizarAlteracoes(EnumOperacaoBanco.ALTERAR);
+                finalizarAlteracoes(EnumOperacaoBanco.EDITAR);
             } 
          
         } catch (RegistroExistenteException e) {
@@ -233,7 +233,7 @@ public class AutorCadastroUI extends javax.swing.JInternalFrame {
                 }
             });      
             
-        } else if (EnumOperacaoBanco.ALTERAR.equals(operacao)){
+        } else if (EnumOperacaoBanco.EDITAR.equals(operacao)){
             JOptionPane.showOptionDialog(null, "Autor alterado com sucesso!", "Cadastro de Autor!", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
                
             this.dispose();

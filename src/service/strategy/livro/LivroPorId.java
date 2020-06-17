@@ -19,7 +19,7 @@ public class LivroPorId implements FiltroStrategy{
 
 //      Percorrendo a lista com API Stream do java 8 e filtrando pelo id.
         return livros.stream()
-                    .filter(a -> livro.getIdLivro().equals(a.getIdLivro())) 
+                    .filter(a -> livro.getId().equals(a.getId())) 
                     .findFirst()
                     .orElse(null);        
         

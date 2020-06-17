@@ -5,12 +5,13 @@
  */
 package service;
 import entity.Cargo;
+import entity.vo.CargoVO;
 import exception.RegistroExistenteException;
 import exception.RegistroNaoExistenteException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 import repository.CargoPersistenciaImpl;
-import repository.interfaces.Persistencia;
 /**
  *
  * @author CroK
@@ -105,7 +106,21 @@ public class CargoService {
         }
         
         return cargosNaoExistentesBanco;
-    }        
+    } 
+    
+    
+    public Vector<CargoVO> carregarTodosAutoresVetorComboBox() throws Exception {
+        
+        List<Cargo> cargos = this.listar();
+        
+        Vector<CargoVO> cargosVOVector = new Vector();
+        
+        for (Cargo cargo : cargos) {
+            cargosVOVector.add(cargo.toCargoVO());
+        }   
+        
+        return cargosVOVector;
+    }      
 
     private Integer gerarNovoId() throws Exception {
         
@@ -113,6 +128,4 @@ public class CargoService {
         
         return ultimoIdBanco != null ? ++ultimoIdBanco : 1;
     }
-    
-    
 }

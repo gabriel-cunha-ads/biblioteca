@@ -154,7 +154,7 @@ public class ClassificacaoDecimalDireitoPersistenciaImpl implements Persistencia
         
         this.excluir(cddBanco);
 
-        ClassificacaoDecimalDireito cddAtualizado = cddBanco.from(cddParaAlterar);
+        ClassificacaoDecimalDireito cddAtualizado = cddBanco.clone(cddParaAlterar);
         
         this.incluir(cddAtualizado);
     }

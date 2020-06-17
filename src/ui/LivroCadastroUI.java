@@ -5,7 +5,7 @@ import entity.ClassificacaoDecimalDireito;
 import entity.Editora;
 import entity.Livro;
 import entity.EnumOperacaoBanco;
-import entity.Usuario;
+import entity.Funcionario;
 import entity.vo.AutorVO;
 import entity.vo.ClassificacaoDecimalDireitoVO;
 import entity.vo.EditoraVO;
@@ -34,8 +34,8 @@ import javax.swing.table.TableColumnModel;
 import service.AutorService;
 import service.ClassificacaoDecimalDireitoService;
 import service.EditoraService;
+import service.FuncionarioService;
 import service.LivroService;
-import service.UsuarioService;
 import ui.components.AutoresLivroCadastroTableModel;
 import ui.components.ViewAbstractTableModel;
 import ui.dialog.AutorCadastroDialog;
@@ -64,10 +64,6 @@ public class LivroCadastroUI extends javax.swing.JInternalFrame {
     private AutorService autorService;
     
     private EditoraService editoraService;
-    
-    private UsuarioService usuarioService;
-    
-    private ClassificacaoDecimalDireitoService cddService;
     
     private List<Autor> autoresTabelaLivro;
     
@@ -107,8 +103,6 @@ public class LivroCadastroUI extends javax.swing.JInternalFrame {
             
             editoraService = new EditoraService();
             
-            UsuarioService usuarioService = new UsuarioService();
-
             ClassificacaoDecimalDireitoService cddService = new ClassificacaoDecimalDireitoService();     
             
             List<Autor> autoresTabelaLivro =  new ArrayList();        
@@ -235,31 +229,25 @@ public class LivroCadastroUI extends javax.swing.JInternalFrame {
             jTextFieldIsbn.setText(livroEmEdicao.getIsbn());
             jComboBoxCdds.setSelectedItem(livroEmEdicao.getCdd().toClassificacaoDecimalDireitoVO());
  
-////         Inicializa jComboBoxAutores
-//            Vector<AutorVO> autoresVO = autorService.carregarTodosAutoresVetorComboBox();
-//            jComboBoxAutores.setModel(new DefaultComboBoxModel(autoresVO));
-            
 //          Consulta os autores pelo id e preenche a lista de autores da tabela.
             autorService = new AutorService();
             for (Autor a : livroEmEdicao.getAutores()) {
                  autoresTabelaLivro.add(autorService.consultar(a));
             }
-            inicializarTabelaAutoresLivro(autoresTabelaLivro);      
             
-////          Inicializa jComboBoxEditoras
-//            Vector<EditoraVO> editorasVO = editoraService.carregarVetorComboBox();
-//            jComboBoxEditoras.setModel(new DefaultComboBoxModel(editorasVO));
+            inicializarTabelaAutoresLivro(autoresTabelaLivro);      
             
             jComboBoxEdicao.setSelectedItem(livroEmEdicao.getEdicao());
             jComboBoxAnoEdicao.setSelectedItem(livroEmEdicao.getAnoEdicao());
             jComboBoxImpressao.setSelectedItem(livroEmEdicao.getImpressaoReimpressao());
             jTextAreaDescricao.setText(livroEmEdicao.getDescricao());
             jXDatePickerIDataImpressao.setDate(Date.from(livroEmEdicao.getDataImpressaoReimpressao().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+            jCheckBoxAtivo.setSelected(livroEmEdicao.isAtivo());
             
         } catch (Exception e) {
             Logger.getLogger(LivroCadastroUI.class.getName()).log(Level.SEVERE, null, e);
             JOptionPane.showMessageDialog(this, "Ocorreu um erro ao preencher os dados para edição do livro. Entre em contato com nosso suporte.",
-                    "Cadastro de Livros", JOptionPane.DEFAULT_OPTION);            
+                    "Edição de Livros", JOptionPane.DEFAULT_OPTION);            
         }
     }
     
@@ -284,7 +272,6 @@ public class LivroCadastroUI extends javax.swing.JInternalFrame {
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
-        jLabel13 = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
         jXPanel1 = new org.jdesktop.swingx.JXPanel();
         jComboBoxEditoras = new javax.swing.JComboBox<>();
@@ -351,10 +338,6 @@ public class LivroCadastroUI extends javax.swing.JInternalFrame {
         jLabel12.setBackground(new java.awt.Color(255, 0, 0));
         jLabel12.setForeground(new java.awt.Color(255, 0, 0));
         jLabel12.setText("*");
-
-        jLabel13.setBackground(new java.awt.Color(255, 0, 0));
-        jLabel13.setForeground(new java.awt.Color(255, 0, 0));
-        jLabel13.setText("*");
 
         jLabel14.setBackground(new java.awt.Color(255, 0, 0));
         jLabel14.setFont(new java.awt.Font("Dialog", 1, 10)); // NOI18N
@@ -546,7 +529,7 @@ public class LivroCadastroUI extends javax.swing.JInternalFrame {
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                            .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 808, Short.MAX_VALUE)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                 .addComponent(jButtonIncluirSalvarLivro, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -570,8 +553,7 @@ public class LivroCadastroUI extends javax.swing.JInternalFrame {
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addGroup(layout.createSequentialGroup()
                                             .addComponent(jLabelCDD)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                            .addComponent(jLabel13))
+                                            .addGap(0, 0, Short.MAX_VALUE))
                                         .addGroup(layout.createSequentialGroup()
                                             .addComponent(jComboBoxCdds, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -598,8 +580,7 @@ public class LivroCadastroUI extends javax.swing.JInternalFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(jLabel12)
-                    .addComponent(jLabelCDD)
-                    .addComponent(jLabel13))
+                    .addComponent(jLabelCDD))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jComboBoxCdds, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -639,34 +620,30 @@ public class LivroCadastroUI extends javax.swing.JInternalFrame {
             ClassificacaoDecimalDireitoVO cddVO = (ClassificacaoDecimalDireitoVO) jComboBoxCdds.getSelectedItem();
             Integer anoeEdicao  = (Integer) this.jComboBoxAnoEdicao.getSelectedItem();
             String edicao       = (String) this.jComboBoxEdicao.getSelectedItem();
-            String impressao = (String) this.jComboBoxImpressao.getSelectedItem();
-            String descricao = jTextAreaDescricao.getText();
+            String impressao    = (String) this.jComboBoxImpressao.getSelectedItem();
+            String descricao    = jTextAreaDescricao.getText();
+            boolean ativo       = jCheckBoxAtivo.isSelected();
             LocalDate dataImpressao = jXDatePickerIDataImpressao.getDate()
                                                                 .toInstant()
                                                                 .atZone(ZoneId.systemDefault())
                                                                 .toLocalDate();
+            ClassificacaoDecimalDireito cdd = cddVO.toClassificacaoDecimalDireito();
 
-            if (titulo.equals("") || isbn.equals("")) {
-                JOptionPane.showMessageDialog(this, "Preencha os campos obrigatórios (*)");
-                jTextFieldTitulo.setFocusable(true);
-                return;
-            }
-            
-//          TODO: implementar codigo do Aires  
-//          ClassificacaoDecimalDireito cdd = cddVO.toClassificacaoDecimalDireito();
-            ClassificacaoDecimalDireito cdd = new ClassificacaoDecimalDireito();
-            
-//          TODO: implementar login depois consultarLogado.
-//          Usuario usuario = usuarioService.consultarLogado();
-            Usuario usuario = new Usuario();
+//          Funcionario funcionario = funcionarioService.consultarLogado();
             
             if (this.autoresTabelaLivro.isEmpty()) {
                 AutorVO autorVO = (AutorVO) jComboBoxAutores.getSelectedItem();
                 this.autoresTabelaLivro.add(autorVO.toAutor());
             }
 
+            if (titulo.equals("") || isbn.equals("")) {
+                JOptionPane.showMessageDialog(this, "Preencha os campos obrigatórios (*)");
+                jTextFieldTitulo.setFocusable(true);
+                return;
+            }
+
             Livro livro = new Livro(titulo,isbn, this.autoresTabelaLivro, editora, cdd, anoeEdicao, 
-                edicao, impressao, dataImpressao, descricao, usuario, true);                    
+                edicao, impressao, dataImpressao, descricao, new Funcionario(1, "Mandrake", "175.394.660-30" ), ativo);                    
             
             if (!this.editandoLivro) {
                 
@@ -675,11 +652,11 @@ public class LivroCadastroUI extends javax.swing.JInternalFrame {
                 finalizarAlteracoes(EnumOperacaoBanco.INCLUIR);     
                 
             } else {
-                livro.setIdLivro(livroEmEdicao.getIdLivro());
+                livro.setId(livroEmEdicao.getId());
                 
                 livroService.alterar(livro);
                 
-                finalizarAlteracoes(EnumOperacaoBanco.ALTERAR);
+                finalizarAlteracoes(EnumOperacaoBanco.EDITAR);
             } 
          
         } catch (RegistroExistenteException e) {
@@ -738,7 +715,7 @@ public class LivroCadastroUI extends javax.swing.JInternalFrame {
                 }
             });      
             
-        } else if (EnumOperacaoBanco.ALTERAR.equals(operacao)){
+        } else if (EnumOperacaoBanco.EDITAR.equals(operacao)){
             JOptionPane.showOptionDialog(null, "Livro alterado com sucesso!", "Cadastro de Livro!", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
                
             this.dispose();
@@ -882,7 +859,6 @@ public class LivroCadastroUI extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel6;

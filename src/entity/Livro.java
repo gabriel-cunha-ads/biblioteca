@@ -2,12 +2,13 @@ package entity;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import util.UtilData;
 
 /**
  *
@@ -15,11 +16,10 @@ import java.util.logging.Logger;
  */
 public class Livro {
     
-    private Integer idLivro;
+    private Integer id;
     private List<Autor> autores;
     private Editora editora;
     private ClassificacaoDecimalDireito cdd;
-    private Usuario usuarioCadastro;
     private String isbn;
     private String titulo;
     private String descricao;
@@ -27,6 +27,7 @@ public class Livro {
     private String edicao;
     private String impressaoReimpressao;
     private LocalDate dataImpressaoReimpressao;
+    private Funcionario funcionarioCadastro;
     private LocalDate dataCadastro;
     private boolean ativo;
     private boolean selecionado = false;
@@ -35,22 +36,21 @@ public class Livro {
     }
     
     public Livro(Integer idLivro) {
-        this.idLivro = idLivro;
+        this.id = idLivro;
     }
 
     public Livro(String dados) throws Exception {
         String[] vetorString = dados.split(";");
         
         if (vetorString.length < 13) {
-            Logger.getLogger(ClassificacaoDecimalDireito.class.getName()).log(Level.SEVERE, "Quantidade de colunas do Vetor de dados divergente. " + dados);
+            Logger.getLogger(Livro.class.getName()).log(Level.SEVERE, "Quantidade de colunas do Vetor de dados divergente. " + dados);
             throw new Exception();
         }
         try {
             Integer id = Integer.parseInt(vetorString[0]);
-            DateTimeFormatter formatoData = DateTimeFormatter.ofPattern("dd/MM/yyyy");            
             
 //          Se id do vetor for null, atribui 1.
-            this.idLivro     = vetorString[0].equals("null") ? 1 : id;  
+            this.id     = vetorString[0].equals("null") ? 1 : id;  
             this.titulo         = vetorString[1];
             this.descricao      = vetorString[2];
             this.isbn           = vetorString[3];
@@ -66,17 +66,17 @@ public class Livro {
             this.edicao         = vetorString[7];
             this.anoEdicao      = Integer.parseInt(vetorString[8]);
             this.impressaoReimpressao       = vetorString[9];
-            this.dataImpressaoReimpressao   = LocalDate.parse(vetorString[10], formatoData);
-            this.usuarioCadastro = new Usuario(Integer.parseInt(vetorString[11]));
-            this.dataCadastro   = LocalDate.parse(vetorString[12], formatoData);
+            this.dataImpressaoReimpressao   = LocalDate.parse(vetorString[10], UtilData.getFormatoData());
+            this.funcionarioCadastro = new Funcionario(Integer.parseInt(vetorString[11]));
+            this.dataCadastro = LocalDate.parse(vetorString[12], UtilData.getFormatoData());
             this.ativo          = Boolean.parseBoolean(vetorString[13]);
                     
         } catch (DateTimeParseException e) {
-            Logger.getLogger(Autor.class.getName()).log(Level.SEVERE, "Erro ao fazer o parse de String para LocalDate" + e);
+            Logger.getLogger(Livro.class.getName()).log(Level.SEVERE, "Erro ao fazer o parse de String para LocalDate" + e);
         } catch(NumberFormatException e) {
-            Logger.getLogger(Autor.class.getName()).log(Level.SEVERE, "Erro ao fazer o parse String to Integer. Erro" + e);
+            Logger.getLogger(Livro.class.getName()).log(Level.SEVERE, "Erro ao fazer o parse String to Integer. Erro" + e);
         } catch(Exception e) {
-            Logger.getLogger(Autor.class.getName()).log(Level.SEVERE, "Erro ao extrair dados do vetor de dados do livro." + e);
+            Logger.getLogger(Livro.class.getName()).log(Level.SEVERE, "Erro ao extrair dados do vetor." + e);
         }
     }     
 
@@ -84,7 +84,7 @@ public class Livro {
     public Livro(String titulo, String isbn, List<Autor> autores, Editora editora, 
             ClassificacaoDecimalDireito cdd, Integer anoeEdicao, String edicao, 
             String impressao, LocalDate dataImpressao, String descricao,  
-            Usuario usuarioCadastro, boolean ativo) {
+            Funcionario funcionarioCadastro, boolean ativo) {
         
         this.titulo     = titulo;
         this.descricao  = descricao;
@@ -96,18 +96,18 @@ public class Livro {
         this.anoEdicao  = anoeEdicao;
         this.impressaoReimpressao       = impressao;
         this.dataImpressaoReimpressao   = dataImpressao;
-        this.usuarioCadastro            = usuarioCadastro;
+        this.funcionarioCadastro        = funcionarioCadastro;
         this.dataCadastro               = LocalDate.now(ZoneId.systemDefault());
         this.ativo                      = ativo;
     }
     
     
-    public Integer getIdLivro() {
-        return idLivro;
+    public Integer getId() {
+        return id;
     }
 
-    public void setIdLivro(Integer idLivro) {
-        this.idLivro = idLivro;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public List<Autor> getAutores() {
@@ -141,12 +141,12 @@ public class Livro {
         this.cdd = cdd;
     }
 
-    public Usuario getUsuarioCadastro() {
-        return usuarioCadastro;
+    public Funcionario getFuncionarioCadastro() {
+        return funcionarioCadastro;
     }
 
-    public void setUsuarioCadastro(Usuario usuarioCadastro) {
-        this.usuarioCadastro = usuarioCadastro;
+    public void setFuncionarioCadastro(Funcionario funcionarioCadastro) {
+        this.funcionarioCadastro = funcionarioCadastro;
     }
 
     public String getIsbn() {
@@ -229,10 +229,8 @@ public class Livro {
         this.selecionado = selecionado;
     }
     
-    
-    
-    public Livro from (Livro livro) throws Exception {
-        this.idLivro    = livro.getIdLivro();
+    public Livro clone (Livro livro) throws Exception {
+        this.id    = livro.getId();
         this.titulo     = livro.getTitulo();
         this.descricao  = livro.getDescricao();
         this.isbn       = livro.getIsbn();
@@ -243,7 +241,7 @@ public class Livro {
         this.anoEdicao  = livro.getAnoEdicao();
         this.impressaoReimpressao  = livro.getImpressaoReimpressao();
         this.dataImpressaoReimpressao = livro.getDataImpressaoReimpressao();
-        this.usuarioCadastro    = livro.getUsuarioCadastro();
+        this.funcionarioCadastro    = livro.getFuncionarioCadastro();
         this.dataCadastro   = livro.getDataCadastro();
         this.ativo      = livro.isAtivo();
         return this;
@@ -251,16 +249,15 @@ public class Livro {
     
     @Override
     public String toString() {
-        DateTimeFormatter formatoData = DateTimeFormatter.ofPattern("dd/MM/yyyy");  
-        
         StringBuffer sb = new StringBuffer();
-        sb.append(idLivro).append(";");
+        sb.append(id).append(";");
         sb.append(titulo).append(";");
         sb.append(descricao).append(";");
         sb.append(isbn).append(";");
         Integer idCdd = cdd.getIdClassificacaoDecimal() == null ? 999 : cdd.getIdClassificacaoDecimal();
         sb.append(idCdd).append(";");
         
+//      Adiciona a lista de ids dos autores
         for (Autor autor : autores) {
             sb.append(autor.getIdAutor()).append(",");
         }   
@@ -272,10 +269,37 @@ public class Livro {
         sb.append(edicao).append(";");
         sb.append(anoEdicao).append(";");
         sb.append(impressaoReimpressao).append(";");
-        sb.append(dataImpressaoReimpressao.format(formatoData)).append(";");
-        sb.append(usuarioCadastro.getIdUsuario() == null ? 999 :  usuarioCadastro.getIdUsuario()).append(";");
-        sb.append(dataCadastro.format(formatoData)).append(";");
+        sb.append(dataImpressaoReimpressao.format(UtilData.getFormatoData())).append(";");
+        sb.append(funcionarioCadastro.getMatricula()).append(";");
+        sb.append(dataCadastro.format(UtilData.getFormatoData())).append(";");
         sb.append(ativo).append(";");
         return sb.toString();
-    }      
+    }  
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 37 * hash + Objects.hashCode(this.id);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Livro other = (Livro) obj;
+        if (!Objects.equals(this.id, other.id)) {
+            return false;
+        }
+        return true;
+    }
+
+    
 }

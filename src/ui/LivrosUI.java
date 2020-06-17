@@ -1,6 +1,5 @@
 package ui;
 
-import entity.Autor;
 import entity.EnumFiltroLivro;
 import java.util.List;
 import entity.Livro;
@@ -13,10 +12,8 @@ import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JDesktopPane;
 import javax.swing.JOptionPane;
-import javax.swing.KeyStroke;
 import javax.swing.table.TableColumnModel;
 import service.LivroService;
-import ui.components.AutoComplete;
 import ui.components.LivroTableModel;
 import ui.components.ViewAbstractTableModel;
 import util.UtilComponentes;
@@ -33,8 +30,6 @@ public class LivrosUI extends javax.swing.JInternalFrame {
     private static final String CAMPO_COMBOBOX_TITULO = "Titulo";
     
     private static final String CAMPO_COMBOBOX_ISBN = "ISBN";
-    
-    private static final String COMMIT_ACTION = "commit";    
     
     private JDesktopPane jDesktopPane;
     
@@ -67,7 +62,7 @@ public class LivrosUI extends javax.swing.JInternalFrame {
         jDesktopPane = dashboardUI.getJDesktopPrincipal();
         
         UtilComponentes.habilitarComponentes(false, jButtonEditarLivro, jButtonExcluirLivros, 
-                jTextFieldTextoPesquisa);
+                jTextFieldTextoPesquisa, jButtonAbrirExemplarCadastroUI);
         
         UtilComponentes.limparCampos(jTextFieldTextoPesquisa);
         
@@ -79,13 +74,6 @@ public class LivrosUI extends javax.swing.JInternalFrame {
         jComboBoxCampoPesquisa.setModel(new DefaultComboBoxModel<>(new String[] {"Selecione",
             CAMPO_COMBOBOX_ID, CAMPO_COMBOBOX_TITULO, CAMPO_COMBOBOX_ISBN}));  
        
-//      Auto sugestão
-//        List<String> titulos = listarTitulosLivros();
-//        jTextFieldTextoPesquisa.setFocusTraversalKeysEnabled(false);
-//        AutoComplete autoComplete = new AutoComplete(jTextFieldTextoPesquisa, titulos);
-//        jTextFieldTextoPesquisa.getDocument().addDocumentListener(autoComplete);
-//        jTextFieldTextoPesquisa.getInputMap().put(KeyStroke.getKeyStroke(title).getKeyStroke("TAB"), COMMIT_ACTION);
-//        jTextFieldTextoPesquisa.getActionMap().put(COMMIT_ACTION, autoComplete.new CommitAction());         
     }
     
     
@@ -102,14 +90,7 @@ public class LivrosUI extends javax.swing.JInternalFrame {
 
             UtilTabela.inicializarTabela(jTableLivros, livroTableModel);
             
-//          Defini tamanho das colunas
-            TableColumnModel tcm = jTableLivros.getColumnModel();
-            tcm.getColumn(0).setPreferredWidth(10);
-            tcm.getColumn(1).setPreferredWidth(280);
-            tcm.getColumn(2).setPreferredWidth(90);
-            tcm.getColumn(3).setPreferredWidth(50);      
-            tcm.getColumn(4).setPreferredWidth(10);            
-            tcm.getColumn(5).setPreferredWidth(10);            
+            ajustarTamanhoColunasTabela();            
 
             addMouseListenerTabela();
             
@@ -117,25 +98,18 @@ public class LivrosUI extends javax.swing.JInternalFrame {
             Logger.getLogger(LivrosUI.class.getName()).log(Level.SEVERE, "LivrosUI - ", ex);
         }
     }
-    
-   
-    
-    private List<String> listarTitulosLivros() {
-        
-        List<String> titulos = new ArrayList();
-        
-        try {
-            List<Livro> listaBanco = livroService.listar();
-            for (Livro a : listaBanco ) {
-                titulos.add(a.getTitulo());
-            }
-        } catch (Exception ex) {
-            Logger.getLogger(LivrosUI.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        return titulos;
-    }    
-    
+
+    protected void ajustarTamanhoColunasTabela() {
+//          Defini tamanho das colunas
+        TableColumnModel tcm = jTableLivros.getColumnModel();
+        tcm.getColumn(0).setPreferredWidth(10);
+        tcm.getColumn(1).setPreferredWidth(280);
+        tcm.getColumn(2).setPreferredWidth(90);
+        tcm.getColumn(3).setPreferredWidth(50);
+        tcm.getColumn(4).setPreferredWidth(10);
+        tcm.getColumn(5).setPreferredWidth(10);
+    }
+
     public void addMouseListenerTabela() {
         
         jTableLivros.addMouseListener(new MouseAdapter() {
@@ -157,20 +131,21 @@ public class LivrosUI extends javax.swing.JInternalFrame {
         //          Regras para habilitar / desabilitar botões 
                     if (qtdLinhasSelcionadas == 1 ) {
                         jButtonEditarLivro.setEnabled(true);
+                        jButtonAbrirExemplarCadastroUI.setEnabled(true);
                         jButtonExcluirLivros.setEnabled(true);
                     } else if (qtdLinhasSelcionadas > 1){
                         jButtonEditarLivro.setEnabled(false);
+                        jButtonAbrirExemplarCadastroUI.setEnabled(false);
                         jButtonExcluirLivros.setEnabled(true);
                     } else if (qtdLinhasSelcionadas < 1) {
                         jButtonEditarLivro.setEnabled(false);
-                        jButtonExcluirLivros.setEnabled(false);                
+                        jButtonExcluirLivros.setEnabled(false); 
+                        jButtonAbrirExemplarCadastroUI.setEnabled(false);
                     }
                 } 
             }
         });        
     }
-    
-
    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -185,8 +160,8 @@ public class LivrosUI extends javax.swing.JInternalFrame {
         jButtonExcluirLivros = new javax.swing.JButton();
         jButtonEditarLivro = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JSeparator();
-        jSeparator2 = new javax.swing.JSeparator();
         jComboBoxCampoPesquisa = new javax.swing.JComboBox<>();
+        jButtonAbrirExemplarCadastroUI = new javax.swing.JButton();
 
         setMaximumSize(new java.awt.Dimension(800, 600));
         setMinimumSize(new java.awt.Dimension(800, 600));
@@ -247,12 +222,18 @@ public class LivrosUI extends javax.swing.JInternalFrame {
             }
         });
 
-        jSeparator2.setToolTipText("");
-
         jComboBoxCampoPesquisa.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         jComboBoxCampoPesquisa.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 jComboBoxCampoPesquisaItemStateChanged(evt);
+            }
+        });
+
+        jButtonAbrirExemplarCadastroUI.setMnemonic('n');
+        jButtonAbrirExemplarCadastroUI.setText("Inlcuir Exemplar");
+        jButtonAbrirExemplarCadastroUI.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonAbrirExemplarCadastroUIActionPerformed(evt);
             }
         });
 
@@ -271,8 +252,8 @@ public class LivrosUI extends javax.swing.JInternalFrame {
                         .addComponent(jButtonEditarLivro)
                         .addGap(14, 14, 14)
                         .addComponent(jButtonExcluirLivros)
-                        .addGap(51, 51, 51)
-                        .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 9, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(66, 66, 66)
+                        .addComponent(jButtonAbrirExemplarCadastroUI)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButtonSair, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
@@ -297,14 +278,13 @@ public class LivrosUI extends javax.swing.JInternalFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 3, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jButtonAbrirLivroCadastroUI)
-                        .addComponent(jButtonSair)
-                        .addComponent(jButtonExcluirLivros)
-                        .addComponent(jButtonEditarLivro))
-                    .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(101, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButtonAbrirLivroCadastroUI)
+                    .addComponent(jButtonSair)
+                    .addComponent(jButtonExcluirLivros)
+                    .addComponent(jButtonEditarLivro)
+                    .addComponent(jButtonAbrirExemplarCadastroUI))
+                .addContainerGap(153, Short.MAX_VALUE))
         );
 
         pack();
@@ -513,8 +493,37 @@ public class LivrosUI extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_jComboBoxCampoPesquisaItemStateChanged
 
+    private void jButtonAbrirExemplarCadastroUIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAbrirExemplarCadastroUIActionPerformed
+//      Verifica se tem livro selecionado (isSelecionado) para edição. 
+        List<Livro> selecionados = getSelecionados();
+
+        try {
+            if (!selecionados.isEmpty() && selecionados.size() == 1) {
+                this.dispose();
+
+                jDesktopPane.remove(this);
+
+//              Cria um instância da tela (UI) que será aberta e passa o selecionado.
+                ExemplarCadastroUI exemplarCadastroUI;        
+                    exemplarCadastroUI = new ExemplarCadastroUI(selecionados.get(0));
+
+//              Adiciona à pilha do JDesktopPane o JInternalFrame.
+                jDesktopPane.add(exemplarCadastroUI);
+
+    //          Remove barra de título e borda da janela
+                UtilComponentes.removerBarraTituloEBorda(exemplarCadastroUI);
+
+    //          Mostra a tela LivrosPrincipal.
+                exemplarCadastroUI.show();
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(LivrosUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButtonAbrirExemplarCadastroUIActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonAbrirExemplarCadastroUI;
     private javax.swing.JButton jButtonAbrirLivroCadastroUI;
     private javax.swing.JButton jButtonEditarLivro;
     private javax.swing.JButton jButtonExcluirLivros;
@@ -523,7 +532,6 @@ public class LivrosUI extends javax.swing.JInternalFrame {
     private javax.swing.JComboBox<String> jComboBoxCampoPesquisa;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JSeparator jSeparator2;
     private javax.swing.JTable jTableLivros;
     private javax.swing.JTextField jTextFieldTextoPesquisa;
     // End of variables declaration//GEN-END:variables

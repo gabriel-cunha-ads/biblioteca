@@ -93,16 +93,18 @@ public class AutorPersistenciaImpl implements Persistencia<Autor>{
         Autor autorResultado = null;
         
         for (Autor a : autoresBanco) {
-            if (autorParaConsultar.getIdAutor() == null) {
+            if (autorParaConsultar.getIdAutor() != null) {
                 if (a.getIdAutor().equals(autorParaConsultar.getIdAutor())) {
                     autorResultado = a;
-                } else if (a.getNome().trim().equals(autorParaConsultar.getNome().trim())) {
-                    autorResultado = a;
                 } 
-            } else {
-                if (a.equals(autor)) {
+            } else if (a.getNome() != null && !a.getNome().equals("")) {
+                if (a.getNome().equals(autorParaConsultar.getNome())) {
                     autorResultado = a;
                 }                
+            } else {
+                if (a.equals(autorParaConsultar)) {
+                    autorResultado = a;
+                }                                
             }
         }
         return autorResultado;
@@ -116,7 +118,7 @@ public class AutorPersistenciaImpl implements Persistencia<Autor>{
         
         this.excluir(autorBanco);
 
-        Autor autorAtualizado = autorBanco.from(autorParaAlterar);
+        Autor autorAtualizado = autorBanco.clone(autorParaAlterar);
         
         this.incluir(autorAtualizado);
     }

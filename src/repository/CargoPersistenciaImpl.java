@@ -77,6 +77,8 @@ public class CargoPersistenciaImpl implements Persistencia<Cargo> {
     @Override
     public Object consultar(Object cargo) throws Exception {
         
+        Cargo cargoConsulta = (Cargo) cargo;
+        
         FileReader fr = new FileReader(arquivoBancoDados);
         
         BufferedReader br = new BufferedReader(fr);
@@ -92,9 +94,18 @@ public class CargoPersistenciaImpl implements Persistencia<Cargo> {
         
         Cargo cargoResultado = null;
         
-        for (Cargo a : cargosBanco) {
-            if (a.equals(cargo)) {
-                cargoResultado = a;
+        for (Cargo c : cargosBanco) {
+            if (cargoConsulta.getIdCargo() != null) {
+                if (c.getIdCargo().equals(cargoConsulta.getIdCargo())) {
+                    cargoResultado = c;
+                }
+            } else if (cargoConsulta.getDescricao() != null  
+                       && !cargoConsulta.getDescricao().equals("")) {
+                cargoResultado = c;
+            } else {
+                if (cargoConsulta.equals(c)) {
+                    cargoResultado = c;
+                }
             }
         }
         return cargoResultado;
@@ -102,14 +113,15 @@ public class CargoPersistenciaImpl implements Persistencia<Cargo> {
 
     @Override
     public void alterar(Object objeto) throws Exception {
+
         Cargo cargoParaAlterar = (Cargo) objeto;
+        
+        Cargo cargoAtualizada = cargoParaAlterar.clone();
         
         Cargo cargoBanco = (Cargo) this.consultar(cargoParaAlterar);
         
         this.excluir(cargoBanco);
 
-        Cargo cargoAtualizada = cargoBanco.from(cargoParaAlterar);
-        
         this.incluir(cargoAtualizada);
     }
 

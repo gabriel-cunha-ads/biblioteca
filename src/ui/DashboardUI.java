@@ -1,14 +1,12 @@
 package ui;
 
 
-import javax.swing.JFrame;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JDesktopPane;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import service.AutorService;
-import service.EditoraService;
 import ui.dialog.FaqDialog;
 import ui.dialog.SobreDialog;
 import util.UtilComponentes;
@@ -20,20 +18,14 @@ public class DashboardUI extends javax.swing.JFrame {
    
     private static DashboardUI instance = null;
     
-    private AutorService autorService;
     
-    private EditoraService editoraService;
-    
-    
-    public DashboardUI() throws Exception {
+    public DashboardUI() {
+        
+//        this.setExtendedState(this.MAXIMIZED_BOTH); 
         
         initComponents();
         
         jLabelNomeTela.setText("Dashboard");
-        
-        autorService = new AutorService();
-    
-        editoraService = new EditoraService();        
     }
     
     @SuppressWarnings("unchecked")
@@ -48,15 +40,14 @@ public class DashboardUI extends javax.swing.JFrame {
         JMenuItemAbrirLivrosUI = new javax.swing.JMenuItem();
         jMenuItemAbrirAutoresUI = new javax.swing.JMenuItem();
         jMenuItemAbrirEditoras = new javax.swing.JMenuItem();
-        jMenuItemAbrirCargoUI = new javax.swing.JMenuItem();
+        jMenuItemAbrirCargosUI = new javax.swing.JMenuItem();
         jMenuItemAbrirCDD = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
-        JMenuItemAbrirUsuariosUI = new javax.swing.JMenuItem();
         JMenuItemAbrirFuncionariosUI = new javax.swing.JMenuItem();
         jSeparator3 = new javax.swing.JPopupMenu.Separator();
-        jMenuItemAbrirAquisicoes = new javax.swing.JMenuItem();
+        jMenuItemAbrirSugestoes = new javax.swing.JMenuItem();
         jMenuItemAbrirLivrosOperacoes = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItemAbrirLivroOperacoes = new javax.swing.JMenuItem();
         menuCliente = new javax.swing.JMenu();
         menuCliente1 = new javax.swing.JMenu();
         jMenu1 = new javax.swing.JMenu();
@@ -121,14 +112,14 @@ public class DashboardUI extends javax.swing.JFrame {
         });
         JMenuLivro.add(jMenuItemAbrirEditoras);
 
-        jMenuItemAbrirCargoUI.setMnemonic('c');
-        jMenuItemAbrirCargoUI.setText("Cargos");
-        jMenuItemAbrirCargoUI.addActionListener(new java.awt.event.ActionListener() {
+        jMenuItemAbrirCargosUI.setMnemonic('c');
+        jMenuItemAbrirCargosUI.setText("Cargos");
+        jMenuItemAbrirCargosUI.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItemAbrirCargoUIActionPerformed(evt);
+                jMenuItemAbrirCargosUIActionPerformed(evt);
             }
         });
-        JMenuLivro.add(jMenuItemAbrirCargoUI);
+        JMenuLivro.add(jMenuItemAbrirCargosUI);
 
         jMenuItemAbrirCDD.setMnemonic('l');
         jMenuItemAbrirCDD.setText("Classificação Decimal");
@@ -140,15 +131,6 @@ public class DashboardUI extends javax.swing.JFrame {
         JMenuLivro.add(jMenuItemAbrirCDD);
         JMenuLivro.add(jSeparator2);
 
-        JMenuItemAbrirUsuariosUI.setMnemonic('u');
-        JMenuItemAbrirUsuariosUI.setText("Usuários");
-        JMenuItemAbrirUsuariosUI.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                JMenuItemAbrirUsuariosUIActionPerformed(evt);
-            }
-        });
-        JMenuLivro.add(JMenuItemAbrirUsuariosUI);
-
         JMenuItemAbrirFuncionariosUI.setMnemonic('f');
         JMenuItemAbrirFuncionariosUI.setText("Funcionários");
         JMenuItemAbrirFuncionariosUI.addActionListener(new java.awt.event.ActionListener() {
@@ -159,22 +141,32 @@ public class DashboardUI extends javax.swing.JFrame {
         JMenuLivro.add(JMenuItemAbrirFuncionariosUI);
         JMenuLivro.add(jSeparator3);
 
-        jMenuItemAbrirAquisicoes.setMnemonic('s');
-        jMenuItemAbrirAquisicoes.setText("Sugestões");
-        jMenuItemAbrirAquisicoes.addActionListener(new java.awt.event.ActionListener() {
+        jMenuItemAbrirSugestoes.setMnemonic('s');
+        jMenuItemAbrirSugestoes.setText("Sugestões");
+        jMenuItemAbrirSugestoes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItemAbrirAquisicoesActionPerformed(evt);
+                jMenuItemAbrirSugestoesActionPerformed(evt);
             }
         });
-        JMenuLivro.add(jMenuItemAbrirAquisicoes);
+        JMenuLivro.add(jMenuItemAbrirSugestoes);
 
         mainMenu.add(JMenuLivro);
 
         jMenuItemAbrirLivrosOperacoes.setMnemonic('o');
         jMenuItemAbrirLivrosOperacoes.setText("Operações");
+        jMenuItemAbrirLivrosOperacoes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemAbrirLivrosOperacoesActionPerformed(evt);
+            }
+        });
 
-        jMenuItem1.setText("Livros");
-        jMenuItemAbrirLivrosOperacoes.add(jMenuItem1);
+        jMenuItemAbrirLivroOperacoes.setText("Livros");
+        jMenuItemAbrirLivroOperacoes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemAbrirLivroOperacoesActionPerformed(evt);
+            }
+        });
+        jMenuItemAbrirLivrosOperacoes.add(jMenuItemAbrirLivroOperacoes);
 
         mainMenu.add(jMenuItemAbrirLivrosOperacoes);
 
@@ -249,127 +241,6 @@ public class DashboardUI extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void JMenuItemAbrirLivrosUIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JMenuItemAbrirLivrosUIActionPerformed
-
-        try {
-    //      Cria uma instância.
-            LivrosUI livrosUI = new LivrosUI();
-
-    //      Adiciona a pilha de do JDesktopPane o JInternalFrame AutoresUI.
-            jDesktopPrincipal.add(livrosUI);
-
-    //      Remove barra de título e borda da janela
-            UtilComponentes.removerBarraTituloEBorda(livrosUI);
-        
-    //      Mostra a tela.
-            livrosUI.show();
-        
-        } catch (Exception ex) {
-            Logger.getLogger(DashboardUI.class.getName()).log(Level.SEVERE, null, ex);
-            JOptionPane.showMessageDialog(this, "Erro ao abrir tela Autores. Entre com contato com suporte.");
-        }        
-        
-
-//        livros.add(livro2);  
-//        
-////      Cria um instância de LivroPrincipalUI.
-//        LivroPrincipalUI livrosPrincipalUI = new LivroPrincipalUI(livros);
-//       
-////      Adiciona a pilha de do JDesktopPane o JInternalFrame LivrosPrincipalUI.
-//        jDesktopPrincipal.add(livrosPrincipalUI);
-//        
-////      Remove barra de título e borda da janela
-//        try {
-//            UtilComponentes.removerBarraTituloEBorda(livrosPrincipalUI);
-//        } catch (Exception ex) {
-//            Logger.getLogger(DashboardUI.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        
-////        Mostra a tela LivrosPrincipal.
-//        livrosPrincipalUI.show();
-//        
-//        try {
-//            UtilComponentes.abrirJInternalFrameMaximizado(livrosPrincipalUI);
-//        } catch (Exception ex) {
-//            Logger.getLogger(DashboardUI.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-       
-    }//GEN-LAST:event_JMenuItemAbrirLivrosUIActionPerformed
-
-    private void JMenuItemAbrirUsuariosUIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JMenuItemAbrirUsuariosUIActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_JMenuItemAbrirUsuariosUIActionPerformed
-
-    private void JMenuItemAbrirFuncionariosUIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JMenuItemAbrirFuncionariosUIActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_JMenuItemAbrirFuncionariosUIActionPerformed
-
-    private void jMenuItemAbrirAutoresUIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemAbrirAutoresUIActionPerformed
-       
-        try {
-    //      Cria uma instância.
-            AutoresUI autoresUI = new AutoresUI();
-
-    //      Adiciona a pilha de do JDesktopPane o JInternalFrame AutoresUI.
-            jDesktopPrincipal.add(autoresUI);
-
-    //      Remove barra de título e borda da janela
-            UtilComponentes.removerBarraTituloEBorda(autoresUI);
-        
-    //      Mostra a tela.
-            autoresUI.show();
-        
-        } catch (Exception ex) {
-            Logger.getLogger(DashboardUI.class.getName()).log(Level.SEVERE, null, ex);
-            JOptionPane.showMessageDialog(this, "Erro ao abrir tela Autores. Entre com contato com suporte.");
-        }
-     
-    }//GEN-LAST:event_jMenuItemAbrirAutoresUIActionPerformed
-
-    private void jMenuItemAbrirAquisicoesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemAbrirAquisicoesActionPerformed
-        
-    }//GEN-LAST:event_jMenuItemAbrirAquisicoesActionPerformed
-
-    private void jMenuItemAbrirEditorasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemAbrirEditorasActionPerformed
-        try {
-    //      Cria uma instância.
-            EditorasUI editorasUI = new EditorasUI();
-
-    //      Adiciona a pilha de do JDesktopPane o JInternalFrame AutoresUI.
-            jDesktopPrincipal.add(editorasUI);
-
-    //      Remove barra de título e borda da janela
-            UtilComponentes.removerBarraTituloEBorda(editorasUI);
-        
-    //      Mostra a tela.
-            editorasUI.show();
-        
-        } catch (Exception ex) {
-            Logger.getLogger(DashboardUI.class.getName()).log(Level.SEVERE, null, ex);
-            JOptionPane.showMessageDialog(this, "Erro ao abrir tela de Editora. Entre com contato com suporte.");
-        }
-    }//GEN-LAST:event_jMenuItemAbrirEditorasActionPerformed
-
-    private void jMenuItemAbrirCDDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemAbrirCDDActionPerformed
-        try {
-    //      Cria uma instância.
-            ClassificacoesDecimalDireitoUI cddUI = new ClassificacoesDecimalDireitoUI();
-
-    //      Adiciona a pilha de do JDesktopPane o JInternalFrame AutoresUI.
-            jDesktopPrincipal.add(cddUI);
-
-    //      Remove barra de título e borda da janela
-            UtilComponentes.removerBarraTituloEBorda(cddUI);
-        
-    //      Mostra a tela.
-            cddUI.show();
-        
-        } catch (Exception ex) {
-            Logger.getLogger(DashboardUI.class.getName()).log(Level.SEVERE, null, ex);
-            JOptionPane.showMessageDialog(this, "Erro ao abrir tela de Classificação Decimal. Entre com contato com suporte.");
-        }
-    }//GEN-LAST:event_jMenuItemAbrirCDDActionPerformed
-
     private void jMenu1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenu1ActionPerformed
 
     }//GEN-LAST:event_jMenu1ActionPerformed
@@ -384,7 +255,7 @@ public class DashboardUI extends javax.swing.JFrame {
         sobreDialog.setVisible(true);
     }//GEN-LAST:event_jMenuItemAbrirSobreUIActionPerformed
 
-    private void jMenuItemAbrirCargoUIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemAbrirCargoUIActionPerformed
+    private void jMenuItemAbrirLivrosOperacoesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemAbrirLivrosOperacoesActionPerformed
        try {
     //      Cria uma instância.
             CargosUI cargosUI = new CargosUI();
@@ -400,11 +271,161 @@ public class DashboardUI extends javax.swing.JFrame {
         
         } catch (Exception ex) {
             Logger.getLogger(DashboardUI.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this, "Erro ao abrir tela de Operações com Livros. Entre com contato com suporte.");
+        }
+    }//GEN-LAST:event_jMenuItemAbrirLivrosOperacoesActionPerformed
+
+    private void jMenuItemAbrirLivroOperacoesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemAbrirLivroOperacoesActionPerformed
+       try {
+    //      Cria uma instância.
+            ExemplarOperacoesUI cargosUI = new ExemplarOperacoesUI();
+
+    //      Adiciona a pilha de do JDesktopPane o JInternalFrame AutoresUI.
+            jDesktopPrincipal.add(cargosUI);
+
+    //      Remove barra de título e borda da janela
+            UtilComponentes.removerBarraTituloEBorda(cargosUI);
+        
+    //      Mostra a tela.
+            cargosUI.show();
+        
+        } catch (Exception ex) {
+            Logger.getLogger(DashboardUI.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this, "Erro ao abrir tela de Operações de Livros. Entre com contato com suporte.");
+        }       
+    }//GEN-LAST:event_jMenuItemAbrirLivroOperacoesActionPerformed
+
+    private void jMenuItemAbrirSugestoesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemAbrirSugestoesActionPerformed
+
+    }//GEN-LAST:event_jMenuItemAbrirSugestoesActionPerformed
+
+    private void JMenuItemAbrirFuncionariosUIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JMenuItemAbrirFuncionariosUIActionPerformed
+        try {
+            //      Cria uma instância.
+            FuncionariosUI funcionariosUI = new FuncionariosUI();
+
+            //      Adiciona a pilha de do JDesktopPane o JInternalFrame AutoresUI.
+            
+            jDesktopPrincipal.add(funcionariosUI);
+
+            //      Remove barra de título e borda da janela
+            UtilComponentes.removerBarraTituloEBorda(funcionariosUI);
+
+            //      Mostra a tela.
+            funcionariosUI.show();
+
+        } catch (Exception ex) {
+            Logger.getLogger(DashboardUI.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this, "Erro ao abrir tela de Funcionarios UI. Entre com contato com suporte.");
+        }
+    }//GEN-LAST:event_JMenuItemAbrirFuncionariosUIActionPerformed
+
+    private void jMenuItemAbrirCDDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemAbrirCDDActionPerformed
+        try {
+            //      Cria uma instância.
+            ClassificacoesDecimalDireitoUI cddUI = new ClassificacoesDecimalDireitoUI();
+
+            //      Adiciona a pilha de do JDesktopPane o JInternalFrame AutoresUI.
+                        
+            jDesktopPrincipal.add(cddUI);
+
+            //      Remove barra de título e borda da janela
+            UtilComponentes.removerBarraTituloEBorda(cddUI);
+
+            //      Mostra a tela.
+            cddUI.show();
+
+        } catch (Exception ex) {
+            Logger.getLogger(DashboardUI.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this, "Erro ao abrir tela de Classificação Decimal. Entre com contato com suporte.");
+        }
+    }//GEN-LAST:event_jMenuItemAbrirCDDActionPerformed
+
+    private void jMenuItemAbrirCargosUIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemAbrirCargosUIActionPerformed
+        try {
+            //      Cria uma instância.
+            CargosUI cargosUI = new CargosUI();
+
+            //      Adiciona a pilha de do JDesktopPane o JInternalFrame AutoresUI.
+                        
+            jDesktopPrincipal.add(cargosUI);
+
+            //      Remove barra de título e borda da janela
+            UtilComponentes.removerBarraTituloEBorda(cargosUI);
+
+            //      Mostra a tela.
+            cargosUI.show();
+
+        } catch (Exception ex) {
+            Logger.getLogger(DashboardUI.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(this, "Erro ao abrir tela de Cargos. Entre com contato com suporte.");
         }
-        
-        
-    }//GEN-LAST:event_jMenuItemAbrirCargoUIActionPerformed
+    }//GEN-LAST:event_jMenuItemAbrirCargosUIActionPerformed
+
+    private void jMenuItemAbrirEditorasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemAbrirEditorasActionPerformed
+        try {
+            //      Cria uma instância.
+            EditorasUI editorasUI = new EditorasUI();
+
+            //      Adiciona a pilha de do JDesktopPane o JInternalFrame AutoresUI.
+                        
+            jDesktopPrincipal.add(editorasUI);
+
+            //      Remove barra de título e borda da janela
+            UtilComponentes.removerBarraTituloEBorda(editorasUI);
+
+            //      Mostra a tela.
+            editorasUI.show();
+
+        } catch (Exception ex) {
+            Logger.getLogger(DashboardUI.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this, "Erro ao abrir tela de Editora. Entre com contato com suporte.");
+        }
+    }//GEN-LAST:event_jMenuItemAbrirEditorasActionPerformed
+
+    private void jMenuItemAbrirAutoresUIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemAbrirAutoresUIActionPerformed
+        try {
+            //      Cria uma instância.
+            AutoresUI autoresUI = new AutoresUI();
+
+            //      Adiciona a pilha de do JDesktopPane o JInternalFrame AutoresUI.
+            
+            jDesktopPrincipal.add(autoresUI);
+
+            //      Remove barra de título e borda da janela
+            UtilComponentes.removerBarraTituloEBorda(autoresUI);
+
+            //      Mostra a tela.
+            autoresUI.show();
+
+        } catch (Exception ex) {
+            Logger.getLogger(DashboardUI.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this, "Erro ao abrir tela Autores. Entre com contato com suporte.");
+        }
+
+    }//GEN-LAST:event_jMenuItemAbrirAutoresUIActionPerformed
+
+    private void JMenuItemAbrirLivrosUIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JMenuItemAbrirLivrosUIActionPerformed
+
+        try {
+            //      Cria uma instância.
+            LivrosUI livrosUI = new LivrosUI();
+
+            //      Adiciona a pilha de do JDesktopPane o JInternalFrame AutoresUI.
+            
+            jDesktopPrincipal.add(livrosUI);
+
+            //      Remove barra de título e borda da janela
+            UtilComponentes.removerBarraTituloEBorda(livrosUI);
+
+            //      Mostra a tela.
+            livrosUI.show();
+
+        } catch (Exception ex) {
+            Logger.getLogger(DashboardUI.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this, "Erro ao abrir tela Livros. Entre com contato com suporte.");
+        }
+    }//GEN-LAST:event_JMenuItemAbrirLivrosUIActionPerformed
 
     public static void main(String args[]) {
 
@@ -440,7 +461,7 @@ public class DashboardUI extends javax.swing.JFrame {
         return jDesktopPrincipal;
     }
     
-    public static DashboardUI getInstance() throws Exception {
+    public static DashboardUI getInstance() {
         if (instance == null) {
             instance = new DashboardUI();
         }
@@ -450,21 +471,20 @@ public class DashboardUI extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem JMenuItemAbrirFuncionariosUI;
     private javax.swing.JMenuItem JMenuItemAbrirLivrosUI;
-    private javax.swing.JMenuItem JMenuItemAbrirUsuariosUI;
     private javax.swing.JMenu JMenuLivro;
     private javax.swing.JDesktopPane jDesktopPrincipal;
     private javax.swing.JLabel jLabelNomeTela;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItemAbrirAquisicoes;
     private javax.swing.JMenuItem jMenuItemAbrirAutoresUI;
     private javax.swing.JMenuItem jMenuItemAbrirCDD;
-    private javax.swing.JMenuItem jMenuItemAbrirCargoUI;
+    private javax.swing.JMenuItem jMenuItemAbrirCargosUI;
     private javax.swing.JMenuItem jMenuItemAbrirEditoras;
     private javax.swing.JMenuItem jMenuItemAbrirFAQUI;
+    private javax.swing.JMenuItem jMenuItemAbrirLivroOperacoes;
     private javax.swing.JMenu jMenuItemAbrirLivrosOperacoes;
     private javax.swing.JMenuItem jMenuItemAbrirSobreUI;
+    private javax.swing.JMenuItem jMenuItemAbrirSugestoes;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator3;

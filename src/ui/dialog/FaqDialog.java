@@ -5,8 +5,6 @@
  */
 package ui.dialog;
 
-import com.sun.media.sound.InvalidFormatException;
-import javax.security.auth.callback.ConfirmationCallback;
 import javax.swing.JOptionPane;
 
 /**

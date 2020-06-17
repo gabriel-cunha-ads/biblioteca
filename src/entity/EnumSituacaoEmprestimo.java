@@ -11,8 +11,8 @@ package entity;
  */
 public enum EnumSituacaoEmprestimo {
 
-    EMPRESTADO,
-    RESERVADO,
-    DISPONIVEL
+    PENDENTE,
+    DEVOLVIDO,
+    EM_ATRASO,
     
 }

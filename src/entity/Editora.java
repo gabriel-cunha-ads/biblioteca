@@ -96,11 +96,12 @@ public class Editora {
         this.selecionado = selecionado;
     }
     
-    public Editora from (Editora editora) throws Exception {
-        this.idEditora = editora.getIdEditora();
-        this.nome = editora.getNome();
-        this.ativo = editora.isAtivo();
-        return this;
+    public Editora clone (Editora editora) throws Exception {
+        Editora editoraClone = new Editora();
+        editoraClone.setIdEditora(editora.getIdEditora());
+        editoraClone.setNome(editora.getNome());
+        editoraClone.setAtivo(editora.isAtivo());
+        return editoraClone;
     }     
     
     public EditoraVO toEditoraVO () throws Exception {

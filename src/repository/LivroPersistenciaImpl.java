@@ -93,11 +93,11 @@ public class LivroPersistenciaImpl implements Persistencia<Livro>{
         Livro livroResultado = null;
         
         for (Livro a : livrosBanco) {
-            if (livroParaConsultar.getIdLivro() != null) {
-                if (a.getIdLivro() ==  livroParaConsultar.getIdLivro()) {
+            if (livroParaConsultar.getId() != null) {
+                if (a.getId() ==  livroParaConsultar.getId()) {
                     livroResultado = a;
                 }
-            } else if (livroParaConsultar.getIdLivro() == null) {
+            } else if (livroParaConsultar.getId() == null) {
                 if (a.getIsbn().trim().equals(livroParaConsultar.getIsbn().trim()) 
                         || (a.getTitulo().trim().equals(livroParaConsultar.getTitulo().trim()) 
                         && a.getCdd().getCodigoCDD().equals(livroParaConsultar.getCdd().getCodigoCDD()) )) {
@@ -120,9 +120,7 @@ public class LivroPersistenciaImpl implements Persistencia<Livro>{
         
         this.excluir(livroParaAlterar);
 
-        Livro livroAtualizado = livroParaAlterar.from(livroParaAlterar);
-        
-        this.incluir(livroAtualizado);
+        this.incluir(livroParaAlterar);
     }
 
     @Override
@@ -141,7 +139,7 @@ public class LivroPersistenciaImpl implements Persistencia<Livro>{
         while((linha = br.readLine()) != null && !linha.trim().equals("")) {
             Livro livroBanco = new Livro(linha);
             
-            if (!livroBanco.getIdLivro().equals(livroParaExcluir.getIdLivro())) {
+            if (!livroBanco.getId().equals(livroParaExcluir.getId())) {
                 livros.add(livroBanco);
             }
         }   
@@ -178,7 +176,7 @@ public class LivroPersistenciaImpl implements Persistencia<Livro>{
         
         if (!livros.isEmpty()) {
             Livro livro = livros.get(livros.size() -1);
-            ultimoId = livro.getIdLivro();
+            ultimoId = livro.getId();
         }
         return ultimoId;        
         

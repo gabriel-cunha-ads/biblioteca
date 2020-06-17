@@ -202,7 +202,7 @@ public class ClassificacaoDecimalDireitoCadastroUI extends javax.swing.JInternal
                 
                 cddService.alterar(cddBanco);
                 
-                finalizarAlteracoes(EnumOperacaoBanco.ALTERAR);
+                finalizarAlteracoes(EnumOperacaoBanco.EDITAR);
             } 
          
         } catch (RegistroExistenteException e) {
@@ -246,7 +246,7 @@ public class ClassificacaoDecimalDireitoCadastroUI extends javax.swing.JInternal
                 }
             });      
             
-        } else if (EnumOperacaoBanco.ALTERAR.equals(operacao)){
+        } else if (EnumOperacaoBanco.EDITAR.equals(operacao)){
             JOptionPane.showOptionDialog(null, "ClassificacaoDecimalDireito alterado com sucesso!", "Cadastro de ClassificacaoDecimalDireito!", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
                
             this.dispose();

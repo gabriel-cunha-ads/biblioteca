@@ -112,7 +112,7 @@ public class EditoraPersistenciaImpl implements Persistencia<Editora>{
         
         this.excluir(editoraBanco);
 
-        Editora editoraAtualizada = editoraBanco.from(editoraParaAlterar);
+        Editora editoraAtualizada = editoraBanco.clone(editoraParaAlterar);
         
         this.incluir(editoraAtualizada);
     }

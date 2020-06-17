@@ -1,5 +1,6 @@
 package service;
 import entity.EnumFiltroLivro;
+import entity.Exemplar;
 import entity.Livro;
 import exception.RegistroExistenteException;
 import exception.RegistroNaoExistenteException;
@@ -14,9 +15,11 @@ import service.strategy.FiltroStrategy;
  */
 public class LivroService {
 
+    private final String NOME_ARQUIVO_BANCO_AUTOR = "livroBd.txt";
+    
     private LivroPersistenciaImpl livroPersistenciaImpl;
     
-    private final String NOME_ARQUIVO_BANCO_AUTOR = "livroBd.txt";
+    private ExemplarService exemplarService;
 
     public LivroService() throws Exception {
         this.livroPersistenciaImpl = new LivroPersistenciaImpl(NOME_ARQUIVO_BANCO_AUTOR);
@@ -33,7 +36,7 @@ public class LivroService {
 
         Integer id = gerarNovoId();
 
-        livro.setIdLivro(id);
+        livro.setId(id);
 
         livroPersistenciaImpl.incluir(livro);
     }
@@ -44,10 +47,10 @@ public class LivroService {
         
         List<Livro> livrosBanco = livroPersistenciaImpl.listar();
             
-        if (livro.getIdLivro() != null) {
+        if (livro.getId() != null) {
 //      Percorrendo a lista com API Stream do java 8 e filtrando pelo id.
         livroBanco = livrosBanco.stream()
-                                .filter(a -> livro.getIdLivro().equals(a.getIdLivro())) 
+                                .filter(a -> livro.getId().equals(a.getId())) 
                                 .findFirst()
                                 .orElse(null);
         } else {
@@ -79,7 +82,23 @@ public class LivroService {
         List<Livro> livros = livroPersistenciaImpl.listar();
 
         return livros;
-    }      
+    }  
+
+    public List<Livro> listarPor(List<Exemplar> exemplares) throws Exception {
+        
+         List<Livro> livros = this.listar();
+         
+         List<Livro> livrosResultado = new ArrayList();
+         
+         for (Livro l : livros) {
+             for (Exemplar e : exemplares) {
+                 if (e.getLivro().getId().equals(l.getId())) {
+                     livrosResultado.add(l);
+                 }
+             }
+         }
+         return livrosResultado;
+} 
     
     public void alterar(Livro livro) throws Exception{
        

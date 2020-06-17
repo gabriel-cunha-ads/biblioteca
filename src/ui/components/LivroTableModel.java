@@ -1,6 +1,8 @@
 package ui.components;
 import entity.Autor;
 import entity.Livro;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -25,16 +27,17 @@ public class LivroTableModel extends ViewAbstractTableModel<Livro> {
 //    Recupera o valor de uma célula. 
     @Override
     public Object getValueAt(int indexLinha, int indexColuna) {
+        DateTimeFormatter formatoData = DateTimeFormatter.ofPattern("dd/MM/yyyy");  
         Livro livro = linhas.get(indexLinha);
         switch(indexColuna) {
             case 0: 
-                return livro.getIdLivro();
+                return livro.getId();
             case 1: 
                 return livro.getTitulo();
             case 2: 
                 return livro.getIsbn();
             case 3: 
-                return livro.getDataCadastro();
+                return livro.getDataCadastro().format(formatoData);
             case 4: 
                 return livro.isAtivo();                
             case 5:

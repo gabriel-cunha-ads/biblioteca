@@ -1,19 +1,45 @@
 package ui;
+import entity.Cargo;
+import entity.Funcionario;
 import java.awt.event.KeyEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import service.CargoService;
+import service.FuncionarioService;
 /**
  *
  * @author Aires Ribeiro
  */
 public class TelaLogin extends javax.swing.JFrame {
 
-    /**
-     * Creates new form TelaLogin
-     */
-    public TelaLogin() {
+    private FuncionarioService fService;    
+    private CargoService cargoService;    
+    
+    public TelaLogin() throws Exception {
         initComponents();
+        fService = new FuncionarioService();
+        
+        cargoService = new CargoService();
+        
+        cargoService.incluir(new Cargo(1, "Administrador sistema", true));
+        
+        Cargo cargo = cargoService.consultar(new Cargo(1));
+
+        fService.incluir(new Funcionario(1, "José das Couves", "596.284.400-98", cargo, "", 
+                "6298172837", "sistema@gmail.com", true, true, "admin" ));
+                
+//                        this.nome       = nome;
+//        this.cpf        = cpf;
+//        this.cargo      = cargo;
+//        this.oab        = oab;
+//        this.celular    = celular; 
+//        this.email      = email;
+//        this.ativo      = ativo;
+//        this.usuarioSistema = isUsuarioSistema();
+//        this.senha = senha  = senha;
+//        this.dataCadastro = LocalDate.now(ZoneId.systemDefault());
+//        this.selecionado = false;          
     }
 
     @SuppressWarnings("unchecked")
@@ -24,19 +50,19 @@ public class TelaLogin extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jPasswordFieldSenha = new javax.swing.JPasswordField();
-        jTextFieldUsuario = new javax.swing.JTextField();
+        jTextFieldMatricula = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jButtonSair = new javax.swing.JButton();
         jButtonEntrar = new javax.swing.JButton();
         jLabelFundo = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Login");
         setResizable(false);
         getContentPane().setLayout(null);
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/Bibioteca2.jpg"))); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/imagens/Bibioteca2.jpg"))); // NOI18N
         jLabel1.setText("jLabel1");
         getContentPane().add(jLabel1);
         jLabel1.setBounds(10, 125, 252, 138);
@@ -51,9 +77,9 @@ public class TelaLogin extends javax.swing.JFrame {
         getContentPane().add(jLabel5);
         jLabel5.setBounds(55, 58, 439, 43);
         getContentPane().add(jPasswordFieldSenha);
-        jPasswordFieldSenha.setBounds(330, 160, 186, 20);
-        getContentPane().add(jTextFieldUsuario);
-        jTextFieldUsuario.setBounds(330, 120, 186, 20);
+        jPasswordFieldSenha.setBounds(330, 160, 186, 22);
+        getContentPane().add(jTextFieldMatricula);
+        jTextFieldMatricula.setBounds(330, 120, 186, 24);
 
         jLabel3.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jLabel3.setText("Senha:");
@@ -61,21 +87,26 @@ public class TelaLogin extends javax.swing.JFrame {
         jLabel3.setBounds(280, 160, 45, 17);
 
         jLabel2.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        jLabel2.setText("Usuário:");
+        jLabel2.setText("Matrícula:");
         getContentPane().add(jLabel2);
-        jLabel2.setBounds(270, 120, 52, 17);
+        jLabel2.setBounds(260, 120, 70, 17);
 
         jButtonSair.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jButtonSair.setText("Sair");
         getContentPane().add(jButtonSair);
-        jButtonSair.setBounds(420, 240, 86, 25);
+        jButtonSair.setBounds(420, 240, 86, 33);
 
         jButtonEntrar.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jButtonEntrar.setText("Entrar");
+        jButtonEntrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonEntrarActionPerformed(evt);
+            }
+        });
         getContentPane().add(jButtonEntrar);
-        jButtonEntrar.setBounds(310, 240, 86, 25);
+        jButtonEntrar.setBounds(310, 240, 86, 33);
 
-        jLabelFundo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/Fundo azul - Matis 133, vermelho 237, sat 240, verde 249, lum 232, azul 255 - 1368 x 728.png"))); // NOI18N
+        jLabelFundo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ui/imagens/Fundo azul - Matis 133, vermelho 237, sat 240, verde 249, lum 232, azul 255 - 1000x690.png"))); // NOI18N
         jLabelFundo.setText("jLabel6");
         getContentPane().add(jLabelFundo);
         jLabelFundo.setBounds(0, 0, 520, 280);
@@ -87,19 +118,21 @@ public class TelaLogin extends javax.swing.JFrame {
     private void jButtonEntrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEntrarActionPerformed
         // TODO add your handling code here:
         try {
-            if(jTextFieldUsuario.getText().equals("Aires")&& jPasswordFieldSenha.getText().equals("1234")){
+            FuncionarioService service = new FuncionarioService();
+            String matricula = jTextFieldMatricula.getText();
+            Funcionario f = service.consultar(new Funcionario(matricula));
+            
+            if(f.getSenha().equals(jPasswordFieldSenha.getPassword())){
                 DashboardUI tela = new DashboardUI();   //Chamar a tela
-                              tela.setVisible(true);        //Tornar a tela visivel
+                tela.setVisible(true);        //Tornar a tela visivel
                 dispose();                                  //Fechar a tela de login e abrir apenas a tela principal
             }else{
                 JOptionPane.showMessageDialog(rootPane, "Acesso Negado!");
+                return;
             }
-        } catch (Exception erro) {
-            try {
-                throw erro;
-            } catch (Exception ex) {
-                Logger.getLogger(TelaLogin.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        } catch (Exception e) {
+                Logger.getLogger(TelaLogin.class.getName()).log(Level.SEVERE, null, e);
+                JOptionPane.showMessageDialog(this, "Ocorreu erro ao tentar efetuar o login.");
         }
     }//GEN-LAST:event_jButtonEntrarActionPerformed
 
@@ -112,7 +145,7 @@ public class TelaLogin extends javax.swing.JFrame {
         // TODO add your handling code here:
      try {
          if(evt.getKeyCode()==KeyEvent.VK_ENTER)   
-         if(jTextFieldUsuario.getText().equals("Aires")&& jPasswordFieldSenha.getText().equals("1234")){
+         if(jTextFieldMatricula.getText().equals("Aires")&& jPasswordFieldSenha.getText().equals("1234")){
                 DashboardUI tela = new DashboardUI();   //Chamar a tela
                               tela.setVisible(true);        //Tornar a tela visivel
                 dispose();                                  //Fechar a tela de login e abrir apenas a tela principal
@@ -159,7 +192,16 @@ public class TelaLogin extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new TelaLogin().setVisible(true);
+
+                try {
+                    DashboardUI dashboardUI = new DashboardUI();
+
+                    dashboardUI = DashboardUI.getInstance();
+                
+                    new TelaLogin().setVisible(true);
+                } catch (Exception ex) {
+                    Logger.getLogger(TelaLogin.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }
@@ -174,6 +216,6 @@ public class TelaLogin extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabelFundo;
     private javax.swing.JPasswordField jPasswordFieldSenha;
-    private javax.swing.JTextField jTextFieldUsuario;
+    private javax.swing.JTextField jTextFieldMatricula;
     // End of variables declaration//GEN-END:variables
 }

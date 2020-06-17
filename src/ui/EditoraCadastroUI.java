@@ -191,7 +191,7 @@ public class EditoraCadastroUI extends javax.swing.JInternalFrame {
                 
                 editoraService.alterar(editoraBanco);
                 
-                finalizarAlteracoes(EnumOperacaoBanco.ALTERAR);
+                finalizarAlteracoes(EnumOperacaoBanco.EDITAR);
             } 
          
         } catch (RegistroExistenteException e) {
@@ -235,7 +235,7 @@ public class EditoraCadastroUI extends javax.swing.JInternalFrame {
                 }
             });      
             
-        } else if (EnumOperacaoBanco.ALTERAR.equals(operacao)){
+        } else if (EnumOperacaoBanco.EDITAR.equals(operacao)){
             JOptionPane.showOptionDialog(null, "Editora alterado com sucesso!", "Cadastro de Editora!", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
                
             this.dispose();

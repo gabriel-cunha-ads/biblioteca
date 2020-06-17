@@ -1,5 +1,6 @@
 package entity;
 
+import entity.vo.CargoVO;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -13,6 +14,12 @@ public class Cargo {
     private String descricao;
     private boolean selecionado = false;
 
+    public Cargo() {
+    }
+    
+    public Cargo(Integer id) {
+        this.idCargo = id;
+    }    
 
     public Cargo(Integer idCargo, String descricao) {
         this.idCargo = idCargo;
@@ -82,12 +89,21 @@ public class Cargo {
     }
     
     
-    public Cargo from (Cargo cargo) throws Exception {
-        this.idCargo    = cargo.getIdCargo();
-        this.descricao  = cargo.getDescricao();
-        this.selecionado = cargo.isSelecionado();
-        return this;
+    public Cargo clone () {
+        Cargo cargoClone    = new Cargo();
+        cargoClone.setIdCargo(this.getIdCargo());
+        cargoClone.setDescricao(this.getDescricao());
+        cargoClone.setSelecionado(this.isSelecionado());
+        return cargoClone;
     }     
+    
+    public CargoVO toCargoVO() {
+        CargoVO cargoVO = new CargoVO();
+        cargoVO.setIdCargo(this.getIdCargo());
+        cargoVO.setDescricao(this.getDescricao());
+        cargoVO.setSelecionado(this.isSelecionado());
+        return cargoVO;
+    }
     
     @Override
     public String toString() {
@@ -121,6 +137,4 @@ public class Cargo {
         }
         return true;
     }
-
-    
 }

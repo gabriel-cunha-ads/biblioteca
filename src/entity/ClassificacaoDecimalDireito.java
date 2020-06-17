@@ -1,7 +1,6 @@
 package entity;
 
 import entity.vo.ClassificacaoDecimalDireitoVO;
-import java.util.ArrayList;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -144,12 +143,13 @@ public class ClassificacaoDecimalDireito {
         this.selecionado = selecionado;
     }
     
-    public ClassificacaoDecimalDireito from (ClassificacaoDecimalDireito cdd) throws Exception {
-        this.idClassificacaoDecimal = cdd.getIdClassificacaoDecimal();
-        this.codigoCDD = cdd.getCodigoCDD();
-        this.descricao = cdd.getDescricao();
-        this.ativo = cdd.isAtivo();
-        return this;
+    public ClassificacaoDecimalDireito clone (ClassificacaoDecimalDireito cdd) throws Exception {
+        ClassificacaoDecimalDireito cddClone = new ClassificacaoDecimalDireito();
+        cddClone.idClassificacaoDecimal = cdd.getIdClassificacaoDecimal();
+        cddClone.codigoCDD = cdd.getCodigoCDD();
+        cddClone.descricao = cdd.getDescricao();
+        cddClone.ativo = cdd.isAtivo();
+        return cddClone;
     }     
     
      public ClassificacaoDecimalDireitoVO toClassificacaoDecimalDireitoVO () throws Exception {

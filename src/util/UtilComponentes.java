@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import javax.swing.JComponent;
 import javax.swing.JInternalFrame;
+import javax.swing.JLabel;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.text.JTextComponent;
 
@@ -24,6 +25,17 @@ public class UtilComponentes {
             c.setText(vazio);
         }
     }
+    
+    /**
+     * Limpar campos de JTextComponent
+     * @param campos - campos para setar string vazia
+    */
+    public static void limparCampos(JLabel... campos) {
+        String vazio = "";
+        for (JLabel c : campos) {
+            c.setText(vazio);
+        }
+    }    
 
     /**
      * Maximizar JInternalFrame para preencher o tamanho do frame pai.

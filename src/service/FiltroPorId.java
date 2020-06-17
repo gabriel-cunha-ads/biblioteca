@@ -18,7 +18,7 @@ public class FiltroPorId implements FiltroStrategy{
         List<Livro> livros = (List<Livro>) lista;
         
         return livros.stream()
-                .filter(a -> a.getIdLivro().equals(livroParaPesquisa.getIdLivro()))
+                .filter(a -> a.getId().equals(livroParaPesquisa.getId()))
                 .findFirst()
                 .orElse(null);
     }

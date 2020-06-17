@@ -6,6 +6,7 @@ import java.time.format.DateTimeParseException;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import util.UtilData;
 
 /**
  *
@@ -13,22 +14,31 @@ import java.util.logging.Logger;
  */
 public class Exemplar {
 
-    private Integer idExemplar;
+    private Integer id;
     private Livro livro;
     private LocalDate dataCompra;
     private Double precoCompra;
     private LocalDate dataBaixa;
     private String motivoBaixa;
-    private EnumSituacaoEmprestimo situacaoEmprestimo;
+    private EnumSituacaoExemplar situacao;
     private boolean ativo;
     private boolean selecionado = false;
 
     public Exemplar(Integer idExemplar) {
-        this.idExemplar = idExemplar;
+        this.id = idExemplar;
     }
 
-    public Exemplar(Livro livro) {
-        this.livro.setIdLivro(livro.getIdLivro());
+    public Exemplar(EnumSituacaoExemplar situacao) {
+        this.situacao = situacao;
+    }
+    
+    public Exemplar(Livro livro, Double precoCompra) {
+        this.livro = livro;
+        this.precoCompra = precoCompra;
+        this.dataCompra  = LocalDate.now();
+        this.situacao    = EnumSituacaoExemplar.DISPONIVEL;
+        this.motivoBaixa = "";
+        this.ativo       = true;
     }
     
     public Exemplar(String dados) throws Exception {
@@ -42,34 +52,35 @@ public class Exemplar {
             Integer id = Integer.parseInt(vetorString[0]);
             Integer idLivro = Integer.parseInt(vetorString[1]);
             
-            DateTimeFormatter formatoData = DateTimeFormatter.ofPattern("dd/MM/yyyy");            
-            
 //          Se id do vetor for null, atribui 1.
-            this.idExemplar     = vetorString[0].equals("null") ? 1 : id;  
+            this.id     = vetorString[0].equals("null") ? 1 : id;  
             this.livro          = new Livro(idLivro);
-            this.dataCompra     = LocalDate.parse(vetorString[2], formatoData);
+            this.dataCompra     = LocalDate.parse(vetorString[2], UtilData.getFormatoData());
             this.precoCompra    = Double.parseDouble(vetorString[3]);
-            this.dataBaixa      = LocalDate.parse(vetorString[4], formatoData);
+            this.dataBaixa      = LocalDate.parse(vetorString[4], UtilData.getFormatoData());
             this.motivoBaixa    = vetorString[5];
-            this.situacaoEmprestimo = EnumSituacaoEmprestimo.valueOf(vetorString[6]);
-            this.ativo          = Boolean.parseBoolean(vetorString[8]);
+            this.situacao       = EnumSituacaoExemplar.valueOf(vetorString[6]);
+            this.ativo          = Boolean.parseBoolean(vetorString[7]);
                     
         } catch (DateTimeParseException ex) {
             Logger.getLogger(Autor.class.getName()).log(Level.SEVERE, "Erro ao fazer o parse de String para LocalDate" + vetorString[1]);
         } catch(NumberFormatException e) {
-            Logger.getLogger(Autor.class.getName()).log(Level.SEVERE, "Erro ao fazer o parse do campo id do vetor de dados do autor com nome " + vetorString[1]);
+            Logger.getLogger(Autor.class.getName()).log(Level.SEVERE, "Erro ao fazer o parse do campo id do vetor do objeto" + vetorString[1]);
         } catch(Exception e) {
-            Logger.getLogger(Autor.class.getName()).log(Level.SEVERE, "Erro ao extrair dados do vetor de dados do autor." + vetorString[1] + "Erro: " + e);
+            Logger.getLogger(Autor.class.getName()).log(Level.SEVERE, "Erro ao extrair dados do vetor." + vetorString[1] + "Erro: " + e);
         }
     } 
+
+    public Exemplar() {
+    }
     
 
-    public Integer getIdExemplar() {
-        return idExemplar;
+    public Integer getId() {
+        return id;
     }
 
-    public void setIdExemplar(Integer idExemplar) {
-        this.idExemplar = idExemplar;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public Livro getLivro() {
@@ -112,14 +123,6 @@ public class Exemplar {
         this.motivoBaixa = motivoBaixa;
     }
 
-    public EnumSituacaoEmprestimo getSituacaoEmprestimo() {
-        return situacaoEmprestimo;
-    }
-
-    public void setSituacaoEmprestimo(EnumSituacaoEmprestimo situacaoEmprestimo) {
-        this.situacaoEmprestimo = situacaoEmprestimo;
-    }
-
     public boolean isAtivo() {
         return ativo;
     }
@@ -135,6 +138,14 @@ public class Exemplar {
     public void setSelecionado(boolean selecionado) {
         this.selecionado = selecionado;
     }
+
+    public EnumSituacaoExemplar getSituacao() {
+        return situacao;
+    }
+
+    public void setSituacao(EnumSituacaoExemplar situacao) {
+        this.situacao = situacao;
+    }
     
     
     @Override
@@ -142,13 +153,14 @@ public class Exemplar {
         DateTimeFormatter formatoData = DateTimeFormatter.ofPattern("dd/MM/yyyy");  
         
         StringBuffer sb = new StringBuffer();
-        sb.append(idExemplar).append(";");
-        sb.append(livro.getIdLivro()).append(";");
+        sb.append(id).append(";");
+        sb.append(livro.getId()).append(";");
         sb.append(dataCompra.format(formatoData)).append(";");
         sb.append(precoCompra).append(";");
-        sb.append(dataBaixa.format(formatoData)).append(";");
+        LocalDate dataDaBaixa = dataBaixa == null ? LocalDate.now().minusYears(1L) : dataBaixa;
+        sb.append(dataDaBaixa.format(UtilData.getFormatoData())).append(";");
         sb.append(motivoBaixa).append(";");
-        sb.append(situacaoEmprestimo).append(";");
+        sb.append(situacao.name()).append(";");
         sb.append(ativo).append(";");
         return sb.toString();
     }      
@@ -157,7 +169,7 @@ public class Exemplar {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 29 * hash + Objects.hashCode(this.idExemplar);
+        hash = 29 * hash + Objects.hashCode(this.id);
         return hash;
     }
 
@@ -173,7 +185,7 @@ public class Exemplar {
             return false;
         }
         final Exemplar other = (Exemplar) obj;
-        if (!Objects.equals(this.idExemplar, other.idExemplar)) {
+        if (!Objects.equals(this.id, other.id)) {
             return false;
         }
         return true;

@@ -1,6 +1,5 @@
 package service;
 import entity.Autor;
-import entity.Editora;
 import entity.vo.AutorVO;
 import exception.RegistroExistenteException;
 import exception.RegistroNaoExistenteException;
@@ -10,7 +9,6 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import repository.AutorPersistenciaImpl;
-import ui.EditorasUI;
 
 /**
  *
@@ -147,16 +145,4 @@ public class AutorService {
         
         return autoresVOVector;
     } 
-    
-    public Vector<AutorVO> carregarTodosAutoresVetorComboBox(List<Autor> autores) throws Exception {
-        
-        Vector<AutorVO> autoresVOVector = new Vector();
-        
-        for (Autor autor : autores) {
-            autoresVOVector.add(autor.toAutorVO());
-        }   
-        
-        return autoresVOVector;
-    }     
-
 }

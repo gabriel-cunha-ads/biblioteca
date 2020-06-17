@@ -91,11 +91,12 @@ public class Autor {
         this.selecionado = selecionado;
     }
     
-    public Autor from (Autor autor) throws Exception {
-        this.idAutor = autor.getIdAutor();
-        this.nome = autor.getNome();
-        this.ativo = autor.isAtivo();
-        return this;
+    public Autor clone (Autor autor) throws Exception {
+        Autor autorClone = new Autor();
+        autorClone.setIdAutor(autor.getIdAutor());
+        autorClone.setNome(autor.getNome());
+        autorClone.setAtivo(autor.isAtivo());
+        return autorClone;
     }    
     
      public AutorVO toAutorVO () throws Exception {

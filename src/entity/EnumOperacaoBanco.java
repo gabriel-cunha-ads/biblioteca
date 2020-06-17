@@ -7,7 +7,7 @@ package entity;
 public enum EnumOperacaoBanco {
     
     INCLUIR("Incluir"), 
-    ALTERAR("Alterar"), 
+    EDITAR("Alterar"), 
     LISTAR("Listar"), 
     EXCLUIR("Excluir"), 
     CONSULTAR("Consultar");

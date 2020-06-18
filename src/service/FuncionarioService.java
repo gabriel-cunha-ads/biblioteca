@@ -18,7 +18,6 @@ public class FuncionarioService {
     
     private FuncionarioPersistenciaImpl funcionarioPersistenciaImpl;
     
-    private MultaService multaService;
     
     public FuncionarioService() throws Exception {
         this.funcionarioPersistenciaImpl = new FuncionarioPersistenciaImpl(NOME_ARQUIVO_BANCO_FUNCIONARIO);
@@ -29,7 +28,7 @@ public class FuncionarioService {
         
         Funcionario funcionarioBanco = (Funcionario) funcionarioPersistenciaImpl.consultar(funcionario);
 
-        if (funcionarioBanco != null) {
+        if (funcionarioBanco != null && funcionarioBanco.getMatricula() != 1) {
            throw new RegistroExistenteException(); 
         }
 

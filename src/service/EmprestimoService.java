@@ -28,7 +28,7 @@ public class EmprestimoService {
 
     public EmprestimoService() throws Exception {
         this.livroPersistenciaImpl = new LivroPersistenciaImpl(NOME_ARQUIVO_BANCO_EMPRESTIMO);
-//        this.funcionarioService = new FuncionarioService();
+        this.funcionarioService = new FuncionarioService();
         this.multaService = new MultaService();
     }
     

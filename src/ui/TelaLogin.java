@@ -28,18 +28,7 @@ public class TelaLogin extends javax.swing.JFrame {
 
         fService.incluir(new Funcionario(1, "José das Couves", "596.284.400-98", cargo, "", 
                 "6298172837", "sistema@gmail.com", true, true, "admin" ));
-                
-//                        this.nome       = nome;
-//        this.cpf        = cpf;
-//        this.cargo      = cargo;
-//        this.oab        = oab;
-//        this.celular    = celular; 
-//        this.email      = email;
-//        this.ativo      = ativo;
-//        this.usuarioSistema = isUsuarioSistema();
-//        this.senha = senha  = senha;
-//        this.dataCadastro = LocalDate.now(ZoneId.systemDefault());
-//        this.selecionado = false;          
+        
     }
 
     @SuppressWarnings("unchecked")
@@ -93,6 +82,11 @@ public class TelaLogin extends javax.swing.JFrame {
 
         jButtonSair.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jButtonSair.setText("Sair");
+        jButtonSair.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonSairActionPerformed(evt);
+            }
+        });
         getContentPane().add(jButtonSair);
         jButtonSair.setBounds(420, 240, 86, 33);
 
@@ -118,11 +112,11 @@ public class TelaLogin extends javax.swing.JFrame {
     private void jButtonEntrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEntrarActionPerformed
         // TODO add your handling code here:
         try {
-            FuncionarioService service = new FuncionarioService();
             String matricula = jTextFieldMatricula.getText();
-            Funcionario f = service.consultar(new Funcionario(matricula));
             
-            if(f.getSenha().equals(jPasswordFieldSenha.getPassword())){
+            Funcionario f = fService.consultar(new Funcionario(1));
+            
+            if(f.getSenha().equals(String.valueOf(jPasswordFieldSenha.getPassword()))){
                 DashboardUI tela = new DashboardUI();   //Chamar a tela
                 tela.setVisible(true);        //Tornar a tela visivel
                 dispose();                                  //Fechar a tela de login e abrir apenas a tela principal
@@ -137,7 +131,6 @@ public class TelaLogin extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonEntrarActionPerformed
 
     private void jButtonSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSairActionPerformed
-   
         System.exit(0);                                 //Sai do sistema fechando a tela
     }//GEN-LAST:event_jButtonSairActionPerformed
 
@@ -164,47 +157,47 @@ public class TelaLogin extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Windows".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TelaLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TelaLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TelaLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(TelaLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-     
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-
-                try {
-                    DashboardUI dashboardUI = new DashboardUI();
-
-                    dashboardUI = DashboardUI.getInstance();
-                
-                    new TelaLogin().setVisible(true);
-                } catch (Exception ex) {
-                    Logger.getLogger(TelaLogin.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        });
-    }
+//    public static void main(String args[]) {
+//        /* Set the Nimbus look and feel */
+//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+//         */
+//        try {
+//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+//                if ("Windows".equals(info.getName())) {
+//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+//                    break;
+//                }
+//            }
+//        } catch (ClassNotFoundException ex) {
+//            java.util.logging.Logger.getLogger(TelaLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (InstantiationException ex) {
+//            java.util.logging.Logger.getLogger(TelaLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (IllegalAccessException ex) {
+//            java.util.logging.Logger.getLogger(TelaLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+//            java.util.logging.Logger.getLogger(TelaLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        }
+//        //</editor-fold>
+//     
+//
+//        /* Create and display the form */
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//
+//                try {
+//                    DashboardUI dashboardUI = new DashboardUI();
+//
+//                    dashboardUI = DashboardUI.getInstance();
+//                
+//                    new TelaLogin().setVisible(true);
+//                } catch (Exception ex) {
+//                    Logger.getLogger(TelaLogin.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//            }
+//        });
+//    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonEntrar;

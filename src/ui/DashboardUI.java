@@ -21,11 +21,11 @@ public class DashboardUI extends javax.swing.JFrame {
     
     public DashboardUI() {
         
-//        this.setExtendedState(this.MAXIMIZED_BOTH); 
+        this.setExtendedState(this.MAXIMIZED_BOTH); 
         
         initComponents();
         
-        jLabelNomeTela.setText("Dashboard");
+        jLabelNomeTela.setText("Bilblioteca");
     }
     
     @SuppressWarnings("unchecked")

@@ -73,13 +73,6 @@ public class AutoresUI extends javax.swing.JInternalFrame {
 //      Define títulos para a combobox de pesquisa.        
         jComboBoxCampoPesquisa.setModel(new DefaultComboBoxModel<>(new String[] {"Selecione", TITULO_COMBOBOX_ID, TITULO_COMBOBOX_NOME}));  
        
-//      Auto sugestão
-        List<String> nomes = listarNomesAutores();
-        jTextFieldTextoPesquisa.setFocusTraversalKeysEnabled(false);
-        AutoComplete autoComplete = new AutoComplete(jTextFieldTextoPesquisa, nomes);
-        jTextFieldTextoPesquisa.getDocument().addDocumentListener(autoComplete);
-        jTextFieldTextoPesquisa.getInputMap().put(KeyStroke.getKeyStroke(title).getKeyStroke("TAB"), COMMIT_ACTION);
-        jTextFieldTextoPesquisa.getActionMap().put(COMMIT_ACTION, autoComplete.new CommitAction());        
     }
     
     

@@ -1,7 +1,6 @@
 package ui;
 
 import entity.EnumFiltroExemplar;
-import entity.EnumSituacaoExemplar;
 import java.util.List;
 import entity.Exemplar;
 import java.awt.event.MouseAdapter;
@@ -15,7 +14,6 @@ import javax.swing.JDesktopPane;
 import javax.swing.JOptionPane;
 import javax.swing.table.TableColumnModel;
 import service.ExemplarService;
-import service.LivroService;
 import ui.components.ExemplarTableModel;
 import ui.components.ViewAbstractTableModel;
 import util.UtilComponentes;

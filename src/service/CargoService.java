@@ -28,7 +28,7 @@ public class CargoService {
     public void incluir(Cargo cargo) throws Exception {
         Cargo cargoBanco = (Cargo) CargoPersistenciaImpl.consultar(cargo);
 
-        if (cargoBanco != null) {
+        if (cargoBanco != null && cargoBanco.getIdCargo() != 1) {
            throw new RegistroExistenteException(); 
         }
 

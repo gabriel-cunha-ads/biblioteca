@@ -1,9 +1,6 @@
 package ui.components;
 import entity.Exemplar;
-import entity.Livro;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import util.UtilData;
 
 /**
  *

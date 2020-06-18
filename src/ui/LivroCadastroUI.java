@@ -34,7 +34,6 @@ import javax.swing.table.TableColumnModel;
 import service.AutorService;
 import service.ClassificacaoDecimalDireitoService;
 import service.EditoraService;
-import service.FuncionarioService;
 import service.LivroService;
 import ui.components.AutoresLivroCadastroTableModel;
 import ui.components.ViewAbstractTableModel;

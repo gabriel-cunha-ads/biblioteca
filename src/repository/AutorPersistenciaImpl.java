@@ -9,6 +9,7 @@ import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
 import repository.interfaces.Persistencia;
+import tcpClient.ComunicadorTCP;
 import util.UtilArquivo;
 import util.UtilSistema;
 
@@ -48,9 +49,10 @@ public class AutorPersistenciaImpl implements Persistencia<Autor>{
 
 //      Fecha o arquivo
         bw.close();
+        
+//      Grava servidor numve (socket)
+        UtilSistema.gravarBancoDadosRemoto(arquivoBancoDados, autor.toString());
     }
-
-
 
     @Override
     public List<Autor> listar() throws Exception {

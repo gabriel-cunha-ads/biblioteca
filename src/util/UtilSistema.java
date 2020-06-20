@@ -2,9 +2,11 @@ package util;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import tcpClient.ComunicadorTCP;
 
 /**
  *
@@ -43,6 +45,11 @@ public class UtilSistema {
             arquivo = new File(getDiretorioBancoDados() + File.separator + nomeBanco);
             FileWriter fw = new FileWriter(arquivo);
         } 
+    }
+    
+    public static void gravarBancoDadosRemoto(String pathArquivoBanco, String mensagem) throws IOException {
+        ComunicadorTCP comunicacao = new ComunicadorTCP("127.0.0.1", 6789);
+        comunicacao.enviarMensagem(pathArquivoBanco+";"+mensagem);
     }
 
 }

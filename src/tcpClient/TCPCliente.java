@@ -1,7 +1,6 @@
-package TCPCliente;
+package tcpClient;
 
-import TCPCliente.Cliente;
-import TCPCliente.ComunicadorTCP;
+import tcpClient.ComunicadorTCP;
 import java.io.IOException;
 import java.util.Scanner;
 

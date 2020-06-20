@@ -50,7 +50,7 @@ public class AutorPersistenciaImpl implements Persistencia<Autor>{
 //      Fecha o arquivo
         bw.close();
         
-//      Grava servidor numve (socket)
+//      Grava servidor nuvem (socket)
         UtilSistema.gravarBancoDadosRemoto(arquivoBancoDados, autor.toString());
     }
 
@@ -123,6 +123,9 @@ public class AutorPersistenciaImpl implements Persistencia<Autor>{
         Autor autorAtualizado = autorBanco.clone(autorParaAlterar);
         
         this.incluir(autorAtualizado);
+        
+//      Grava servidor nuvem (socket)
+        UtilSistema.gravarBancoDadosRemoto(arquivoBancoDados, autorParaAlterar.toString());        
     }
 
     @Override
